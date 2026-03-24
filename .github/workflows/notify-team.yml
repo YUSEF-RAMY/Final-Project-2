@@ -1,0 +1,23 @@
+name: Notify Team on Main PR
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "📢 **Pull Request for Main Branch**\n\nAttention @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @heba10allah\n\nA new PR has been opened targeting the `main` branch. Please review the changes for any potential conflicts or issues before merging."
+            });
