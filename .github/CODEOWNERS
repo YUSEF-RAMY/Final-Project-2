@@ -1,0 +1,28 @@
+# ======================
+# Code Owners for Final-Project-2
+# ======================
+
+# Global owners
+* @YUSEF-RAMY
+
+# ======================
+# Code Owners
+# ======================
+
+# Core Backend & Architecture
+/Backend/           @YUSEF-RAMY
+/ApiPostman/        @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @hebal0allah
+
+# Infrastructure & DevOps
+/Dockerfile         @YUSEF-RAMY
+/docker/            @YUSEF-RAMY
+/.github/workflows/ @YUSEF-RAMY
+
+# AI & Data Models
+/Ai/                @Yousef-samiir @hebal0allah
+
+# Frontend Web (React)
+/Web/               @YUSEF-RAMY @Maryam-Elazab
+
+# Mobile Application (Flutter/Native)
+/Mobile/            @amr-khalid-saleh
