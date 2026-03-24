@@ -19,5 +19,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "📢 **Pull Request for Main Branch**Attention @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @hebal0allah \n\nA new PR has been opened targeting the `main` branch. Please review the changes for any potential conflicts or issues before merging."
+              body: "📢 **Pull Request for Main Branch**\n\nAttention @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @heba10allah\n\nA new PR has been opened targeting the `main` branch. Please review the changes for any potential conflicts or issues before merging."
             });
