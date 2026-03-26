@@ -11,7 +11,7 @@
 
 # Core Backend & Architecture
 /Backend/           @YUSEF-RAMY
-/ApiPostman/        @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @hebal0allah
+/ApiPostman/        @YUSEF-RAMY @amr-khalid-saleh @Maryam-Elazab @Yousef-samiir @heba10allah
 
 # Infrastructure & DevOps
 /Dockerfile         @YUSEF-RAMY
@@ -19,7 +19,7 @@
 /.github/workflows/ @YUSEF-RAMY
 
 # AI & Data Models
-/Ai/                @Yousef-samiir @hebal0allah
+/Ai/                @Yousef-samiir @heba10allah
 
 # Frontend Web (React)
 /Web/               @YUSEF-RAMY @Maryam-Elazab
