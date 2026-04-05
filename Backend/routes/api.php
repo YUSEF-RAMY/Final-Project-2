@@ -13,6 +13,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nutrition-plan', [NutritionController::class, 'generate']);
 
 
