@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Meal } from '../../../services/dailySummaryService';
+import type { Meal, MacroData } from '../../../services/dailySummaryService';
 import { deleteFoodItem } from '../../../services/foodService';
 import styles from './MealPlan.module.css';
 
 interface MealPlanProps {
   meals: Meal[];
+  mealTargets?: Record<string, MacroData>;
   onRefetch?: () => void;
 }
 
@@ -23,7 +24,7 @@ const MEAL_CONFIG = {
   snacks:    { icon: 'fa-solid fa-cookie-bite', color: '#d97706', bg: '#fffbeb', label: 'Snacks'    },
 };
 
-const MealPlan: React.FC<MealPlanProps> = ({ meals, onRefetch }) => {
+const MealPlan: React.FC<MealPlanProps> = ({ meals, mealTargets, onRefetch }) => {
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -59,6 +60,7 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, onRefetch }) => {
 
         /* ── Empty state: meal not returned by API yet ── */
         if (!meal) {
+          const targetKcal = mealTargets?.[mealType]?.calories ? Math.round(mealTargets[mealType].calories) : null;
           return (
             <div className={styles.card} key={mealType}>
               <div className={styles.iconBox} style={{ color: config.color, backgroundColor: config.bg }}>
@@ -67,7 +69,9 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, onRefetch }) => {
               <div className={styles.cardContent}>
                 <div className={styles.cardHeader}>
                   <span className={styles.mealName}>{config.label}</span>
-                  <span className={styles.mealTargetKcal}>— kcal</span>
+                  <span className={styles.mealTargetKcal}>
+                    {targetKcal ? `Target: ${targetKcal} kcal` : '— kcal'}
+                  </span>
                 </div>
                 <div className={styles.progressBar}>
                   <div className={styles.progressFill} style={{ width: '0%', backgroundColor: config.color }} />
@@ -89,7 +93,7 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, onRefetch }) => {
 
         const { metrics, items } = meal;
         const consumed    = metrics.consumed_calories || 0;
-        const target      = metrics.target_calories  || 1;
+        const target      = metrics.target_calories || mealTargets?.[mealType]?.calories || 1;
         const progressPct = Math.min((consumed / target) * 100, 100);
         const isEmpty     = items.length === 0;
 
