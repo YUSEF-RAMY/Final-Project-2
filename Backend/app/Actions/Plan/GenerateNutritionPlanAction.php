@@ -14,9 +14,9 @@ class GenerateNutritionPlanAction
         private MealPlanService $mealPlanService,
     ) {}
 
-    public function execute($data)
+    public function execute($data, $userID)
     {
-        $nutrition = $this->ai->manual($data);
+        $nutrition = $this->ai->manual($data , $userID);
 
         $plan = $this->mealPlanService->generatePlan($nutrition);
 
