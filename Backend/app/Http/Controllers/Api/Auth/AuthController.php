@@ -22,20 +22,15 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        // بننادي الـ Service اللي متعرفة في الـ constructor
         $result = $this->authService->registerUser($request->validated());
 
-        return response()->json(
+        return $this->sendResponse(
             [
-                'status' => 'success',
-                'status_code' => 201,
-                'message' => 'User registered successfully',
-                'data' => [
-                    'user' => new UserResource($result['user']),
-                    'token' => $result['token'],
-                    'token_type' => 'Bearer',
-                ],
+                'user' => new UserResource($result['user']),
+                'token' => $result['token'],
+                'token_type' => 'Bearer',
             ],
+            'User registered successfully',
             201,
         );
     }
@@ -44,70 +39,53 @@ class AuthController extends Controller
     {
         $result = $this->authService->login($request->validated());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'Logged in successfully',
-            'data' => [
+        return $this->sendResponse(
+            [
                 'user' => new UserResource($result['user']),
                 'token' => $result['token'],
                 'token_type' => 'Bearer',
             ],
-        ], 200);
+            'Logged in successfully',
+        );
     }
+
     public function logout(Request $request)
     {
         $this->authService->logout($request->user());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'Logged out successfully',
-        ], 200);
+        return $this->sendSuccess('Logged out successfully');
     }
 
     public function changePassword(UpdatePasswordRequest $request)
     {
         $this->authService->updatePassword($request->validated());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'Password updated successfully',
-        ], 200);
+        return $this->sendSuccess('Password updated successfully');
     }
 
     public function forgotPassword(ForgotPasswordRequest $request, SendOtpAction $action)
     {
         $action->execute($request->validated());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'OTP code sent to your email',
-        ], 200);
+        return $this->sendSuccess('OTP code sent to your email');
     }
 
     public function verifyOtp(VerifyOtpRequest $request, VerifyOtpAction $action)
     {
         $token = $action->execute($request->validated());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'OTP verified successfully. You can now reset your password.',
-            'token' => $token,
-        ], 200);
+        return $this->sendResponse(
+            [
+                'token' => $token,
+            ],
+            'OTP verified successfully.',
+        );
     }
 
     public function resetPassword(ResetPasswordRequest $request, ResetPasswordAction $action)
     {
         $action->execute($request->validated());
 
-        return response()->json([
-            'status' => 'success',
-            'status_code' => 200,
-            'message' => 'Password has been reset successfully. You can now login with your new password.',
-        ], 200);
+        return $this->sendSuccess('Password has been reset successfully. You can now login with your new password.');
     }
 }
