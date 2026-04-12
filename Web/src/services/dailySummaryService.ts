@@ -55,11 +55,8 @@ export interface DailySummaryData {
   meals: Meal[];
 }
 
-// Quick note: the backend has a known bug where it multiplies macro values by the
-// raw quantity instead of dividing by 100 first. So everything comes back 100x
-// too big. We fix that here before any component ever sees the numbers.
 function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
-  const fix = (n: number): number => +(n / 100).toFixed(2);
+  const fix = (n: number): number => +(n).toFixed(2);
 
   const fixMacro = (m: MacroData): MacroData => ({
     calories: fix(Number(m.calories)),
@@ -75,7 +72,7 @@ function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
     overview: {
       ...data.overview,
       consumed: correctedConsumed,
-      // Recalculate remaining ourselves since the API's remaining is also inflated
+      target: fixMacro(data.overview.target),
       remaining: {
         calories: Math.max(0, +(data.overview.target.calories - correctedConsumed.calories).toFixed(2)),
         protein:  Math.max(0, +(data.overview.target.protein  - correctedConsumed.protein ).toFixed(2)),
