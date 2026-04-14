@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Profile;
 
 use App\Http\Resources\Inbody\BodyReportResource;
+use App\Http\Resources\MealResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -38,7 +39,7 @@ class UserMeResource extends JsonResource
             'body_reports' => BodyReportResource::collection($this->whenLoaded('body_report')),
 
             // Meals
-            'meals' => \App\Http\Resources\MealResource::collection($this->whenLoaded('meals')),
+            'meals' => MealResource::collection($this->whenLoaded('meals')),
 
             // Meal Plans
             'meal_plans' => $this->whenLoaded('mealPlans'),
