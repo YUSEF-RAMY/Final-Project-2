@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Food;
 use App\Actions\Plan\GenerateNutritionPlanAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NutritionController extends Controller
 {
@@ -14,6 +15,6 @@ class NutritionController extends Controller
 
     public function generate(Request $request)
     {
-        return $this->action->execute($request->all());
+        // return $this->action->execute($request->all() , Auth::id());
     }
 }
