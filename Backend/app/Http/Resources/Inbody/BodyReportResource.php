@@ -27,8 +27,8 @@ class BodyReportResource extends JsonResource
             'minerals'        => $this->minerals,
             'bmi'             => $this->bmi,
             'measured_at'     => $this->datetime?->format('Y-m-d H:i'), // تنسيق التاريخ
+            'created_at'      => $this->created_at->diffForHumans(),     // "منذ ساعتين" مثلاً
             'inbody_image'       => asset('storage/' . $this->report_image), // رابط مباشر للصورة
-            // 'created_at'      => $this->created_at->diffForHumans(),     // "منذ ساعتين" مثلاً
         ];
     }
 }
