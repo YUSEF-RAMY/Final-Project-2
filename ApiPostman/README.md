@@ -190,10 +190,22 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
     "status_code": 200,
     "message": "Notifications retrieved successfully.",
     "meta": {
-        "total_count": 0,
-        "unread_count": 0
+        "total_count": 1,
+        "unread_count": 1
     },
-    "data": []
+    "data": [
+        {
+            "notification_id": "e8b...",
+            "title": "InBody analysis completed! 🎉",
+            "body": "Your new numbers are ready, open the app to see your calories and macros.",
+            "is_read": false,
+            "payload": {
+                "inbody_report_id": 123...
+            },
+            "created_at": "7 minutes ago",
+            "full_date": "2026-04-19 22:42"
+        }
+    ]
 }
 ```
 
@@ -205,12 +217,24 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 {
     "status": "success",
     "status_code": 200,
-    "message": "Notification Is Readed",
+    "message": "Notifications retrieved successfully.",
     "meta": {
-        "total_count": 0,
+        "total_count": 1,
         "unread_count": 0
     },
-    "data": []
+    "data": [
+        {
+            "notification_id": "e8b4...",
+            "title": "InBody analysis completed! 🎉",
+            "body": "Your new numbers are ready, open the app to see your calories and macros.",
+            "is_read": true,
+            "payload": {
+                "inbody_report_id": 123...
+            },
+            "created_at": "8 minutes ago",
+            "full_date": "2026-04-19 22:42"
+        }
+    ]
 }
 ```
 
