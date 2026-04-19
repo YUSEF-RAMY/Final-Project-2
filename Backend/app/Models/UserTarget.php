@@ -13,7 +13,6 @@ class UserTarget extends Model
         'target_protein',
         'target_carbs',
         'target_fats',
-        'fitness_goal'
     ];
 
     protected $casts = [
