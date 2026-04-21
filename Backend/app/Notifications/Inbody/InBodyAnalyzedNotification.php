@@ -31,7 +31,7 @@ class InBodyAnalyzedNotification extends Notification implements ShouldQueue
 
     public function toFcm($notifiable): FcmMessage
     {
-        logger('Sending FCM to user: ' . $notifiable->id);
+        logger('Sending FCM to user: =>' . $notifiable->id);
         return FcmMessage::create()
             ->setData($this->payload())
             ->setNotification(

@@ -9,33 +9,41 @@ use App\Http\Controllers\Api\UserTarget\UserTargetController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Group Auth Controller without middleware (register, login, forgot-password, verify-otp, reset-password)
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/forgot-password', 'forgotPassword');
+    Route::post('/verify-otp', 'verifyOtp');
+    Route::post('/reset-password', 'resetPassword');
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 
+// Group Auth Controller with middleware (auth:sanctum) => (logout, change-password)
     Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout');
         Route::post('/change-password', 'changePassword');
-        Route::post('/forgot-password', 'forgotPassword');
-        Route::post('/verify-otp', 'verifyOtp');
-        Route::post('/reset-password', 'resetPassword');
     });
 
+// Group InBody (Data extraction from InBody , Get Latest Data)
     Route::prefix('inbody')->controller(InBodyController::class)->group(function () {
             Route::post('/analyze', 'analyze');
             Route::get('/latest', 'getLatestReport');
         });
 
+// Group Daily User Target
     Route::controller(UserTargetController::class)->group(function () {
         Route::get('/daily-target', 'getDailyTarget');
     });
 
+// Group FCM (firebase cloud tokens)
     Route::prefix('profile')->controller(ProfileController::class)->group(function () {
-        Route::post('/fcm-token', 'updateFcmToken'); 
-        // Route::get('/', 'show');
-    });
+            Route::post('/fcm-token', 'updateFcmToken');
+            // Route::get('/', 'show');
+        });
 
+// Group Notifications 
     Route::prefix('notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/read', 'markAsRead');
