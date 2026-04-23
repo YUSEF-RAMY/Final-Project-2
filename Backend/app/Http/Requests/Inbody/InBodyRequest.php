@@ -23,7 +23,7 @@ class InBodyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|mimes:jpeg,png,jpg,pdf|max:5120',
+            'image' => 'required|mimes:jpeg,png,jpg|max:5120',
         ];
     }
 }
