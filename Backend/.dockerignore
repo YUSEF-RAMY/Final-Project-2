@@ -1,0 +1,27 @@
+# تجاهل مكتبات الـ PHP والـ JS (لأننا هننزلهم جوه الكونتينر)
+vendor/
+node_modules/
+
+# تجاهل ملفات النظام والـ Git
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+.env
+
+# تجاهل الصور والملفات اللي اليوزر بيرفعها (عشان متبقاش جزء من الـ Image)
+storage/*.jpg
+storage/*.png
+storage/*.jpeg
+storage/*.pdf
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*.log
+
+# تجاهل ملفات الـ AI والـ IDE
+.idea/
+.vscode/
+.agents/
+.claude/
