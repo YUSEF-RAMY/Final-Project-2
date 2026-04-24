@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/var/www
+    depends_on:
+      - db
     networks:
       - healthify-net
 
@@ -33,10 +35,10 @@ services:
     container_name: healthify-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: healthify
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: healthify_user
+      MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
     volumes:

@@ -2,6 +2,7 @@ FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
     libpng-dev \
+    nano \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     zip \
@@ -13,16 +14,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd
 
-# نزل Composer عشان نقدر ننزل الـ Vendors
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# تحديد مكان الكود جوه الـ Container
 WORKDIR /var/www
 
-# نسخ كل ملفات المشروع من جهازك للـ Container
 COPY . .
 
-# ضبط الصلاحيات للمجلدات المهمة عشان متبقاش Read-only
+RUN chmod +x storage
+
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 9000
