@@ -22,25 +22,19 @@ Follow these steps to start the project on your local machine:
 Create your environment file from the example:
 ```bash
 cp .env.example .env
-
-docker compose up -d --build
-
-# 1. Install dependencies
-docker exec healthify-backend-api composer install
-
-# 2. Generate App Key
-docker exec healthify-backend-api php artisan key:generate
-
-# 3. Create Database Tables
-docker exec healthify-backend-api php artisan migrate:fresh --seed
-
-# 4. Create Storage Link
-docker exec healthify-backend-api php artisan storage:link
-
 ```
 
----
+### 2. Start the Application
+Build and start the Docker containers. The setup is fully automated! 
+Dependencies will be installed, the app key will be generated, migrations will run, and permissions will be fixed—all automatically.
 
+```bash
+docker compose up -d --build
+```
+
+That's it! The application will be available at `http://localhost:8000/api` once the startup is complete.
+
+---
 
 ## 📡 API Endpoints
 The base URL for all API endpoints is:
@@ -52,28 +46,21 @@ The base URL for all API endpoints is:
 
 | Container Name | Port | Task |
 | :--- | :--- | :--- |
-| `healthify-backend-api` | 9000 | Runs PHP & Laravel Code |
+| `healthify-nginx` | 8000 | Web server handling HTTP requests |
+| `healthify-backend-api` | 9000 | Runs PHP & Laravel Code (FastCGI) |
 | `healthify-db` | 3306 | MySQL Database |
 
 ---
 
 ## 🛠 Useful Commands
 
-* **Stop Project:** `docker compose stop`
-* **Start Project:** `docker compose start`
-* **Show Real-time Logs:** `docker logs -f healthify-backend-api`
+* **Stop Project:** `docker compose down`
+* **Stop Project & Clear Data (Reset Database):** `docker compose down -v`
+* **Start Project:** `docker compose up -d`
+* **Show Real-time Logs:** `docker compose logs -f`
 * **Access Terminal inside Docker:** `docker exec -it healthify-backend-api bash`
 * **Clear Laravel Cache:** `docker exec healthify-backend-api php artisan optimize:clear`
-
----
-
-## 🔒 Permission Fix
-If you see any "Permission Denied" errors in your logs or Postman, run this command to fix folder ownership:
-
-```bash
-docker exec healthify-backend-api chown -R www-data:www-data storage bootstrap/cache
-docker exec healthify-backend-api chmod -R 775 storage bootstrap/cache
-```
+* **Run Tinker:** `docker exec -it healthify-backend-api php artisan tinker`
 
 ---
 
