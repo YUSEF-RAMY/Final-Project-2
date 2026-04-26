@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "a39c2109-f4be-4428-acd9-832ff93a5dde",
-    "name": "Final_Project_2",
+    "name": "Healthyfy",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "39175131"
   },
@@ -467,6 +467,303 @@
               ],
               "path": [
                 "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "InBody",
+      "item": [
+        {
+          "name": "Get Info From InBody",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "18aeffd2-f54a-4d1e-be4b-967d6d480871",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/inbody/analyze",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "inbody",
+                "analyze"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Latest Report",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{url}}/inbody/latest",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "inbody",
+                "latest"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notifications",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "notification_id",
+                  "type": "text",
+                  "uuid": "d37169d3-62d5-451c-a9be-87a82efd2bd4",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notifications/read",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "notifications",
+                "read"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear All Notifications",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notifications/clear-all",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "notifications",
+                "clear-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update FCM Token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fcm_token",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b0fe4a74-479b-4b02-9eb4-55028033c134"
+                },
+                {
+                  "key": "device_type",
+                  "value": "",
+                  "description": "android or ios or web",
+                  "type": "text",
+                  "uuid": "3f3764fd-6bcb-46ae-a2a1-6fa5dd4f6a4f"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/profile/fcm-token",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "profile",
+                "fcm-token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Daily User Target",
+      "item": [
+        {
+          "name": "Get User Target",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/daily-target",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "daily-target"
               ]
             }
           },
