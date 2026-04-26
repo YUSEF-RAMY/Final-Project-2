@@ -1,36 +1,36 @@
 services:
-
-  # خدمة الـ PHP (البرنامج بتاعك)
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: healthify-backend-api
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
-      - ./:/var/www
+      - app-storage:/var/www/storage/app
+      - app-public:/var/www/public
     depends_on:
-      - db
+      healthify-db:
+        condition: service_healthy
     networks:
       - healthify-net
 
-  # خدمة الـ Nginx (السيرفر اللي هيستقبل الطلبات)
   web:
     image: nginx:alpine
     container_name: healthify-nginx
     restart: unless-stopped
     ports:
-      - "8000:80" # هتفتح الـ API من localhost:8000
+      - "8000:80"
     volumes:
-      - ./:/var/www
-      - ./docker-config/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./docker-config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - app-public:/var/www/public:ro
     depends_on:
       - app
     networks:
       - healthify-net
 
-  # خدمة الـ MySQL (الداتابيز)
-  db:
+  healthify-db:
     image: mysql:8.0
     container_name: healthify-db
     restart: unless-stopped
@@ -45,6 +45,12 @@ services:
       - dbdata:/var/lib/mysql
     networks:
       - healthify-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
 networks:
   healthify-net:
@@ -52,3 +58,5 @@ networks:
 
 volumes:
   dbdata:
+  app-storage:
+  app-public:
