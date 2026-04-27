@@ -126,6 +126,12 @@
                   "uuid": "13fedb52-663a-4142-b780-9226434d640e"
                 },
                 {
+                  "key": "profile_image",
+                  "type": "file",
+                  "uuid": "00f2a1c9-db27-4f0c-9fbe-fcdcc9a22664",
+                  "value": null
+                },
+                {
                   "key": "email",
                   "value": "",
                   "type": "text",
