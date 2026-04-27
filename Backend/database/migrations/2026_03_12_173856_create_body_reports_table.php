@@ -12,19 +12,27 @@ return new class extends Migration {
     {
         Schema::create('body_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('report_image')->nullable(); // مسار الصورة المخزنة
 
-            $table->foreignId('user_id');
+            // البيانات الأساسية (نستخدم decimal لدقة أعلى)
+            $table->decimal('height', 5, 2)->nullable();
+            $table->integer('age')->nullable();
+            $table->string('gender')->nullable();
+            $table->timestamp('datetime')->nullable();
+            $table->decimal('weight', 5, 2)->nullable();
+            $table->decimal('smm', 5, 2)->nullable(); // Skeletal Muscle Mass
+            $table->decimal('body_fat_mass', 5, 2)->nullable();
+            $table->decimal('water', 5, 2)->nullable();
+            $table->decimal('protein', 5, 2)->nullable();
+            $table->decimal('minerals', 5, 2)->nullable();
+            $table->decimal('bmi', 5, 2)->nullable();
+            $table->decimal('pbf', 5, 2)->nullable(); // Percent Body Fat
 
-            $table->string('report_image')->nullable();
+            // بيانات الـ InBody التخصصية (بنفس أسامي الـ AI للسهولة)
 
-            $table->float('weight')->nullable();
-            $table->float('bmi')->nullable();
-            $table->float('body_fat')->nullable();
-            $table->float('muscle_mass')->nullable();
-            $table->float('water_percentage')->nullable();
-            $table->float('protein_mass')->nullable();
-            $table->float('visceral_fat')->nullable();
-            $table->float('bmr')->nullable();
+            // تاريخ القياس الفعلي اللي جاي من ورقة الـ InBody
+            $table->timestamp('measured_at')->nullable();
 
             $table->timestamps();
         });

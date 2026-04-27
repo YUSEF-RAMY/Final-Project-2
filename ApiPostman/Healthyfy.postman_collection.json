@@ -419,6 +419,16 @@
         {
           "name": "Reset Password",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -444,13 +454,13 @@
                 },
                 {
                   "key": "password",
-                  "value": "Password1234",
+                  "value": "",
                   "type": "text",
                   "uuid": "68910743-ff68-4a97-92ca-3397af651a28"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "Password1234",
+                  "value": "",
                   "type": "text",
                   "uuid": "3b03f413-c337-4629-9aba-777a0b4020fb"
                 }
