@@ -10,7 +10,7 @@ This folder contains the official **Postman Collection** and **Environment** for
 
 ## ⚙️ Setup & Installation
 1. **Import:** Drag and drop both JSON files into your Postman app.
-2. **Environment:** Select `Final_Project_2` from the environment selector (top-right corner).
+2. **Environment:** Select `Healthyfy` from the environment selector (top-right corner).
 3. **Base URL:** Ensure the `{{url}}` variable matches your current Ngrok or local server address.
 
 ---
@@ -29,7 +29,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 1. Login
 * **Method:** `POST` | **Endpoint:** `{{url}}/login`
-* **Body (form-data):** `email`, `password`
+* **Body (form-data):** `email`(email), `password`(string)
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -75,7 +75,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 3. Logout
 * **Method:** `POST` | **Endpoint:** `{{url}}/Logout`
-* **Body (form-data):** `null`
+* **Body (form-data):** `Only Brearer Token`
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -88,7 +88,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 4. Change Password
 * **Method:** `POST` | **Endpoint:** `{{url}}/change-password`
-* **Body (form-data):** `current_password`, `password`, `password_confirmation`
+* **Body (form-data):** `current_password`(string), `password`(string), `password_confirmation`(string)
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -101,7 +101,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 5. Forgot Password (OTP)
 * **Method:** `POST` | **Endpoint:** `{{url}}/forgot-password`
-* **Body (form-data):** `email`
+* **Body (form-data):** `email`(email)
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -114,7 +114,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 6. Verify Otp
 * **Method:** `POST` | **Endpoint:** `{{url}}/verify-otp`
-* **Body (form-data):** `email` , `code`
+* **Body (form-data):** `email`(email) , `code`(integer)
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -127,9 +127,9 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 ```
 
 ### 6. Reset Password
-* **Method:** `POST` | **Endpoint:** `{{url}}/reset-password`
-* **Body (form-data):** `email`, `token`, `password`, `password_confirmation`
-* **Authoriztion Type:** `Brearer Token`, `{{token}}`
+* **Method:** `POST` | **Endpoint:** `{{url}}/reset-password`,
+* **Body (form-data):** `email`(email), `token`(string), `password`(string), `password_confirmation`(string),
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
 * **Response:**
 ```json
 {
@@ -139,6 +139,154 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 }
 ```
 
+### 7. Get Info From InBody
+* **Method:** `POST` | **Endpoint:** `{{url}}/inbody/analyze`
+* **Body (form-data):** `image`(file || image)
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`
+* **Response:**
+```json
+{
+    "status": "processing",
+    "status_code": 202,
+    "message": "Your data is being analyzed; we will send you a notification as soon as it is finished."
+}
+```
+
+### 8. Get Info From InBody
+* **Method:** `GET` | **Endpoint:** `{{url}}/inbody/latest`
+* **Body (form-data):** `Only Brearer Token`
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`
+* **Response:**
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "Latest report retrieved successfully.",
+    "data": {
+        "height": "185.00",
+        "weight": "72.80",
+        "age": 18,
+        "gender": "male",
+        "muscle_mass": "38.80",
+        "body_fat_percentage (pbf)": "100.00",
+        "body_fat_mass": "72.80",
+        "water": "50.50",
+        "protein": "13.50",
+        "minerals": "4.74",
+        "bmi": "21.27",
+        "measured_at": "2026-01-20 21:16",
+        "created_at": "54 minutes ago",
+        "inbody_image": "http://katydid.../inbody_reports/RJgw4pt....jpg"
+    }
+}
+```
+
+### 9. Get All Notifications
+* **Method:** `GET` | **Endpoint:** `{{url}}/notifications`,
+* **Body (form-data):** `Only Brearer Token`,
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
+* **Response:**
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "Notifications retrieved successfully.",
+    "meta": {
+        "total_count": 1,
+        "unread_count": 1
+    },
+    "data": [
+        {
+            "notification_id": "e8b...",
+            "title": "InBody analysis completed! 🎉",
+            "body": "Your new numbers are ready, open the app to see your calories and macros.",
+            "is_read": false,
+            "payload": {
+                "inbody_report_id": 123...
+            },
+            "created_at": "7 minutes ago",
+            "full_date": "2026-04-19 22:42"
+        }
+    ]
+}
+```
+
+### 10. Mark Notification as Read
+* **Method:** `POST` | **Endpoint:** `{{url}}/notifications/read`,
+* **Body (form-data):** `notification_id`(string & integer),
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "Notifications retrieved successfully.",
+    "meta": {
+        "total_count": 1,
+        "unread_count": 0
+    },
+    "data": [
+        {
+            "notification_id": "e8b4...",
+            "title": "InBody analysis completed! 🎉",
+            "body": "Your new numbers are ready, open the app to see your calories and macros.",
+            "is_read": true,
+            "payload": {
+                "inbody_report_id": 123...
+            },
+            "created_at": "8 minutes ago",
+            "full_date": "2026-04-19 22:42"
+        }
+    ]
+}
+```
+
+### 11. Clear All Notifications
+* **Method:** `DELETE` | **Endpoint:** `{{url}}/notifications/clear-all`,
+* **Body (form-data):** `Only Brearer Token`,
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "All notifications cleared.",
+    "meta": {
+        "total_count": 0,
+        "unread_count": 0
+    },
+    "data": []
+}
+```
+
+### 12. Update FCM Token
+* **Method:** `POST` | **Endpoint:** `{{url}}/profile/fcm-token`,
+* **Body (form-data):** `fcm_token`(string), `device_type`(string => ( ios || android || web ))
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "FCM Token updated successfully."
+}
+```
+
+### 13. Get User Target
+* **Method:** `GET` | **Endpoint:** `{{url}}/daily-target`,
+* **Body (form-data):** `Only Brearer Token`
+* **Authoriztion Type:** `Brearer Token`, `{{token}}`,
+```json
+{
+    "status": "success",
+    "status_code": 200,
+    "message": "Daily targets retrieved successfully.",
+    "data": {
+        "calories": 1973.97,
+        "protein": 148.05,
+        "carbs": 222.07,
+        "fats": 54.83,
+        "updated_at": "56 minutes ago"
+    }
+}
+```
 ---
 
 ## 🧪 Testing Guidelines & Notes
