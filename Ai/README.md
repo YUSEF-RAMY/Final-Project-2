@@ -1,13 +1,12 @@
 # 🏋️ AIMBody — AI-Powered Fitness Intelligence System
 
 > End-to-end ML pipeline that predicts personalised daily nutrition targets from InBody body composition metrics.
-> **Train → Save → Serve 🚀**
 
 ---
 
 ## 📌 Overview
 
-AIMBody takes raw InBody scan data (weight, muscle mass, body fat %, etc.) alongside the user's activity level, fitness level, and goal — and returns tailored daily targets for **calories, protein, carbs, and fat**.
+inbody-ai-predictor takes raw InBody scan data (weight, muscle mass, body fat %, etc.) alongside the user's activity level, fitness level, and goal — and returns tailored daily targets for **calories, protein, carbs, and fat**.
 
 Built as a production-ready system with two connected layers:
 
@@ -21,7 +20,7 @@ Built as a production-ready system with two connected layers:
 ## 📂 Project Structure
 
 ```
-AIMBody/
+inbody-ai-predictor/
 ├── data/
 │   └── fitness_dataset.csv        # 100K synthetic samples (physiologically consistent)
 ├── model/                         # Auto-created after training
