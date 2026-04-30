@@ -23,7 +23,7 @@ class UserProfileResource extends JsonResource
             'primary_objective' => $this->primary_objective,
             'medical_conditions' => $this->medical_conditions,
 
-            'last_updated' => $this->updated_at->format('Y-m-d h:i:s A'),
+            'last_updated' => $this->updated_at->format('Y-m-d h:i A'),
         ];
     }
 }
