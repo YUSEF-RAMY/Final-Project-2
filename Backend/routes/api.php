@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Food\NutritionController;
 use App\Http\Controllers\Api\InBody\InBodyController;
+use App\Http\Controllers\Api\Notifications\DeviceController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Profile\ProfileController;
 use App\Http\Controllers\Api\UserTarget\UserTargetController;
@@ -42,10 +43,18 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Group FCM (firebase cloud tokens)
+    Route::prefix('devices')
+        ->controller(DeviceController::class)
+        ->group(function () {
+            Route::get('/', 'index');
+            Route::post('/register', 'register');
+            Route::put('/update', 'update');
+            Route::delete('/unregister', 'unregister');
+        });
+
     Route::prefix('profile')
         ->controller(ProfileController::class)
         ->group(function () {
-            Route::post('/fcm-token', 'updateFcmToken');
             // Route::get('/', 'show');
         });
 
