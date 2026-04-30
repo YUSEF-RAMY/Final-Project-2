@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('profile')
         ->controller(ProfileController::class)
         ->group(function () {
-            // Route::get('/', 'show');
+            Route::get('/', 'show');
         });
 
     // Group Notifications
