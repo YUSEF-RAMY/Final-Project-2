@@ -24,8 +24,9 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name'     => 'required|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed', // confirmed بتجبره يبعت password_confirmation
+            'password' => 'required|string|min:8|confirmed', // password_confirmation
         ];
     }
 }
