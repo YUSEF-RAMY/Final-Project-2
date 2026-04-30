@@ -1,0 +1,41 @@
+# PHP & JS dependencies (installed inside the container via multi-stage build)
+vendor/
+node_modules/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker files (not needed inside the image)
+docker-compose.yml
+
+# User-uploaded files (should be on persistent volumes)
+storage/app/public/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*.log
+
+# AI & IDE configuration
+.idea/
+.vscode/
+.agents/
+.claude/
+.gemini/
+.mcp.json
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+boost.json
+opencode.json
+
+# Dev-only cached providers (would reference Boost which is --no-dev)
+bootstrap/cache/*.php
+
+# Tests (not needed in production image)
+tests/
+phpunit.xml
+
+# Documentation
+README.md
