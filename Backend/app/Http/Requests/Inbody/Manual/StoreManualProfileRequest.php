@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Inbody;
+namespace App\Http\Requests\Inbody\Manual;
 
 use App\Enums\ActivityLevel;
 use App\Enums\PrimaryObjective;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class InBodyRequest extends FormRequest
+class StoreManualProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,10 @@ class InBodyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|mimes:jpeg,png,jpg|max:5120',
+            'age' => 'required|integer|min:10|max:100',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'gender' => 'required|in:male,female',
             'activity_level' => ['required', Rule::enum(ActivityLevel::class)],
             'primary_objective' => ['required', Rule::enum(PrimaryObjective::class)],
             'medical_conditions' => 'nullable|string',
