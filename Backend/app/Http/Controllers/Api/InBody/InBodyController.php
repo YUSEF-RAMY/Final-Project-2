@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers\Api\InBody;
 
+use App\Actions\Nutrition\SyncNutritionStateAction;
+use App\DTOs\InBody\NutritionAnalysisInputDTO;
+use App\Enums\ActivityLevel;
+use App\Enums\PrimaryObjective;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inbody\InBodyRequest;
+use App\Http\Requests\Inbody\Manual\StoreManualProfileRequest;
 use App\Http\Resources\Inbody\BodyReportResource;
+use App\Http\Resources\Profile\UserProfileResource;
 use App\Jobs\Inbody\ProcessInBodyAnalysis;
 use App\Services\Inbody\InBodyService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class InBodyController extends Controller
 {
@@ -20,8 +25,10 @@ class InBodyController extends Controller
         try {
             $path = $request->file('image')->store('temp_inbody', 'public');
 
-            ProcessInBodyAnalysis::dispatch($request->user(), $path);
-            logger('dispatch ProcessInBodyAnalysis Is Done');
+            $extraData = $request->only(['activity_level', 'primary_objective', 'medical_conditions']);
+
+            ProcessInBodyAnalysis::dispatch($request->user(), $path, $extraData);
+            logger('dispatch ProcessInBodyAnalysis Is Done with extra data');
 
             // 3. الرد الفوري
             return response()->json(
@@ -37,11 +44,54 @@ class InBodyController extends Controller
         }
     }
 
+    public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction)
+    {
+        $inputDto = NutritionAnalysisInputDTO::fromArray($request->validated());
+
+        $syncAction->execute($request->user(), $inputDto);
+
+        $profile = $request->user()->load('profile')->profile;
+
+        return response()->json([
+            'status' => true,
+            'status_code' => 200,
+            'message' => 'Profile metrics and goals updated successfully',
+            'data' => new UserProfileResource($profile),
+        ], 200);
+    }
+
+    public function updateGoals(Request $request, SyncNutritionStateAction $syncAction)
+    {
+        $validated = $request->validate([
+            'primary_objective' => ['required', Rule::enum(PrimaryObjective::class)],
+            'activity_level' => ['required', Rule::enum(ActivityLevel::class)],
+            'medical_conditions' => 'nullable|string',
+        ]);
+
+        $profile = $request->user()->profile;
+
+        if (! $profile) {
+            return response()->json(['status' => 'error', 'message' => 'Profile not found. Please complete manual entry first.'], 422);
+        }
+
+        // Re-sync using existing profile metrics but new goals
+        $inputDto = NutritionAnalysisInputDTO::fromArray(array_merge($profile->toArray(), $validated));
+
+        $syncAction->execute($request->user(), $inputDto);
+
+        return response()->json([
+            'status' => true,
+            'status_code' => 200,
+            'message' => 'Goals updated and nutrition targets recalculated successfully',
+            'data' => new UserProfileResource($request->user()->load('profile')->profile),
+        ], 200);
+    }
+
     public function getLatestReport(Request $request)
     {
         $report = $this->inBodyService->getLatestReport($request->user());
 
-        if (!$report) {
+        if (! $report) {
             return response()->json([
                 'status' => 'success',
                 'status_code' => 200,
@@ -54,7 +104,7 @@ class InBodyController extends Controller
             'status' => 'success',
             'status_code' => 200,
             'message' => 'Latest report retrieved successfully.',
-            'data' => new BodyReportResource($report), 
+            'data' => new BodyReportResource($report),
         ]);
     }
 }
