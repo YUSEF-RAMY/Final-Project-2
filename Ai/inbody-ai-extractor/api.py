@@ -6,7 +6,9 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 app = FastAPI(title="InBody AI Extractor API")
 
 app.add_middleware(
@@ -17,8 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-GOOGLE_API_KEY = "AIzaSyD5vao2-w31f4w3IaZQ_yqMpneHUbaCt3g"
-
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 def process_inbody_image(image_bytes):
     try:
         client = genai.Client(api_key=GOOGLE_API_KEY)
