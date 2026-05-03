@@ -822,6 +822,7 @@
                 {
                   "key": "medical_conditions",
                   "value": "",
+                  "description": "nullable",
                   "type": "text",
                   "uuid": "ce28ecd0-e90b-4fd8-8d77-173897803eb9"
                 }
@@ -989,6 +990,44 @@
               ],
               "path": [
                 "daily-target"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/profile",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "profile"
               ]
             }
           },
