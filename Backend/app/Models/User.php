@@ -4,7 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\UserDevices;
-use App\Models\UserProfile;
 use App\Models\UserTarget;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserDevices;
 
 class User extends Authenticatable
 {
@@ -24,7 +24,9 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'email', 'password'];
+
+    protected $fillable = ['name', 'email', 'password', 'profile_image'];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,15 +65,10 @@ class User extends Authenticatable
         return $this->hasMany(Body_report::class);
     }
 
-    public function profile()
-    {
-        return $this->hasOne(UserProfile::class);
-    }
-
     public function target()
-    {
-        return $this->hasOne(UserTarget::class, 'user_id');
-    }
+{
+    return $this->hasOne(UserTarget::class, 'user_id'); 
+}
 
     /**
      * Get the user's initials
