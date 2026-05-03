@@ -62,7 +62,6 @@ class InBodyController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'trace_id' => $inbodyRequest->trace_id,
                 'status' => $inbodyRequest->status,
                 'created_at' => $inbodyRequest->created_at,
             ]
