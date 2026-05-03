@@ -5,7 +5,8 @@ FROM composer:2 AS composer-stage
 
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+RUN --mount=type=cache,target=/tmp/cache \
+    composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # ============================================
 # Stage 2: Build frontend assets (Vite + TailwindCSS)
@@ -15,7 +16,8 @@ FROM node:20-alpine AS node-stage
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 # Copy vendor from composer stage (needed for flux.css and blade source paths)
 COPY --from=composer-stage /app/vendor ./vendor
@@ -29,7 +31,8 @@ RUN npm run build
 # ============================================
 FROM php:8.4-fpm
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     nano \
@@ -41,35 +44,31 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     netcat-openbsd \
-    && docker-php-ext-install pdo_mysql zip exif pcntl bcmath \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
+    && install-php-extensions pdo_mysql zip exif pcntl bcmath gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www
 
-# Copy application code
-COPY . .
+# Copy application code with proper permissions immediately
+COPY --chown=www-data:www-data . .
 
 # Clear cached service providers from dev environment
 RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php bootstrap/cache/config.php
 
 # Copy vendor from composer stage
-COPY --from=composer-stage /app/vendor ./vendor
+COPY --from=composer-stage --chown=www-data:www-data /app/vendor ./vendor
 
 # Copy built frontend assets from node stage
-COPY --from=node-stage /app/public/build ./public/build
+COPY --from=node-stage --chown=www-data:www-data /app/public/build ./public/build
 
-# Create required storage directories
-RUN mkdir -p storage/framework/cache/data \
+# Create required storage directories with proper permissions
+RUN install -d -m 775 -o www-data -g www-data \
+    storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
     storage/logs \
-    bootstrap/cache
-
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www \
+    bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Copy and prepare entrypoint
