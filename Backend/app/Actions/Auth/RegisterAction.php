@@ -1,9 +1,11 @@
 <?php
 namespace App\Actions\Auth;
 
+use App\Mail\WelcomeUserMail;
 use App\Repositories\Auth\UserRepository;
 use App\Repositories\Auth\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterAction
 {
@@ -16,6 +18,10 @@ class RegisterAction
         $data['password'] = Hash::make($data['password']);
         
         // حفظ المستخدم عن طريق الـ Repo
-        return $this->userRepo->create($data);
+        $user = $this->userRepo->create($data);
+
+        Mail::to($user->email)->send(new WelcomeUserMail($user));
+
+        return $user;
     }
 }
