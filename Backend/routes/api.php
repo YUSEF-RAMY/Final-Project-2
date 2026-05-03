@@ -2,55 +2,27 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Food\NutritionController;
-use App\Http\Controllers\Api\InBody\InBodyController;
-use App\Http\Controllers\Api\Notifications\NotificationController;
-use App\Http\Controllers\Api\Profile\ProfileController;
-use App\Http\Controllers\Api\UserTarget\UserTargetController;
+use App\Http\Controllers\Api\Report\BodyReportController;
 use Illuminate\Support\Facades\Route;
 
 
-// Group Auth Controller without middleware (register, login, forgot-password, verify-otp, reset-password)
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
-    Route::post('/forgot-password', 'forgotPassword');
-    Route::post('/verify-otp', 'verifyOtp');
-    Route::post('/reset-password', 'resetPassword');
-});
+
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-
-// Group Auth Controller with middleware (auth:sanctum) => (logout, change-password)
-    Route::controller(AuthController::class)->group(function () {
-        Route::post('/logout', 'logout');
-        Route::post('/change-password', 'changePassword');
-    });
-
-// Group InBody (Data extraction from InBody , Get Latest Data)
-    Route::prefix('inbody')->controller(InBodyController::class)->group(function () {
-            Route::post('/analyze', 'analyze');
-            Route::get('/latest', 'getLatestReport');
-        });
-
-// Group Daily User Target
-    Route::controller(UserTargetController::class)->group(function () {
-        Route::get('/daily-target', 'getDailyTarget');
-    });
-
-// Group FCM (firebase cloud tokens)
-    Route::prefix('profile')->controller(ProfileController::class)->group(function () {
-            Route::post('/fcm-token', 'updateFcmToken');
-            // Route::get('/', 'show');
-        });
-
-// Group Notifications 
-    Route::prefix('notifications')->controller(NotificationController::class)->group(function () {
-            Route::get('/', 'index');
-            Route::post('/read', 'markAsRead');
-            Route::delete('/clear-all', 'clearAll');
-        });
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nutrition-plan', [NutritionController::class, 'generate']);
+
+
+    Route::post('/body-report/upload', [BodyReportController::class,'upload']);
+    Route::post('/body-report/manual', [BodyReportController::class,'manual']);
 });
