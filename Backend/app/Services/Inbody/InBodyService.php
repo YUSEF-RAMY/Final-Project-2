@@ -38,16 +38,46 @@ class InBodyService
 
             $aiData = $data['data'];
 
+            $reportData = [
+                'user_id' => $user->id,
+                'report_image' => $newPath,
+                'height' => $aiData['height'] ?? 0,
+                'float',
+                'weight' => $aiData['weight'] ?? 0,
+                'float',
+                'age' => $aiData['age'] ?? 0,
+                'int',
+                'gender' => $aiData['gender'] ?? 'male',
+                'smm' => $aiData['smm'] ?? 0,
+                'float',
+                'pbf' => $aiData['pbf'] ?? 0,
+                'float',
+                'body_fat_mass' => $aiData['body_fat_mass'] ?? 0,
+                'float',
+                'bmi' => $aiData['bmi'] ?? 0,
+                'float',
+                'water' => $aiData['water'] ?? 0,
+                'float',
+                'protein' => $aiData['protein'] ?? 0,
+                'float',
+                'minerals' => $aiData['minerals'] ?? 0,
+                'float',
+
+                // الحل السحري: ابعد عن وجع دماغ الـ AI في التاريخ دلوقتي
+                'measured_at' => now(),
+                'datetime' => now(),
+            ];
+
             // نقل الصورة
             $newPath = 'inbody_reports/' . basename($image);
             Storage::disk('public')->move($image, $newPath);
 
             // تخزين
             $report = $this->inBodyRepo->store(
-                array_merge($aiData, [
+                array_merge($reportData, [
                     'user_id' => $user->id,
                     'report_image' => $newPath,
-                    'measured_at' => $aiData['datetime'],
+                    'measured_at' => now(),
                 ]),
             );
 
