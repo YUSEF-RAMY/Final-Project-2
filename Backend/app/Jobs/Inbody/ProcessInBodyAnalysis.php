@@ -17,7 +17,7 @@ class ProcessInBodyAnalysis implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 300;
+    public $timeout = 150;
 
     public $tries = 1;
 

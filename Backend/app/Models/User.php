@@ -70,6 +70,16 @@ class User extends Authenticatable
         return $this->hasOne(UserTarget::class, 'user_id');
     }
 
+    public function meals()
+    {
+        return $this->hasMany(Meal::class);
+    }
+
+    public function mealPlans()
+    {
+        return $this->hasMany(MealPlan::class);
+    }
+
     /**
      * Get the user's initials
      */

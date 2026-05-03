@@ -15,7 +15,7 @@ class InBodyService
             $imagePath = Storage::disk('public')->path($image);
             $stream = fopen($imagePath, 'r');
 
-            $response = Http::timeout(240)
+            $response = Http::timeout(120)
                 ->attach('image', $stream, basename($imagePath))
                 ->post(config('services.ai.url').'/predict');
 

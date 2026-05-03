@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      - AI_SERVICE_URL=http://ai-service:8000
     volumes:
       - app-storage:/var/www/storage/app
       - app-public:/var/www/public
@@ -54,19 +52,6 @@ services:
       retries: 10
       start_period: 30s
 
-  ai-service:
-    build:
-      context: ../Ai/inbody-ai-vision
-      dockerfile: Dockerfile
-    container_name: healthify-ai-service
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    volumes:
-      - ai-model-cache:/root/.cache/huggingface
-    networks:
-      - healthify-net
-
 networks:
   healthify-net:
     driver: bridge
@@ -75,4 +60,3 @@ volumes:
   dbdata:
   app-storage:
   app-public:
-  ai-model-cache:
