@@ -14,18 +14,10 @@ class AuthService
         $user = app(RegisterAction::class)->execute($data);
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(
-            [
-                'status' => 'success',
-                'message' => 'User registered successfully',
-                'data' => [
-                    'user' => new UserResource($user),
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                ],
-            ],
-            201,
-        );
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
     }
 
     public function login(array $credentials)
@@ -33,24 +25,16 @@ class AuthService
         // استدعاء الأكشن
         [$user, $token] = app(LoginAction::class)->execute($credentials);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'تم تسجيل الدخول بنجاح',
-            'data' => [
-                'user' => new UserResource($user),
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ],
-        ]);
+        return [
+            'user' => new UserResource($user),
+            'token' => $token,
+        ];
     }
 
     public function logout($user)
     {
         $user->tokens()->delete();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'تم تسجيل الخروج بنجاح',
-        ]);
+        return true;
     }
 
     public function updatePassword(array $data)
@@ -59,9 +43,6 @@ class AuthService
 
         app(UpdatePasswordAction::class)->execute($user, $data);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'تم تغيير كلمة المرور بنجاح',
-        ]);
+        return true;
     }
 }
