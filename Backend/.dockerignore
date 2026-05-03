@@ -39,7 +39,3 @@ phpunit.xml
 
 # Documentation
 README.md
-
-# Secrets and environment
-.env
-/secrets/
