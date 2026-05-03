@@ -6,9 +6,11 @@ services:
     container_name: healthify-backend-api
     restart: unless-stopped
     env_file:
-      - .env
-    environment:
-      - AI_SERVICE_URL=http://ai-service:8000
+      - .env.docker
+    secrets:
+      - db_password
+      - mail_password
+      - firebase_credentials
     volumes:
       - app-storage:/var/www/storage/app
       - app-public:/var/www/public
@@ -38,9 +40,11 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: healthify
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
       MYSQL_USER: healthify_user
-      MYSQL_PASSWORD: root
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
     ports:
       - "3306:3306"
     volumes:
@@ -48,7 +52,7 @@ services:
     networks:
       - healthify-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "sh", "-c", "mysqladmin ping -h localhost -uroot -p\"$$(cat /run/secrets/db_password)\""]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -61,7 +65,7 @@ services:
     container_name: healthify-ai-service
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ai-model-cache:/root/.cache/huggingface
     networks:
