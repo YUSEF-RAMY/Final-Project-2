@@ -1,27 +1,41 @@
-# تجاهل مكتبات الـ PHP والـ JS (لأننا هننزلهم جوه الكونتينر)
+# PHP & JS dependencies (installed inside the container via multi-stage build)
 vendor/
 node_modules/
 
-# تجاهل ملفات النظام والـ Git
+# Git
 .git/
 .gitignore
-.dockerignore
-Dockerfile
-docker-compose.yml
-.env
+.gitattributes
 
-# تجاهل الصور والملفات اللي اليوزر بيرفعها (عشان متبقاش جزء من الـ Image)
-storage/*.jpg
-storage/*.png
-storage/*.jpeg
-storage/*.pdf
+# Docker files (not needed inside the image)
+docker-compose.yml
+
+# User-uploaded files (should be on persistent volumes)
+storage/app/public/*
 storage/framework/cache/data/*
 storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*.log
 
-# تجاهل ملفات الـ AI والـ IDE
+# AI & IDE configuration
 .idea/
 .vscode/
 .agents/
 .claude/
+.gemini/
+.mcp.json
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+boost.json
+opencode.json
+
+# Dev-only cached providers (would reference Boost which is --no-dev)
+bootstrap/cache/*.php
+
+# Tests (not needed in production image)
+tests/
+phpunit.xml
+
+# Documentation
+README.md
