@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Food\NutritionController;
 use App\Http\Controllers\Api\InBody\InBodyController;
-use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\Notifications\DeviceController;
 use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Profile\ProfileController;
@@ -66,16 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', 'index');
             Route::post('/read', 'markAsRead');
             Route::delete('/clear-all', 'clearAll');
-        });
-
-    // Group Food Tracking
-    Route::prefix('foods')
-        ->controller(MealController::class)
-        ->group(function () {
-            Route::get('/', 'index');
-            Route::post('/meals/{meal_type}/items', 'store');
-            Route::delete('/meals/items/{id}', 'destroy');
-            Route::get('/daily-summary', 'summary');
         });
 });
 
