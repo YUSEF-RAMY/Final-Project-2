@@ -127,41 +127,6 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-        'auth' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/auth.log'),
-            'level' => 'info',
-            'days' => 14,
-        ],
-
-        'jobs' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/jobs.log'),
-            'level' => 'info',
-            'days' => 14,
-        ],
-
-        'ai' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/ai.log'),
-            'level' => 'info',
-            'days' => 14,
-        ],
-
-        'notifications' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/notifications.log'),
-            'level' => 'info',
-            'days' => 14,
-        ],
-
-        'errors' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/errors.log'),
-            'level' => 'error',
-            'days' => 14,
-        ],
-
     ],
 
 ];
