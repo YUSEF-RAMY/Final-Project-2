@@ -11,7 +11,6 @@ class AuthService
 {
     public function registerUser(array $data)
     {
-        logger('AuthService registerUser called with data: ' . json_encode($data));
         $user = app(RegisterAction::class)->execute($data);
         $token = $user->createToken('auth_token')->plainTextToken;
 

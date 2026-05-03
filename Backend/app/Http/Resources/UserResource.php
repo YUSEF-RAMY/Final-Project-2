@@ -17,7 +17,6 @@ class UserResource extends JsonResource
         return [
             'name'       => $this->name,
             'email'      => $this->email,
-            'profile_image' => $this->profile_image ? asset('storage/' . $this->profile_image) : null,
             'created_at' => $this->created_at->format('Y-m-d h:i:s A'),
             'updated_at' => $this->updated_at->format('Y-m-d h:i:s A'),
         ];

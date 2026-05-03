@@ -51,7 +51,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
 
 ### 2. Register
 * **Method:** `POST` | **Endpoint:** `{{url}}/register`
-* **Body (form-data):** `name`, `email`, `profile_image`, `password`, `password_confirmation`
+* **Body (form-data):** `name`(string), `email`(email), `password`(string), `password_confirmation`(string)
 * **Authoriztion Type:** `Brearer Token`, `{{token}}`
 * **Response:**
 ```json
@@ -63,9 +63,7 @@ We have implemented **Post-response Scripts** to automate the workflow and elimi
         "user": {
             "name": "test",
             "email": "test@gmail.com",
-            "profile_image": "http://localhost:8000/storage/profile_images/YaqF......png",
-            "created_at": "2026-04-27 02:40:52 PM",
-            "updated_at": "2026-04-27 02:40:52 PM"
+            "created_at": "2026-04-06 01:17:49"
         },
         "token": "1|ybHGBzhZ...",
         "token_type": "Bearer"
