@@ -36,7 +36,7 @@ class UserMeResource extends JsonResource
                 return new BodyReportResource($this->body_report()->latest()->first());
             }),
 
-            'created_at' => $this->created_at->format('Y-m-d h:i A'),
+            'created_at' => $this->created_at->format('Y-m-d'),
         ];
     }
 }
