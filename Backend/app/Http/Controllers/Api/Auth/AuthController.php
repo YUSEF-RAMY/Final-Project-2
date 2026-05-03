@@ -10,16 +10,12 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    protected  $authService;
+    public function __construct(protected AuthService $authService) {}
 
-    public function __construct(AuthService $authService)
-    {
-        $this->authService = $authService;
-    }
     public function register(RegisterRequest $request)
     {
-        // هنا البيانات بتوصل "متفلترة" وجاهزة
-        return $this->authService->register($request->validated());
+        // بننادي الـ Service اللي متعرفة في الـ constructor
+        return $this->authService->registerUser($request->validated());
     }
 
     public function login(LoginRequest $request)

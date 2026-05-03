@@ -27,4 +27,13 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.exists' => 'هذا البريد الإلكتروني غير مسجل لدينا.',
+            'email.required' => 'يرجى إدخال البريد الإلكتروني.',
+            'password.required' => 'يرجى إدخال كلمة المرور.',
+        ];
+    }
 }
