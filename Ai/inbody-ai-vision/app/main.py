@@ -7,6 +7,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
+from huggingface_hub import hf_hub_download
 from ultralytics import YOLO
 from paddleocr import PaddleOCR
 
