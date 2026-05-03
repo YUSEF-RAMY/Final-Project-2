@@ -54,12 +54,12 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "yusef@gmail.com",
+                  "value": "",
                   "type": "text"
                 },
                 {
                   "key": "password",
-                  "value": "password",
+                  "value": "",
                   "type": "text"
                 }
               ]
@@ -201,6 +201,62 @@
               ],
               "path": [
                 "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "current_password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "13fedb52-663a-4142-b780-9226434d640e"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b7f3199e-0d02-4961-a6a1-b317dedb18d0"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f08bb565-0c79-4e7a-bcf7-4e27fb156476"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/change-password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "change-password"
               ]
             }
           },
