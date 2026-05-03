@@ -9,7 +9,6 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from ultralytics import YOLO
 from paddleocr import PaddleOCR
-from huggingface_hub import hf_hub_download
 
 app = FastAPI(title="InBody OCR API ")
 
@@ -19,18 +18,8 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # 1. تحميل الموديلات
-LOCAL_MODEL_PATH = "models/best.pt"
-HF_REPO_ID = "Heba15/healthify-inbody-ai-vision"
-HF_FILENAME = "best.pt"
-
-if os.path.exists(LOCAL_MODEL_PATH):
-    print(f"Loading local model from {LOCAL_MODEL_PATH}")
-    yolo_model = YOLO(LOCAL_MODEL_PATH)
-else:
-    print(f"Local model not found. Downloading from HuggingFace ({HF_REPO_ID})...")
-    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
-    yolo_model = YOLO(model_path)
-
+MODEL_PATH = r"D:/Nutrition/inbody1_model-20260316T114557Z-1-001/inbody1_model/weights/best.pt"
+yolo_model = YOLO(MODEL_PATH)
 ocr_model = PaddleOCR(lang="en", use_angle_cls=True, use_gpu=False, show_log=False)
 
 DATE_PATTERN = r'\d{4}[\./-]\d{2}[\./-]\d{2}'

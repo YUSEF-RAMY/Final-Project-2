@@ -6,6 +6,7 @@ node_modules/
 .git/
 .gitignore
 .gitattributes
+secrets/
 
 # Docker files (not needed inside the image)
 docker-compose.yml
@@ -39,7 +40,3 @@ phpunit.xml
 
 # Documentation
 README.md
-
-# Secrets and environment
-.env
-/secrets/

@@ -7,12 +7,13 @@ use App\DTOs\InBody\NutritionAnalysisInputDTO;
 use App\Enums\ActivityLevel;
 use App\Enums\PrimaryObjective;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Inbody\InBodyRequest;
+use App\Http\Requests\Inbody\InBodyRequest as ValidationRequest;
 use App\Http\Requests\Inbody\Manual\StoreManualProfileRequest;
 use App\Http\Resources\Inbody\BodyReportResource;
 use App\Http\Resources\Profile\UserProfileResource;
 use App\Jobs\Inbody\ProcessInBodyAnalysis;
 use App\Services\Inbody\InBodyService;
+use App\Models\InBodyRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -20,28 +21,51 @@ class InBodyController extends Controller
 {
     public function __construct(protected InBodyService $inBodyService) {}
 
-    public function analyze(InBodyRequest $request)
+    public function analyze(ValidationRequest $request)
     {
         try {
             $path = $request->file('image')->store('temp_inbody', 'public');
+            $traceId = app('trace_id');
+
+            // Initialize tracking record
+            InBodyRequest::create([
+                'user_id' => $request->user()->id,
+                'trace_id' => $traceId,
+                'image_path' => $path,
+                'status' => 'processing'
+            ]);
 
             $extraData = $request->only(['activity_level', 'primary_objective', 'medical_conditions']);
 
             ProcessInBodyAnalysis::dispatch($request->user(), $path, $extraData);
-            logger('dispatch ProcessInBodyAnalysis Is Done with extra data');
 
-            // 3. الرد الفوري
             return response()->json(
                 [
                     'status' => 'processing',
                     'status_code' => 202,
-                    'message' => 'Your data is being analyzed; we will send you a notification as soon as it is finished.',
+                    'trace_id' => $traceId,
+                    'message' => 'Your InBody analysis is being processed; we will notify you when it is ready.',
                 ],
                 202,
             );
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function checkStatus(Request $request, $traceId)
+    {
+        $inbodyRequest = InBodyRequest::where('trace_id', $traceId)
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'status' => $inbodyRequest->status,
+                'created_at' => $inbodyRequest->created_at,
+            ]
+        ]);
     }
 
     public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction)
