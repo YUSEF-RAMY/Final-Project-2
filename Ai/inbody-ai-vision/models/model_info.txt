@@ -1,4 +1,0 @@
-Model: InBody AI Vision
-Source: Hugging Face
-Task: Body composition detection using YOLO
-Repo: Heba15/healthify-inbody-ai-vision

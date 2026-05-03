@@ -4,7 +4,6 @@ namespace App\Actions\Auth;
 use App\Mail\WelcomeUserMail;
 use App\Repositories\Auth\UserRepository;
 use App\Repositories\Auth\UserRepositoryInterface;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,13 +14,9 @@ class RegisterAction
 
     public function execute(array $data)
     {
-        if (isset($data['profile_image']) && $data['profile_image'] instanceof UploadedFile) {
-            $path = $data['profile_image']->store('profile_images', 'public');
-
-            $data['profile_image'] = $path;
-        }
+        // تشفير الباسورد قبل الحفظ
         $data['password'] = Hash::make($data['password']);
-
+        
         // حفظ المستخدم عن طريق الـ Repo
         $user = $this->userRepo->create($data);
 
