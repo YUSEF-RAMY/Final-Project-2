@@ -154,9 +154,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/register",
+              "raw": "{{ngrok_url}}/register",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "register"
@@ -1154,7 +1154,7 @@
               "formdata": [
                 {
                   "key": "date",
-                  "value": "2026-07-02",
+                  "value": "",
                   "type": "text",
                   "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
                 }
@@ -1199,7 +1199,7 @@
               "formdata": [
                 {
                   "key": "id",
-                  "value": "1",
+                  "value": "",
                   "type": "text",
                   "uuid": "8e2b5ea8-5f31-4543-87ef-2f05f04120c0"
                 }
