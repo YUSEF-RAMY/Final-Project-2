@@ -55,13 +55,11 @@
                 {
                   "key": "email",
                   "value": "",
-                  "description": "test@example.com",
                   "type": "text"
                 },
                 {
                   "key": "password",
                   "value": "",
-                  "description": "password",
                   "type": "text"
                 }
               ]
@@ -304,6 +302,16 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -361,6 +369,16 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -401,6 +419,16 @@
         {
           "name": "Reset Password",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -453,202 +481,53 @@
       ]
     },
     {
-      "name": "User Devices",
-      "item": [
-        {
-          "name": "Get User Device",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/devices/",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "devices",
-                ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Register Device",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "fcm_token",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "b0fe4a74-479b-4b02-9eb4-55028033c134"
-                },
-                {
-                  "key": "device_type",
-                  "value": "",
-                  "description": "android or ios or web",
-                  "type": "text",
-                  "uuid": "3f3764fd-6bcb-46ae-a2a1-6fa5dd4f6a4f"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/devices/register",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "devices",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Device",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "applicatoin/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "old_token",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "8264e5bd-ef57-491a-92ef-2bdca0a534c0"
-                },
-                {
-                  "key": "new_token",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "5bfa7550-0b88-41cd-b219-88394ce09bb6"
-                },
-                {
-                  "key": "device_type",
-                  "value": "",
-                  "description": "android,ios,web",
-                  "type": "text",
-                  "uuid": "d31da4df-9d36-4fe5-9d7e-51912d824d43"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/devices/update",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "devices",
-                "update"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Unregister Device",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "applicatoin/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "fcm_token",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "8264e5bd-ef57-491a-92ef-2bdca0a534c0"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/devices/unregister",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "devices",
-                "unregister"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "InBody",
       "item": [
+        {
+          "name": "Get Info From InBody",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "18aeffd2-f54a-4d1e-be4b-967d6d480871",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/inbody/analyze",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "inbody",
+                "analyze"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Get Latest Report",
           "protocolProfileBehavior": {
@@ -685,157 +564,6 @@
               "path": [
                 "inbody",
                 "latest"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Info From InBody",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "type": "file",
-                  "uuid": "18aeffd2-f54a-4d1e-be4b-967d6d480871",
-                  "value": null
-                },
-                {
-                  "key": "activity_level",
-                  "value": "",
-                  "description": "sedentary || lightly_active || moderately_active ||very_active",
-                  "type": "text",
-                  "uuid": "29dc495b-b855-4385-b82f-70741395b512"
-                },
-                {
-                  "key": "primary_objective",
-                  "value": "",
-                  "description": "build_muscle || lose_weight || maintain",
-                  "type": "text",
-                  "uuid": "2ca1e38f-c53b-479a-b503-7b0ce8032d4a"
-                },
-                {
-                  "key": "medical_conditions",
-                  "value": "",
-                  "description": "nullable",
-                  "type": "text",
-                  "uuid": "c03b3f2b-6fcb-4037-8aca-5d6ebdb6759f"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/inbody/analyze",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "inbody",
-                "analyze"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Manual Profile Setup",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "age",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "13fedb52-663a-4142-b780-9226434d640e"
-                },
-                {
-                  "key": "height",
-                  "type": "text",
-                  "uuid": "00f2a1c9-db27-4f0c-9fbe-fcdcc9a22664",
-                  "value": ""
-                },
-                {
-                  "key": "weight",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "d2a75bfd-c314-4e54-b5a5-de7adb2e18f1"
-                },
-                {
-                  "key": "gender",
-                  "value": "",
-                  "description": "male || female",
-                  "type": "text",
-                  "uuid": "f0337cff-6962-4c52-89a2-d53d733308f3"
-                },
-                {
-                  "key": "activity_level",
-                  "value": "",
-                  "description": "sedentary || lightly_active || moderately_active ||very_active",
-                  "type": "text",
-                  "uuid": "34b13316-2aad-4e1f-849b-f3bacc9834d1"
-                },
-                {
-                  "key": "primary_objective",
-                  "value": "",
-                  "description": "lose_weight || build_muscle || maintain",
-                  "type": "text",
-                  "uuid": "1e3e77cd-79bd-4216-b4fb-2356a0b32e7d"
-                },
-                {
-                  "key": "medical_conditions",
-                  "value": "",
-                  "description": "nullable",
-                  "type": "text",
-                  "uuid": "ce28ecd0-e90b-4fd8-8d77-173897803eb9"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/inbody/manual",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "inbody",
-                "manual"
               ]
             }
           },
@@ -956,6 +684,58 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Update FCM Token",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fcm_token",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b0fe4a74-479b-4b02-9eb4-55028033c134"
+                },
+                {
+                  "key": "device_type",
+                  "value": "",
+                  "description": "android or ios or web",
+                  "type": "text",
+                  "uuid": "3f3764fd-6bcb-46ae-a2a1-6fa5dd4f6a4f"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/profile/fcm-token",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "profile",
+                "fcm-token"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -990,44 +770,6 @@
               ],
               "path": [
                 "daily-target"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Profile",
-      "item": [
-        {
-          "name": "Get User Profile",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/profile",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "profile"
               ]
             }
           },

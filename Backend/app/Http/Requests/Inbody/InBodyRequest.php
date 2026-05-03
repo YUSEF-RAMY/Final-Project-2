@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\Inbody;
 
-use App\Enums\ActivityLevel;
-use App\Enums\PrimaryObjective;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class InBodyRequest extends FormRequest
 {
@@ -27,9 +24,6 @@ class InBodyRequest extends FormRequest
     {
         return [
             'image' => 'required|mimes:jpeg,png,jpg|max:5120',
-            'activity_level' => ['required', Rule::enum(ActivityLevel::class)],
-            'primary_objective' => ['required', Rule::enum(PrimaryObjective::class)],
-            'medical_conditions' => 'nullable|string',
         ];
     }
 }
