@@ -21,10 +21,3 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-
-# AI Agents & Skills
-.agents/
-.claude/
-.gemini/
-.skills/
-*.md.agents
