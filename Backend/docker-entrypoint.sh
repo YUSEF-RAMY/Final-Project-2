@@ -5,6 +5,23 @@ echo "============================================"
 echo "  Healthify Backend - Starting Up"
 echo "============================================"
 
+# Resolve secret paths
+SECRETS_DB_PATH="/run/secrets/db_password"
+SECRETS_MAIL_PATH="/run/secrets/mail_password"
+
+# Function to run artisan commands with secrets injected only into the specific command
+run_secure_artisan() {
+    # Only read secrets if they exist
+    _DB_PASS=""
+    if [ -f "$SECRETS_DB_PATH" ]; then _DB_PASS=$(cat "$SECRETS_DB_PATH"); fi
+    
+    _MAIL_PASS=""
+    if [ -f "$SECRETS_MAIL_PATH" ]; then _MAIL_PASS=$(cat "$SECRETS_MAIL_PATH"); fi
+
+    # Execute command with secrets injected into process environment only
+    DB_PASSWORD="$_DB_PASS" MAIL_PASSWORD="$_MAIL_PASS" php artisan "$@"
+}
+
 # Wait for the database to be ready
 echo "Waiting for database at ${DB_HOST:-healthify-db}:${DB_PORT:-3306}..."
 MAX_RETRIES=30
@@ -23,35 +40,42 @@ echo "Database is up!"
 # Generate app key if not set
 if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:" ]; then
     echo "Generating application key..."
-    php artisan key:generate --force --no-interaction
+    run_secure_artisan key:generate --force --no-interaction
 fi
 
 # Run database migrations
 echo "Running database migrations..."
-php artisan migrate --force --no-interaction
+run_secure_artisan migrate --force --no-interaction
 
 # Seed database
 echo "Seeding database..."
-php artisan db:seed --force --no-interaction
+run_secure_artisan db:seed --force --no-interaction
 
 # Cache configuration for production performance
+# This is CRITICAL: secrets are baked into the config cache here and nowhere else
 echo "Caching configuration..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+run_secure_artisan config:cache
+run_secure_artisan route:cache
+run_secure_artisan view:cache
 
 # Ensure storage link exists
-php artisan storage:link --force --no-interaction 2>/dev/null || true
+run_secure_artisan storage:link --force --no-interaction 2>/dev/null || true
 
 # Fix storage permissions (safety net)
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
+
 # Start queue worker in the background
 echo "Starting queue worker..."
-php artisan queue:work --sleep=3 --tries=3 --max-time=3600 &
+# Queue worker also needs the secrets if it doesn't use the cached config
+run_secure_artisan queue:work --sleep=3 --tries=3 --max-time=3600 &
+
+# Start scheduler in the background
+echo "Starting scheduler..."
+run_secure_artisan schedule:work &
 
 echo "============================================"
 echo "  Starting PHP-FPM..."
 echo "============================================"
-# Start php-fpm as PID 1 for proper signal handling
+# Start php-fpm as PID 1. It will read from the cached config in bootstrap/cache/config.php
 exec php-fpm
