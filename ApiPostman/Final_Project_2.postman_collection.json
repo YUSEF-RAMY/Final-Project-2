@@ -29,7 +29,7 @@
                 "exec": [
                   "if (pm.response.code === 200) {",
                   "    let response = pm.response.json();",
-                  "    let token = response.data.access_token;",
+                  "    let token = response.data.token;",
                   "    pm.environment.set(\"token\", token);",
                   "    console.log(\"✅ Token saved successfully!\");",
                   "}"
@@ -85,7 +85,7 @@
                 "exec": [
                   "if (pm.response.code === 201) {",
                   "    let response = pm.response.json();",
-                  "    let token = response.data.access_token;",
+                  "    let token = response.data.token;",
                   "    pm.environment.set(\"token\", token);",
                   "    console.log(\"✅ Token saved successfully!\");",
                   "}"
@@ -257,6 +257,216 @@
               ],
               "path": [
                 "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password (OTP)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    let sentEmail;",
+                  "",
+                  "    if (pm.request.body.mode === 'formdata') {",
+                  "        sentEmail = pm.request.body.formdata.get(\"email\");",
+                  "    } ",
+                  "    else if (pm.request.body.mode === 'urlencoded') {",
+                  "        sentEmail = pm.request.body.urlencoded.get(\"email\");",
+                  "    }",
+                  "    else if (pm.request.body.mode === 'raw') {",
+                  "        let requestBody = JSON.parse(pm.request.body.raw);",
+                  "        sentEmail = requestBody.email;",
+                  "    }",
+                  "    ",
+                  "    if (sentEmail) {",
+                  "        pm.environment.set(\"reset_email\", sentEmail);",
+                  "        console.log(\"Email saved: \" + sentEmail);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "68910743-ff68-4a97-92ca-3397af651a28"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/forgot-password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Otp",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    let jsonData = pm.response.json();",
+                  "    if (jsonData.data.token) {",
+                  "        pm.environment.set(\"temp_reset_token\", jsonData.data.token);",
+                  "        console.log(\"Token saved: \" + jsonData.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{reset_email}}",
+                  "type": "text",
+                  "uuid": "ce11e670-1607-4eb9-942e-3c307fd985ec"
+                },
+                {
+                  "key": "code",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "68910743-ff68-4a97-92ca-3397af651a28"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/verify-otp",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{reset_email}}",
+                  "type": "text",
+                  "uuid": "f64028bc-c98b-463a-adb6-ed4d92879c02"
+                },
+                {
+                  "key": "token",
+                  "value": "{{temp_reset_token}}",
+                  "type": "text",
+                  "uuid": "9b2cb9c8-a85a-4f3a-9b10-be9d491467f5"
+                },
+                {
+                  "key": "password",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "68910743-ff68-4a97-92ca-3397af651a28"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "3b03f413-c337-4629-9aba-777a0b4020fb"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/reset-password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "reset-password"
               ]
             }
           },
