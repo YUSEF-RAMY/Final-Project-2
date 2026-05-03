@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/update-goals', 'updateGoals');
 
             Route::get('/latest', 'getLatestReport');
+            Route::get('/status/{traceId}', 'checkStatus');
         });
 
     // Group Daily User Target
