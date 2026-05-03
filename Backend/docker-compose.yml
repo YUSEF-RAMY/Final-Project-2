@@ -4,11 +4,15 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: healthify-backend-api
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     environment:
       - AI_SERVICE_URL=http://ai-service:8000
+      - DB_HOST=healthify-db
+      - DB_DATABASE=healthify
+      - DB_USERNAME=healthify_user
+      - DB_PASSWORD=healthify_password
     volumes:
       - app-storage:/var/www/storage/app
       - app-public:/var/www/public
@@ -17,11 +21,17 @@ services:
         condition: service_healthy
     networks:
       - healthify-net
+    healthcheck:
+      test: ["CMD", "php", "artisan", "about"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   web:
     image: nginx:alpine
     container_name: healthify-nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "8000:80"
     volumes:
@@ -31,16 +41,21 @@ services:
       - app
     networks:
       - healthify-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   healthify-db:
     image: mysql:8.0
     container_name: healthify-db
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_DATABASE: healthify
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_USER: healthify_user
-      MYSQL_PASSWORD: root
+      MYSQL_PASSWORD: healthify_password
     ports:
       - "3306:3306"
     volumes:
@@ -48,10 +63,10 @@ services:
     networks:
       - healthify-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-      interval: 5s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uhealthify_user", "-phealthify_password"]
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
       start_period: 30s
 
   ai-service:
@@ -59,13 +74,19 @@ services:
       context: ../Ai/inbody-ai-vision
       dockerfile: Dockerfile
     container_name: healthify-ai-service
-    restart: unless-stopped
+    restart: always
     ports:
-      - "8000:8000"
+      - "8080:8000"
     volumes:
       - ai-model-cache:/root/.cache/huggingface
     networks:
       - healthify-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 networks:
   healthify-net:
