@@ -1,10 +1,26 @@
 ## 📝 Summary
+- Describe what this PR does
 
-## 🛠️ Changes Context
-- [ ] **Feature:** New functionality added.
-- [ ] **Bug Fix:** Resolved an existing issue.
-- [ ] **Refactor:** Code improvement without changing behavior.
-- [ ] **Infrastructure:** DevOps or Config changes.
-- [ ] **Documentation:** Updates to README or docs.
+## 🎯 Scope
+- [ ] backend
+- [ ] mobile
+- [ ] web
+- [ ] ai
+- [ ] devops
+
+## 🛠️ Type of Change
+- [ ] Feature
+- [ ] Bug Fix
+- [ ] Refactor
+- [ ] Infrastructure
+- [ ] Documentation
+
+## 🧪 Testing
+- [ ] Tested locally
+- [ ] No breaking changes
+- [ ] API tested (if backend)
+
+## 🔗 Related Issue
+- #
 
 ## 📸 Screenshots (Optional)
