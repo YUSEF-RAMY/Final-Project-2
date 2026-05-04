@@ -4,13 +4,13 @@ namespace App\Jobs\Inbody;
 
 use App\Actions\Nutrition\SyncNutritionStateAction;
 use App\DTOs\InBody\NutritionAnalysisInputDTO;
-use App\Models\User;
+use App\Jobs\Middleware\JobLoggingMiddleware;
 use App\Models\AiRetryQueue;
 use App\Models\InBodyRequest;
+use App\Models\User;
 use App\Notifications\Inbody\InBodyAnalyzedNotification;
 use App\Services\Inbody\InBodyService;
 use App\Services\LogService;
-use App\Jobs\Middleware\JobLoggingMiddleware;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -22,7 +22,9 @@ class ProcessInBodyAnalysis implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 300;
+
     public $tries = 1;
+
     public $trace_id;
 
     public function __construct(public User $user, protected string $imagePath, protected array $extraData)
@@ -36,7 +38,7 @@ class ProcessInBodyAnalysis implements ShouldQueue
                 [
                     'user_id' => $this->user->id,
                     'image_path' => $this->imagePath,
-                    'status' => 'processing'
+                    'status' => 'processing',
                 ]
             );
         }
@@ -51,7 +53,7 @@ class ProcessInBodyAnalysis implements ShouldQueue
     {
         try {
             $this->executeAnalysisPipeline($inBodyService, $syncAction);
-            
+
             // Update user-facing status
             if ($this->trace_id) {
                 InBodyRequest::where('trace_id', $this->trace_id)->update(['status' => 'completed']);
@@ -73,10 +75,10 @@ class ProcessInBodyAnalysis implements ShouldQueue
                 'user_id' => $this->user->id,
                 'payload' => [
                     'imagePath' => $this->imagePath,
-                    'extraData' => $this->extraData
+                    'extraData' => $this->extraData,
                 ],
                 'trace_id' => $this->trace_id ?? 'unknown',
-                'status' => 'queued_for_retry'
+                'status' => 'queued_for_retry',
             ]);
 
             // Update user-facing status
@@ -97,7 +99,7 @@ class ProcessInBodyAnalysis implements ShouldQueue
     public function executeAnalysisPipeline(InBodyService $inBodyService, SyncNutritionStateAction $syncAction): void
     {
         $ocrResult = $inBodyService->processInBodyImage($this->user, $this->imagePath);
-        $aiData = $ocrResult['ai_data'];
+        $aiData = $this->sanitizeAiData($ocrResult['ai_data']);
 
         $inputDto = NutritionAnalysisInputDTO::fromArray([
             'weight' => $aiData['weight'] ?? $this->user->profile?->weight ?? 0,
@@ -126,5 +128,32 @@ class ProcessInBodyAnalysis implements ShouldQueue
 
         $report = $this->user->body_report()->latest()->first();
         $this->user->notify(new InBodyAnalyzedNotification($report));
+    }
+
+    private function sanitizeAiData(array $data): array
+    {
+        $numericFields = ['weight', 'height', 'bmi', 'bmr', 'smm', 'pbf', 'body_fat_mass', 'water', 'protein', 'minerals'];
+
+        foreach ($numericFields as $field) {
+            if (isset($data[$field])) {
+                $val = (float) $data[$field];
+
+                // Fix obvious scaling issues from AI (e.g., grams vs kg, or scaled percentages)
+                // If PBF or Body Fat Mass are > 1000, they are likely scaled by 1000
+                if (($field === 'pbf' || $field === 'body_fat_mass') && $val > 1000) {
+                    $val = $val / 1000;
+                }
+
+                // Clamp values to fit decimal(5,2) which is max 999.99
+                // BMR is decimal(8,2) so it can be larger
+                if ($field === 'bmr') {
+                    $data[$field] = min($val, 999999.99);
+                } else {
+                    $data[$field] = min($val, 999.99);
+                }
+            }
+        }
+
+        return $data;
     }
 }
