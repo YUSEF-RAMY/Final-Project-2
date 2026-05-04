@@ -12,8 +12,9 @@ use App\Http\Requests\Inbody\Manual\StoreManualProfileRequest;
 use App\Http\Resources\Inbody\BodyReportResource;
 use App\Http\Resources\Profile\UserProfileResource;
 use App\Jobs\Inbody\ProcessInBodyAnalysis;
-use App\Services\Inbody\InBodyService;
 use App\Models\InBodyRequest;
+use App\Services\Inbody\InBodyCalculationService;
+use App\Services\Inbody\InBodyService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +22,7 @@ class InBodyController extends Controller
 {
     public function __construct(
         protected InBodyService $inBodyService,
-        protected \App\Services\Inbody\InBodyCalculationService $calculationService
+        protected InBodyCalculationService $calculationService
     ) {}
 
     public function analyze(ValidationRequest $request)
@@ -35,7 +36,7 @@ class InBodyController extends Controller
                 'user_id' => $request->user()->id,
                 'trace_id' => $traceId,
                 'image_path' => $path,
-                'status' => 'processing'
+                'status' => 'processing',
             ]);
 
             $extraData = $request->only(['activity_level', 'primary_objective', 'medical_conditions']);
@@ -46,7 +47,7 @@ class InBodyController extends Controller
                 [
                     'status' => 'processing',
                     'status_code' => 202,
-                    'trace_id' => $traceId,
+                    // 'trace_id' => $traceId,
                     'message' => 'Your InBody analysis is being processed; we will notify you when it is ready.',
                 ],
                 202,
@@ -67,14 +68,14 @@ class InBodyController extends Controller
             'data' => [
                 'status' => $inbodyRequest->status,
                 'created_at' => $inbodyRequest->created_at,
-            ]
+            ],
         ]);
     }
 
     public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction)
     {
         $data = $request->validated();
-        
+
         // Calculate BMI automatically
         $data['bmi'] = $this->calculationService->calculateBMI($data['weight'], $data['height']);
 
