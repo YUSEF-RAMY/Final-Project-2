@@ -19,7 +19,10 @@ use Illuminate\Validation\Rule;
 
 class InBodyController extends Controller
 {
-    public function __construct(protected InBodyService $inBodyService) {}
+    public function __construct(
+        protected InBodyService $inBodyService,
+        protected \App\Services\Inbody\InBodyCalculationService $calculationService
+    ) {}
 
     public function analyze(ValidationRequest $request)
     {
@@ -70,7 +73,12 @@ class InBodyController extends Controller
 
     public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction)
     {
-        $inputDto = NutritionAnalysisInputDTO::fromArray($request->validated());
+        $data = $request->validated();
+        
+        // Calculate BMI automatically
+        $data['bmi'] = $this->calculationService->calculateBMI($data['weight'], $data['height']);
+
+        $inputDto = NutritionAnalysisInputDTO::fromArray($data);
 
         $syncAction->execute($request->user(), $inputDto);
 

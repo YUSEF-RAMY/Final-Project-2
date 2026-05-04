@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->decimal('minerals', 5, 2)->nullable();
             $table->decimal('bmi', 5, 2)->nullable();
             $table->decimal('pbf', 5, 2)->nullable(); // Percent Body Fat
+            $table->decimal('bmr', 8, 2)->nullable();
 
             // بيانات الـ InBody التخصصية (بنفس أسامي الـ AI للسهولة)
 
