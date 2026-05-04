@@ -26,6 +26,7 @@ class BodyReportResource extends JsonResource
             'protein'         => $this->protein,
             'minerals'        => $this->minerals,
             'bmi'             => $this->bmi,
+            'bmr'             => $this->bmr,
             'measured_at'     => $this->datetime?->format('Y-m-d h:i A'),
             'created_at'      => $this->created_at->format('Y-m-d h:i A'),
             'image'           => $this->report_image ? asset('storage/' . $this->report_image) : null,

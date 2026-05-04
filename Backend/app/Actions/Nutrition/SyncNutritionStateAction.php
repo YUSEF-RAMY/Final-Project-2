@@ -37,6 +37,8 @@ class SyncNutritionStateAction
             'height' => $input->height,
             'weight' => $input->weight,
             'age' => $input->age,
+            'bmi' => $input->bmi,
+            'bmr' => $input->bmr,
             'gender' => $input->gender,
             'measured_at' => now(),
             'datetime' => now(),
