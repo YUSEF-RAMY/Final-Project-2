@@ -12,7 +12,6 @@ class JobLoggingMiddleware
      * Process the queued job.
      *
      * @param  mixed  $job
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle($job, Closure $next)
@@ -20,6 +19,8 @@ class JobLoggingMiddleware
         // 1. Propagate Trace ID from job payload if available
         if (isset($job->trace_id)) {
             app()->instance('trace_id', $job->trace_id);
+        } elseif (isset($job->notification->trace_id)) {
+            app()->instance('trace_id', $job->notification->trace_id);
         }
 
         $startTime = Carbon::now();

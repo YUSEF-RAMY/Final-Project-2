@@ -2,9 +2,12 @@
 
 namespace App\Notifications\Inbody;
 
-use Illuminate\Bus\Queueable;
+use App\Jobs\Middleware\JobLoggingMiddleware;
 use App\Models\Body_report;
+use App\Services\LogService;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
@@ -14,39 +17,117 @@ class InBodyAnalyzedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Body_report $report) {}
+    public $tries = 3;
+
+    public $backoff = [10, 30, 60];
+
+    public ?string $trace_id = null;
+
+    public function __construct(protected Body_report $report, ?string $trace_id = null)
+    {
+        $this->trace_id = $trace_id ?? (app()->bound('trace_id') ? app('trace_id') : null);
+    }
+
+    public function middleware()
+    {
+        return [new JobLoggingMiddleware];
+    }
 
     public function via(object $notifiable): array
     {
-        return [FcmChannel::class, 'database'];
+        return [FcmChannel::class, 'database', 'mail'];
     }
 
     private function payload(): array
     {
         return [
-            'inbody_report_id' => (string) $this->report->id,
+            'inbody_report_id' => $this->report->id ? (string) $this->report->id : 'unknown',
             'type' => 'inbody_analysis',
         ];
     }
 
-    public function toFcm($notifiable): FcmMessage
+    public function toFcm($notifiable): ?FcmMessage
     {
-        logger('Sending FCM to user: =>' . $notifiable->id);
-        return FcmMessage::create()
-            ->setData($this->payload())
-            ->setNotification(
-                FcmNotification::create([
-                    'title' => 'InBody analysis completed! 🎉',
-                    'body' => 'Your new numbers are ready, open the app to see your calories and macros.',
-                ]),
+        try {
+            LogService::log(
+                channel: 'notifications',
+                event: 'building_fcm_notification',
+                layer: 'notification',
+                userId: $notifiable->id,
+                context: ['report_id' => $this->report->id, 'trace_id' => $this->trace_id]
             );
+
+            return FcmMessage::create()
+                ->setData($this->payload())
+                ->setNotification(
+                    FcmNotification::create([
+                        'title' => 'InBody analysis completed! 🎉',
+                        'body' => 'Your new numbers are ready, open the app to see your calories and macros.',
+                    ]),
+                );
+        } catch (\Throwable $e) {
+            LogService::error($e, ['notifiable_id' => $notifiable->id, 'report_id' => $this->report->id], 'notification');
+
+            return null;
+        }
     }
 
     public function toArray(object $notifiable): array
     {
-        return $this->payload() + [
-            'title' => 'InBody analysis completed! 🎉',
-            'message' => 'Your new numbers are ready, open the app to see your calories and macros.',
-        ];
+        try {
+            return $this->payload() + [
+                'title' => 'InBody analysis completed! 🎉',
+                'message' => 'Your new numbers are ready, open the app to see your calories and macros.',
+            ];
+        } catch (\Throwable $e) {
+            LogService::error($e, ['notifiable_id' => $notifiable->id], 'notification');
+
+            return [
+                'error' => 'Failed to build notification payload',
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return $this->toArray($notifiable);
+    }
+
+    public function toMail(object $notifiable): ?MailMessage
+    {
+        try {
+            return (new MailMessage)
+                ->subject('InBody Analysis Completed! 🎉')
+                ->greeting('Hello '.$notifiable->name.'!')
+                ->line('Your InBody analysis is complete and your new macros are ready.')
+                ->action('View Results', url('/results'))
+                ->line('Thank you for using Healthify!');
+        } catch (\Throwable $e) {
+            LogService::error($e, ['notifiable_id' => $notifiable->id], 'notification');
+
+            return null;
+        }
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        LogService::log(
+            channel: 'notifications',
+            event: 'notification_failed',
+            layer: 'notification',
+            status: 'failed',
+            userId: $this->report->user_id,
+            context: [
+                'notification' => static::class,
+                'error' => $exception->getMessage(),
+                'trace_id' => $this->trace_id,
+            ]
+        );
+
+        LogService::error($exception, ['notification' => static::class, 'report_id' => $this->report->id], 'notification');
     }
 }

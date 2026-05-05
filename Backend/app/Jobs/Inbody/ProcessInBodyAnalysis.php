@@ -124,10 +124,20 @@ class ProcessInBodyAnalysis implements ShouldQueue
             ],
         ]);
 
-        $syncAction->execute($this->user, $inputDto);
+        $report = $syncAction->execute($this->user, $inputDto);
 
-        $report = $this->user->body_report()->latest()->first();
-        $this->user->notify(new InBodyAnalyzedNotification($report));
+        if ($report && $report->exists) {
+            $this->user->notify(new InBodyAnalyzedNotification($report, $this->trace_id));
+        } else {
+            LogService::log(
+                channel: 'notifications',
+                event: 'notification_skipped',
+                layer: 'notification',
+                status: 'failed',
+                userId: $this->user->id,
+                context: ['reason' => 'Body report creation failed or returned null', 'trace_id' => $this->trace_id]
+            );
+        }
     }
 
     private function sanitizeAiData(array $data): array
