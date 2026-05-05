@@ -3,9 +3,9 @@
 namespace App\Services\Inbody;
 
 use App\Services\LogService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Carbon;
 
 class InBodyService
 {
@@ -18,7 +18,7 @@ class InBodyService
 
         try {
             $imagePath = Storage::disk('public')->path($image);
-            
+
             // Log file metadata (No binaries)
             LogService::log(
                 channel: 'ai',
@@ -92,9 +92,6 @@ class InBodyService
             ];
 
         } catch (\Throwable $e) {
-            if (Storage::disk('public')->exists($image)) {
-                Storage::disk('public')->delete($image);
-            }
             LogService::error($e, ['user_id' => $user->id, 'image' => $image]);
             throw $e;
         }

@@ -9,13 +9,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Queue\SerializesModels;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class InBodyAnalyzedNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, SerializesModels;
 
     public $tries = 3;
 
@@ -40,8 +41,10 @@ class InBodyAnalyzedNotification extends Notification implements ShouldQueue
 
     private function payload(): array
     {
+        $reportId = $this->report->id ?? $this->report->getKey();
+
         return [
-            'inbody_report_id' => $this->report->id ? (string) $this->report->id : 'unknown',
+            'inbody_report_id' => $reportId ? (string) $reportId : 'unknown',
             'type' => 'inbody_analysis',
         ];
     }
@@ -58,12 +61,11 @@ class InBodyAnalyzedNotification extends Notification implements ShouldQueue
             );
 
             return FcmMessage::create()
-                ->setData($this->payload())
-                ->setNotification(
-                    FcmNotification::create([
-                        'title' => 'InBody analysis completed! 🎉',
-                        'body' => 'Your new numbers are ready, open the app to see your calories and macros.',
-                    ]),
+                ->data($this->payload())
+                ->notification(
+                    FcmNotification::create()
+                        ->title('InBody analysis completed! 🎉')
+                        ->body('Your new numbers are ready, open the app to see your calories and macros.'),
                 );
         } catch (\Throwable $e) {
             LogService::error($e, ['notifiable_id' => $notifiable->id, 'report_id' => $this->report->id], 'notification');
