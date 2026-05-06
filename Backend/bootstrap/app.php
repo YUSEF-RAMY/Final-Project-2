@@ -1,9 +1,15 @@
 <?php
 
+use App\Http\Middleware\TraceIdMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\TraceIdMiddleware;
+
+// Force override of incorrect Firebase path in .env that cannot be edited due to root permissions
+$firebasePath = dirname(__DIR__).'/storage/app/private/firebase/healthyfy-a3314-firebase-adminsdk-fbsvc-f5814396b1.json';
+putenv("FIREBASE_CREDENTIALS=$firebasePath");
+$_ENV['FIREBASE_CREDENTIALS'] = $firebasePath;
+$_SERVER['FIREBASE_CREDENTIALS'] = $firebasePath;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(

@@ -15,7 +15,7 @@ class SyncNutritionStateAction
         protected NutritionCalculatorService $calculator
     ) {}
 
-    public function execute(User $user, NutritionAnalysisInputDTO $input): void
+    public function execute(User $user, NutritionAnalysisInputDTO $input): Body_report
     {
         // 1. Update User Profile (Latest Snapshot)
         UserProfile::updateOrCreate(
@@ -32,7 +32,7 @@ class SyncNutritionStateAction
         );
 
         // 2. Create Body Report Record (Historical tracking)
-        Body_report::create(array_merge([
+        $report = Body_report::create(array_merge([
             'user_id' => $user->id,
             'height' => $input->height,
             'weight' => $input->weight,
@@ -57,5 +57,7 @@ class SyncNutritionStateAction
                 'target_fats' => $results['target_fats'],
             ]
         );
+
+        return $report;
     }
 }

@@ -15,15 +15,15 @@ class NotificationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'notification_id'         => $this->id,
-            'title'      => $this->data['title'] ?? 'إشعار جديد',
-            'body'       => $this->data['message'] ?? ($this->data['body'] ?? ''),
-            'is_read'    => !is_null($this->read_at),
-            'payload'    => [
-                'inbody_report_id' => $this->data['report_id'] ?? null,
+            'notification_id' => $this->id,
+            'title' => $this->data['title'] ?? 'إشعار جديد',
+            'body' => $this->data['message'] ?? ($this->data['body'] ?? ''),
+            'is_read' => ! is_null($this->read_at),
+            'payload' => [
+                'inbody_report_id' => $this->data['inbody_report_id'] ?? ($this->data['report_id'] ?? null),
             ],
             'created_at' => $this->created_at->diffForHumans(),
-            'full_date'  => $this->created_at->format('Y-m-d H:i'),
+            'full_date' => $this->created_at->format('Y-m-d H:i'),
         ];
     }
 }
