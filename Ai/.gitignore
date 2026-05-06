@@ -21,12 +21,7 @@ inbody-ai-predictor/data/*.csv
 inbody-ai-extractor/data/
 inbody-ai-vision/Training/data/
 
-# Model files (typically large)
-inbody-ai-predictor/model/
-*.keras
-*.h5
-*.pkl
-*.joblib
+
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
