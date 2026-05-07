@@ -6,14 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.predictor import AIMBodyPredictor
 from api.schemas import PredictRequest, PredictResponse
-
+from huggingface_hub import hf_hub_download
 # ── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("aimbody")
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
-    title="AIMBody API",
+    title="AI INBody API",
     description="AI-powered personalised nutrition prediction from InBody metrics.",
     version="1.0.0",
 )
@@ -30,16 +30,33 @@ predictor: AIMBodyPredictor | None = None
 
 
 @app.on_event("startup")
+
 def load_model() -> None:
     global predictor
-    log.info("Loading model artifacts …")
-    predictor = AIMBodyPredictor(
-        model_path   = "model/aimbody_model.keras",
-        scaler_path  = "model/scaler.pkl",
-        encoder_path = "model/encoders.pkl",
-    )
-    log.info("✅ Model ready.")
+    log.info("Loading model artifacts from Hugging Face …")
 
+    model_path = hf_hub_download(
+        repo_id="Heba15/inbody_model",
+        filename="inbody_model.keras"
+    )
+
+    scaler_path = hf_hub_download(
+        repo_id="Heba15/inbody_model",
+        filename="scaler.pkl"
+    )
+
+    encoder_path = hf_hub_download(
+        repo_id="Heba15/inbody_model",
+        filename="encoder.pkl"
+    )
+
+    predictor = AIMBodyPredictor(
+        model_path=model_path,
+        scaler_path=scaler_path,
+        encoder_path=encoder_path,
+    )
+
+    log.info("✅ Model ready.")
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 @app.get("/health", tags=["System"])

@@ -1,4 +1,4 @@
-# 🏋️ AIMBody — AI-Powered Fitness Intelligence System
+# 🏋️ AI IN Body — AI-Powered Fitness Intelligence System
 
 > End-to-end ML pipeline that predicts personalised daily nutrition targets from InBody body composition metrics.
 
