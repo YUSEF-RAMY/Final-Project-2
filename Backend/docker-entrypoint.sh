@@ -61,9 +61,12 @@ run_secure_artisan view:cache
 # Ensure storage link exists
 run_secure_artisan storage:link --force --no-interaction 2>/dev/null || true
 
-# Fix storage permissions (safety net)
-chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
-chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
+# Fix storage permissions only if needed (safety net)
+if [ ! -w /var/www/storage/framework ]; then
+    echo "Fixing storage permissions..."
+    chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
+fi
 
 # Start queue worker in the background
 echo "Starting queue worker..."

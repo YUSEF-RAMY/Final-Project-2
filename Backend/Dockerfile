@@ -5,25 +5,27 @@ FROM composer:2 AS composer-stage
 
 WORKDIR /app
 COPY composer.json composer.lock ./
+# Use cache mount for composer downloads
 RUN --mount=type=cache,target=/tmp/cache \
     composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
 # ============================================
 # Stage 2: Build frontend assets (Vite + TailwindCSS)
-# Needs vendor/ because app.css imports flux.css from vendor
 # ============================================
 FROM node:20-alpine AS node-stage
 
 WORKDIR /app
 COPY package.json package-lock.json ./
+# Use cache mount for npm
 RUN --mount=type=cache,target=/root/.npm \
     npm ci
 
-# Copy vendor from composer stage (needed for flux.css and blade source paths)
-COPY --from=composer-stage /app/vendor ./vendor
-
+# Copy only what is needed for the build
 COPY vite.config.js ./
 COPY resources/ ./resources/
+# Also need vendor/ for Flux UI CSS/Blade components (Tailwind scans them)
+COPY --from=composer-stage /app/vendor ./vendor
+
 RUN npm run build
 
 # ============================================
@@ -50,31 +52,33 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /var/www
 
-# Copy application code with proper permissions immediately
+# 1. Copy dependencies first (most stable layers)
+COPY --from=composer-stage --chown=www-data:www-data /app/vendor ./vendor
+
+# 2. Copy application code (excluding what is in .dockerignore)
 COPY --chown=www-data:www-data . .
+
+# 3. Copy built frontend assets
+COPY --from=node-stage --chown=www-data:www-data /app/public/build ./public/build
 
 # Clear cached service providers from dev environment
 RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php bootstrap/cache/config.php
 
-# Copy vendor from composer stage
-COPY --from=composer-stage --chown=www-data:www-data /app/vendor ./vendor
-
-# Copy built frontend assets from node stage
-COPY --from=node-stage --chown=www-data:www-data /app/public/build ./public/build
-
 # Create required storage directories with proper permissions
-RUN install -d -m 775 -o www-data -g www-data \
-    storage/framework/cache/data \
-    storage/framework/sessions \
-    storage/framework/views \
-    storage/logs \
-    bootstrap/cache \
+# Using mkdir -p and chown in one layer to minimize size and fix permission issues
+RUN mkdir -p storage/framework/cache/data \
+             storage/framework/sessions \
+             storage/framework/views \
+             storage/logs \
+             bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Copy and prepare entrypoint
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY --chown=www-data:www-data docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 9000
 
+# Run as root but entrypoint will handle process execution
 CMD ["docker-entrypoint.sh"]

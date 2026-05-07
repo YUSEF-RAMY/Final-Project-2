@@ -77,8 +77,12 @@ services:
     restart: always
     ports:
       - "8080:8000"
+    environment:
+      - MODEL_PATH=/app/models/best.pt
     volumes:
-      - ai-model-cache:/root/.cache/huggingface
+      - ../Ai/inbody-ai-vision/models:/app/models
+      - ai-model-cache:/root/.cache
+      - ai-paddle-cache:/root/.paddleocr
     networks:
       - healthify-net
     healthcheck:
@@ -97,3 +101,4 @@ volumes:
   app-storage:
   app-public:
   ai-model-cache:
+  ai-paddle-cache:

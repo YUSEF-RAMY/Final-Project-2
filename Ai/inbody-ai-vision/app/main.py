@@ -19,7 +19,8 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # 1. تحميل الموديلات
-MODEL_PATH = r"D:/Nutrition/inbody1_model-20260316T114557Z-1-001/inbody1_model/weights/best.pt"
+# يقرأ المسار من متغير بيئة (MODEL_PATH)، وإذا لم يوجد يستخدم المسار الافتراضي
+MODEL_PATH = os.getenv("MODEL_PATH", "/app/models/best.pt")
 yolo_model = YOLO(MODEL_PATH)
 ocr_model = PaddleOCR(lang="en", use_angle_cls=True, use_gpu=False, show_log=False)
 

@@ -13,14 +13,17 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements
+# 1. Fix pip caching: Remove --no-cache-dir and use BuildKit cache mount correctly
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir -r requirements.txt
+    pip install -r requirements.txt
+
+# 2. Pre-create directories for models to avoid permission issues at runtime
+# PaddleOCR and Ultralytics use these by default
+RUN mkdir -p /root/.paddleocr /root/.config/Ultralytics /root/.cache/huggingface
 
 # Copy the rest of the application
+# Use .dockerignore to avoid copying models/ if they are large
 COPY . .
 
 # Expose the port
