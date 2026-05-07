@@ -54,22 +54,22 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "test@example.com",
                   "description": "test@example.com",
                   "type": "text"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "password",
                   "description": "password",
                   "type": "text"
                 }
               ]
             },
             "url": {
-              "raw": "{{url}}/login",
+              "raw": "{{ngrok_url}}/login",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "login"
@@ -123,7 +123,7 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "",
+                  "value": "test",
                   "type": "text",
                   "uuid": "13fedb52-663a-4142-b780-9226434d640e"
                 },
@@ -135,19 +135,19 @@
                 },
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "test@gmail.com",
                   "type": "text",
                   "uuid": "d2a75bfd-c314-4e54-b5a5-de7adb2e18f1"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "password",
                   "type": "text",
                   "uuid": "f0337cff-6962-4c52-89a2-d53d733308f3"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "",
+                  "value": "password",
                   "type": "text",
                   "uuid": "34b13316-2aad-4e1f-849b-f3bacc9834d1"
                 }
@@ -203,9 +203,9 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/logout",
+              "raw": "{{ngrok_url}}/logout",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "logout"
@@ -259,9 +259,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/change-password",
+              "raw": "{{ngrok_url}}/change-password",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "change-password"
@@ -324,9 +324,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/forgot-password",
+              "raw": "{{ngrok_url}}/forgot-password",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "forgot-password"
@@ -387,9 +387,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/verify-otp",
+              "raw": "{{ngrok_url}}/verify-otp",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "verify-otp"
@@ -439,9 +439,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/reset-password",
+              "raw": "{{ngrok_url}}/reset-password",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "reset-password"
@@ -529,9 +529,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/devices/register",
+              "raw": "{{ngrok_url}}/devices/register",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "devices",
@@ -587,9 +587,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/devices/update",
+              "raw": "{{ngrok_url}}/devices/update",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "devices",
@@ -632,9 +632,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/devices/unregister",
+              "raw": "{{ngrok_url}}/devices/unregister",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "devices",
@@ -678,9 +678,9 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{url}}/inbody/latest",
+              "raw": "{{ngrok_url}}/inbody/latest",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "inbody",
@@ -744,9 +744,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/inbody/analyze",
+              "raw": "{{ngrok_url}}/inbody/analyze",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "inbody",
@@ -829,9 +829,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/inbody/manual",
+              "raw": "{{ngrok_url}}/inbody/manual",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "inbody",
@@ -911,9 +911,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/notifications/read",
+              "raw": "{{ngrok_url}}/notifications/read",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "notifications",
@@ -945,9 +945,9 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/notifications/clear-all",
+              "raw": "{{ngrok_url}}/notifications/clear-all",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "notifications",
@@ -962,6 +962,54 @@
     {
       "name": "Daily User Target",
       "item": [
+        {
+          "name": "GET Daily Summary",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "date",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{ngrok_url}}/foods/daily-summary",
+              "host": [
+                "{{ngrok_url}}"
+              ],
+              "path": [
+                "foods",
+                "daily-summary"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Get User Target",
           "request": {
@@ -984,9 +1032,9 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/daily-target",
+              "raw": "{{ngrok_url}}/daily-target",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "daily-target"
@@ -1022,9 +1070,9 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/profile",
+              "raw": "{{ngrok_url}}/profile",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "profile"
@@ -1041,8 +1089,33 @@
         {
           "name": "Get All Food",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{ngrok_url}}/foods",
+              "host": [
+                "{{ngrok_url}}"
+              ],
+              "path": [
+                "foods"
+              ]
+            }
           },
           "response": []
         },
@@ -1126,54 +1199,6 @@
           "response": []
         },
         {
-          "name": "GET Daily Summary",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "date",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/foods/daily-summary",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "foods",
-                "daily-summary"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Delete Item",
           "request": {
             "auth": {
@@ -1206,9 +1231,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/foods/meals/items",
+              "raw": "{{ngrok_url}}/foods/meals/items",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "foods",
