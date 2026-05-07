@@ -11,16 +11,29 @@ SECRETS_MAIL_PATH="/run/secrets/mail_password"
 
 # Function to run artisan commands with secrets injected only into the specific command
 run_secure_artisan() {
-    # Only read secrets if they exist
-    _DB_PASS=""
-    if [ -f "$SECRETS_DB_PATH" ]; then _DB_PASS=$(cat "$SECRETS_DB_PATH"); fi
-    
-    _MAIL_PASS=""
-    if [ -f "$SECRETS_MAIL_PATH" ]; then _MAIL_PASS=$(cat "$SECRETS_MAIL_PATH"); fi
+    # If secrets exist, they take priority by being exported to the process environment
+    if [ -f "$SECRETS_DB_PATH" ]; then export DB_PASSWORD=$(cat "$SECRETS_DB_PATH"); fi
+    if [ -f "$SECRETS_MAIL_PATH" ]; then export MAIL_PASSWORD=$(cat "$SECRETS_MAIL_PATH"); fi
 
-    # Execute command with secrets injected into process environment only
-    DB_PASSWORD="$_DB_PASS" MAIL_PASSWORD="$_MAIL_PASS" php artisan "$@"
+    php artisan "$@"
 }
+
+# 0. Clear any stale caches from host volumes immediately
+echo "Clearing stale caches..."
+php artisan config:clear || true
+php artisan optimize:clear || true
+
+# 1. Automate .env configuration
+if [ ! -f .env ]; then
+    echo "Creating .env from .env.docker..."
+    if [ -f .env.docker ]; then
+        cp .env.docker .env
+    elif [ -f .env.example ]; then
+        cp .env.example .env
+    else
+        echo "WARNING: Neither .env.docker nor .env.example found. Laravel might fail."
+    fi
+fi
 
 # Wait for the database to be ready
 echo "Waiting for database at ${DB_HOST:-healthify-db}:${DB_PORT:-3306}..."
