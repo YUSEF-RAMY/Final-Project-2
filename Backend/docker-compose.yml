@@ -9,16 +9,15 @@ services:
       - .env.docker
     environment:
       - AI_SERVICE_URL=http://healthify-ai-service:8000
-      - DB_HOST=healthify-db
+      - DB_HOST=db
       - DB_DATABASE=healthify
       - DB_USERNAME=healthify_user
       - DB_PASSWORD=healthify_password
     volumes:
-      - ./.env:/var/www/.env
       - app-storage:/var/www/storage/app
       - app-public:/var/www/public
     depends_on:
-      healthify-db:
+      db:
         condition: service_healthy
     networks:
       - healthify-net
@@ -49,7 +48,7 @@ services:
       timeout: 10s
       retries: 3
 
-  healthify-db:
+  db:
     image: mysql:8.0
     container_name: healthify-db
     restart: always

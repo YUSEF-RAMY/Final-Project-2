@@ -36,10 +36,11 @@ if [ ! -f .env ]; then
 fi
 
 # Wait for the database to be ready
-echo "Waiting for database at ${DB_HOST:-healthify-db}:${DB_PORT:-3306}..."
+echo "Waiting for database at ${DB_HOST:-db}:${DB_PORT:-3306}..."
+sleep 1
 MAX_RETRIES=30
 RETRY_COUNT=0
-until nc -z "${DB_HOST:-healthify-db}" "${DB_PORT:-3306}" 2>/dev/null; do
+until nc -z "${DB_HOST:-db}" "${DB_PORT:-3306}" 2>/dev/null; do
     RETRY_COUNT=$((RETRY_COUNT + 1))
     if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
         echo "ERROR: Database not available after ${MAX_RETRIES} attempts. Exiting."
