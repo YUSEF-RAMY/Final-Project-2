@@ -1,0 +1,111 @@
+.sidebar {
+  width: 250px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0;
+  border-right: 1px solid #f3f4f6;
+  height: 100%;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  margin-bottom: 48px;
+}
+
+.logoCircle {
+  width: 40px;
+  height: 40px;
+  background-color: #1f2937;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.logoText h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #10b981;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.logoText p {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.navItem.active {
+  background-color: #ecfdf5;
+  color: #10b981;
+  border-left-color: #10b981;
+  border-radius: 0 24px 24px 0;
+  margin-right: 24px;
+}
+
+.navItem i {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+}
+
+.bottomAction {
+  padding: 0 24px;
+  margin-top: auto;
+}
+
+.logButton {
+  width: 100%;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.logButton:hover {
+  background-color: #059669;
+}

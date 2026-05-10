@@ -1,0 +1,307 @@
+/* --- Global Resets & Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body styles removed to prevent global layout leakage. 
+   Use .login-container for layout instead. */
+
+/* --- Layout Containers --- */
+.login-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.left-panel, .right-panel {
+    height: 100%;
+}
+
+.left-panel {
+    flex: 1; /* 50% Width */
+}
+
+.right-panel {
+    flex: 1; /* 50% Width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 40px;
+}
+
+/* --- Left Side (Visual Panel) --- */
+.left-side {
+    width: 100%;
+    height: 100%;
+    background: url('../../assets/login.avif') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 60px;
+    position: relative;
+}
+
+/* Transparent Overlay */
+.left-side::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.162);
+    z-index: 1;
+}
+
+.left-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+.logo-tag {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #1a7a44;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    z-index: 2;
+    box-shadow: 0px 8px 32px 0px rgba(0, 110, 47, 0.05);
+    backdrop-filter: blur(12px);
+}
+
+.hero-text {
+    border-left: 5px solid #2ecc71;
+    padding-left: 20px;
+    max-width: 500px;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 15px;
+}
+
+.hero-text p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* --- Right Side (Form Panel) --- */
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-box h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* --- Form Groups & Inputs --- */
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.9rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-wrapper input:focus {
+    border-color: #2ecc71;
+}
+
+/* Input States (Validation) */
+.input-wrapper input.invalid {
+    border-color: #e74c3c !important;
+    background-color: #fff9f8;
+}
+
+.input-wrapper input.valid {
+    border-color: #2ecc71 !important;
+    background-color: #f4fff8;
+}
+
+.input-wrapper i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+/* --- Actions & Buttons --- */
+.forgot-pass {
+    float: right;
+    color: #1a7a44;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.btn-signin {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(to right, #1a7a44, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.btn-signin:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.divider {
+    text-align: center;
+    margin: 25px 0;
+    color: #aaa;
+    font-size: 0.8rem;
+    position: relative;
+}
+
+/* --- Social Login --- */
+.social-btns {
+    display: flex;
+    gap: 15px;
+}
+
+.social-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background: #f9f9f9;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.social-btn:hover {
+    background: #f0f0f0;
+}
+
+.signup-text {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.signup-text a {
+    color: rgba(34, 197, 94, 1);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* --- Error Messages --- */
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+}
+
+/* --- SweetAlert2 Stability --- */
+body.swal2-shown {
+    padding-right: 0 !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+.swal2-container {
+    height: 100vh !important;
+}
+
+/* --- Responsive Layout (Tablet/Mobile) --- */
+@media (max-width: 900px) {
+    .left-panel {
+        display: none;
+    }
+
+    .right-panel {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .login-container {
+        width: 100%;
+    }
+
+    .login-box {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .login-box h2, .subtitle {
+        text-align: center;
+    }
+
+    .login-box h2 {
+        font-size: 1.7rem;
+    }
+}
+
+/* --- Small Mobile Devices --- */
+@media (max-width: 480px) {
+    .social-btns {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-signin {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .logo-tag {
+        top: 20px;
+        left: 20px;
+        font-size: 1rem;
+    }
+}
