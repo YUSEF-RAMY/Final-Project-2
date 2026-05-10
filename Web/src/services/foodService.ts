@@ -29,7 +29,7 @@ function getAuthHeaders(): Record<string, string> {
 
 // Fetch all foods
 export async function fetchFoods(): Promise<Food[]> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const baseUrl = import.meta.env.API_BASE_URL;
   const response = await fetch(`${baseUrl}/foods`, {
     headers: getAuthHeaders(),
   });
@@ -40,7 +40,13 @@ export async function fetchFoods(): Promise<Food[]> {
     throw new Error('UNAUTHORIZED');
   }
 
-  const result = await response.json();
+  const text = await response.text();
+  let result;
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch (e) {
+    result = {};
+  }
 
   if (response.ok) {
     // Support diff response formats
@@ -56,8 +62,8 @@ export async function addFoodToMeal(
   mealType: string,
   foodId: number,
   quantity: number
-): Promise<any> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+): Promise<unknown> {
+  const baseUrl = import.meta.env.API_BASE_URL;
   const response = await fetch(`${baseUrl}/foods/meals/${mealType}/items`, {
     method: 'POST',
     headers: getAuthHeaders(),
@@ -70,7 +76,13 @@ export async function addFoodToMeal(
     throw new Error('UNAUTHORIZED');
   }
 
-  const result = await response.json();
+  const text = await response.text();
+  let result;
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch (e) {
+    result = {};
+  }
 
   if (response.ok) {
     return result;

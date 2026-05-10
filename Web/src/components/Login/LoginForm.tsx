@@ -57,7 +57,7 @@ const LoginForm = () => {
       loginFormData.append("password", password);
 
       const loginResponse = await fetch(
-        "https://katydid-champion-mutually.ngrok-free.app/api/login",
+        `${import.meta.env.API_BASE_URL}/login`,
         {
           method: "POST",
           body: loginFormData,
@@ -83,7 +83,7 @@ const LoginForm = () => {
 
         try {
           await fetch(
-            "https://katydid-champion-mutually.ngrok-free.app/api/devices/register",
+            `${import.meta.env.API_BASE_URL}/devices/register`,
             {
               method: "POST",
               body: deviceFormData,

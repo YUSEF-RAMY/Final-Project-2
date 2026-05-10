@@ -3,7 +3,7 @@ import InBodyStats from '../components/AnalysisInBody/InBodyStats';
 import type { InBodyData } from '../components/AnalysisInBody/types';
 import styles from '../components/AnalysisInBody/InBody.module.css';
 
-const BASE_URL = "https://katydid-champion-mutually.ngrok-free.app";
+const BASE_URL = import.meta.env.API_BASE_URL;
 
 import { useNotification } from '../context/NotificationContext';
 
@@ -13,7 +13,7 @@ interface ExtendedInBodyData extends InBodyData {
 }
 
 const AnalysisInBodyPage: React.FC = () => {
-  const { finishProcessing } = useNotification();
+  useNotification();
   const [inBodyData, setInBodyData] = useState<ExtendedInBodyData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +29,7 @@ const AnalysisInBodyPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/api/inbody/latest`, {
+      const response = await fetch(`${BASE_URL}/inbody/latest`, {
         signal,
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -39,7 +39,7 @@ const Splash = () => {
           </svg>
         </div>
 
-        <h1 className="text-4xl font-bold text-gray-900 mb-1">Healthyfy</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-1">Healthify</h1>
         <p className="text-gray-500 text-lg mb-8">Your AI Nutrition Coach</p>
 
         {/* النقط اللي بتنور (Loader) */}

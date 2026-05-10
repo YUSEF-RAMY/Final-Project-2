@@ -65,7 +65,7 @@ const SignUpForm = () => {
     }
 
     try {
-      const response = await fetch("https://katydid-champion-mutually.ngrok-free.app/api/register", {
+      const response = await fetch(`${import.meta.env.API_BASE_URL}/register`, {
         method: "POST",
         body: data,
         headers: { 
@@ -87,7 +87,7 @@ const SignUpForm = () => {
         deviceFormData.append("device_type", "web");
 
         try {
-          await fetch("https://katydid-champion-mutually.ngrok-free.app/api/devices/register", {
+          await fetch(`${import.meta.env.API_BASE_URL}/devices/register`, {
             method: "POST",
             body: deviceFormData,
             headers: { 

@@ -24,7 +24,7 @@ type OnboardingMode = 'manual' | 'upload' | 'camera';
 
 const OnboardingSteps: React.FC = () => {
   const navigate = useNavigate();
-  const { startProcessing, uploadAnalysis } = useNotification();
+  const { uploadAnalysis } = useNotification();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [mode, setMode] = useState<OnboardingMode>('manual');
   const [imageReady, setImageReady] = useState<boolean>(false);
@@ -34,7 +34,7 @@ const OnboardingSteps: React.FC = () => {
   const [medical, setMedical] = useState<string>('');
   const [formData, setFormData] = useState<FormDataValues>({ age: '', gender: '', height: '', weight: '' });
 
-  const API_URL = "https://katydid-champion-mutually.ngrok-free.app/api";
+  const API_URL = import.meta.env.API_BASE_URL;
 
   // Converts Base64 string from camera capture to a File object
   const base64ToFile = (base64String: string, fileName: string): File => {

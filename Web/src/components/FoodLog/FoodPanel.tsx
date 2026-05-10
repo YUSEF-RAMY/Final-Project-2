@@ -42,9 +42,10 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
       setTimeout(() => {
         onSuccess();
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Add food error:', err);
-      setError(err.message || 'Failed to add food.');
+      const message = err instanceof Error ? err.message : 'Failed to add food.';
+      setError(message);
     } finally {
       setLoading(false);
     }

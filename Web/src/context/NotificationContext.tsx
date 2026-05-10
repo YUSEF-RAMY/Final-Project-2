@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
 type NotificationStatus = 'idle' | 'processing' | 'done';
@@ -20,7 +21,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-const BASE_URL = "https://katydid-champion-mutually.ngrok-free.app";
+const BASE_URL = import.meta.env.API_BASE_URL;
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<NotificationState>({
@@ -70,7 +71,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       startProcessing("Processing...");
       try {
         // 1. Fetch current (old) state to get its created_at timestamp
-        const latestRes = await fetch(`${BASE_URL}/api/inbody/latest`, {
+        const latestRes = await fetch(`${BASE_URL}/inbody/latest`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
@@ -110,7 +111,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
           const checkStatus = async () => {
             if (!isPolling) return;
             try {
-              const pollRes = await fetch(`${BASE_URL}/api/inbody/latest`, {
+              const pollRes = await fetch(`${BASE_URL}/inbody/latest`, {
                 headers: {
                   'Authorization': `Bearer ${token}`,
                   'Accept': 'application/json',

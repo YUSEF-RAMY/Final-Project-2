@@ -29,21 +29,23 @@ export function useDailySummary(): UseDailySummaryResult {
     try {
       const result = await fetchDailySummary(today);
       setData(result);
-    } catch (err: any) {
-      if (err.message === 'UNAUTHORIZED') {
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      if (errorObj.message === 'UNAUTHORIZED') {
         navigate('/login');
         return;
       }
       console.error('Dashboard API Error:', err);
-      setError(err.message || 'An unexpected error occurred.');
+      setError(errorObj.message || 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
   }, [navigate, today]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    Promise.resolve().then(() => loadData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { data, loading, error, refetch: loadData };
 }
