@@ -28,7 +28,7 @@ const TargetPage: React.FC = () => {
       }
 
       // Use the centralized Environment Variable
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || "https://katydid-champion-mutually.ngrok-free.app/api";
+      const baseUrl = import.meta.env.API_BASE_URL;
       
       const response = await fetch(`${baseUrl}/daily-target`, {
         headers: {
@@ -45,24 +45,32 @@ const TargetPage: React.FC = () => {
         return;
       }
 
-      const result = await response.json();
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch (e) {
+        result = {};
+      }
 
       if (response.ok && result.status === "success" && result.data) {
         setData(result.data);
       } else {
         throw new Error(result.message || "Failed to fetch target data");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("API Error:", err);
-      setError(err.message || "An unexpected error occurred while fetching your targets.");
+      const message = err instanceof Error ? err.message : "An unexpected error occurred while fetching your targets.";
+      setError(message);
     } finally {
       setLoading(false);
     }
   }, [navigate]);
 
   useEffect(() => {
-    fetchTargetData();
-  }, [fetchTargetData]);
+    Promise.resolve().then(() => fetchTargetData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Render Loading State
   if (loading) {

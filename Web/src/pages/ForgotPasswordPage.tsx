@@ -13,7 +13,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState('05:00');
 
-  const API_URL = "https://katydid-champion-mutually.ngrok-free.app/api";
+  const API_URL = import.meta.env.API_BASE_URL;
 
   // الهيدرز المشتركة لحل مشاكل الـ CORS و ngrok
   const commonHeaders = {

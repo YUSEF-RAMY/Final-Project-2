@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import styles from './Home.module.css';
 import Sidebar from '../components/home/sidebar/Sidebar';
 import Header from '../components/home/header/Header';
@@ -12,7 +12,7 @@ import GlobalNotification from '../components/GlobalNotification/GlobalNotificat
 
 const Home: React.FC = () => {
   const { data, loading, error, refetch } = useDailySummary();
-  const navigate = useNavigate();
+
 
   return (
     <div className={styles.dashboardLayout}>

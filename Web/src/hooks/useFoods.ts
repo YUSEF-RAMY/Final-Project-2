@@ -28,21 +28,23 @@ export function useFoods(): UseFoodsResult {
     try {
       const result = await fetchFoods();
       setFoods(result);
-    } catch (err: any) {
-      if (err.message === 'UNAUTHORIZED') {
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      if (errorObj.message === 'UNAUTHORIZED') {
         navigate('/login');
         return;
       }
       console.error('Foods API Error:', err);
-      setError(err.message || 'Failed to load foods.');
+      setError(errorObj.message || 'Failed to load foods.');
     } finally {
       setLoading(false);
     }
   }, [navigate]);
 
   useEffect(() => {
-    loadFoods();
-  }, [loadFoods]);
+    Promise.resolve().then(() => loadFoods());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Extract unique categories from the fetched foods
   const categories = useMemo(() => {

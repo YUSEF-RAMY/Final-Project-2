@@ -52,8 +52,11 @@ export async function fetchDailySummary(date: string): Promise<DailySummaryData>
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/foods/daily-summary?date=${date}`, {
+  const baseUrl = import.meta.env.API_BASE_URL;
+  const fullUrl = `${baseUrl}/foods/daily-summary?date=${date}`;
+  console.log('Full URL Debug:', fullUrl);
+  
+  const response = await fetch(fullUrl, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
@@ -67,11 +70,24 @@ export async function fetchDailySummary(date: string): Promise<DailySummaryData>
     throw new Error('UNAUTHORIZED');
   }
 
-  const result = await response.json();
-
-  if (response.ok && result.data) {
-    return result.data as DailySummaryData;
+  const text = await response.text();
+  let result;
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch (e) {
+    throw new Error(`Server returned invalid JSON: ${text.substring(0, 100)}`);
   }
 
-  throw new Error(result.message || 'Failed to fetch daily summary');
+  if (response.ok) {
+    const finalData = result.data || result;
+    console.log('Daily Summary Debug:', { url: response.url, status: response.status, data: finalData });
+    
+    // Return the data if it's not null/undefined
+    if (finalData && typeof finalData === 'object') {
+      return finalData as DailySummaryData;
+    }
+  }
+
+  console.error('Daily Summary Error Details:', { status: response.status, result });
+  throw new Error(result.message || result.error || 'Failed to fetch daily summary');
 }
