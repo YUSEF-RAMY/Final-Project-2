@@ -29,7 +29,7 @@ function getAuthHeaders(): Record<string, string> {
 
 // Fetch all foods
 export async function fetchFoods(): Promise<Food[]> {
-  const baseUrl = import.meta.env.API_BASE_URL;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const response = await fetch(`${baseUrl}/foods`, {
     headers: getAuthHeaders(),
   });
@@ -63,7 +63,7 @@ export async function addFoodToMeal(
   foodId: number,
   quantity: number
 ): Promise<unknown> {
-  const baseUrl = import.meta.env.API_BASE_URL;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const response = await fetch(`${baseUrl}/foods/meals/${mealType}/items`, {
     method: 'POST',
     headers: getAuthHeaders(),

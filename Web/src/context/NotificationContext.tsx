@@ -21,7 +21,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-const BASE_URL = import.meta.env.API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<NotificationState>({

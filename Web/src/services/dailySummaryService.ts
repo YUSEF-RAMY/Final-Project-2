@@ -52,7 +52,7 @@ export async function fetchDailySummary(date: string): Promise<DailySummaryData>
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');
 
-  const baseUrl = import.meta.env.API_BASE_URL;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const fullUrl = `${baseUrl}/foods/daily-summary?date=${date}`;
   console.log('Full URL Debug:', fullUrl);
   
