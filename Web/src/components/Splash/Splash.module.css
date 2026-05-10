@@ -1,0 +1,83 @@
+.splash-container {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background-color: #ffffff;
+  z-index: 9999;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.logo-box {
+  width: 100px;
+  height: 100px;
+  background: #e9f7ef;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.brand-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #111;
+  margin: 0;
+}
+
+.tagline {
+  color: #888;
+  margin-top: 5px;
+}
+
+.loader-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.loader-dots span {
+  width: 10px;
+  height: 10px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+}
+
+/* الدوائر */
+.shape {
+  position: absolute;
+  filter: blur(70px);
+  z-index: 1;
+  border-radius: 50%;
+}
+
+.circle-green {
+  width: 50vmin;
+  height: 50vmin;
+  background: rgba(34, 197, 94, 0.1);
+  top: -10%;
+  left: -10%;
+}
+
+.circle-orange {
+  width: 60vmin;
+  height: 60vmin;
+  background: rgba(255, 240, 220, 0.8);
+  bottom: -10%;
+  right: -10%;
+}

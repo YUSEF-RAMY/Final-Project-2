@@ -1,0 +1,311 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 100vw;
+  background-color: white;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 0;
+}
+
+.panelHeaderInfo h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px;
+}
+
+.panelHeaderInfo p {
+  font-size: 13px;
+  color: #10b981;
+  margin: 0;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #374151;
+}
+
+/* Scrollable body */
+.panelBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Food image */
+.foodImageContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.foodImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  background-color: #f9fafb;
+}
+
+.foodImagePlaceholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  font-size: 24px;
+}
+
+.foodMainInfo h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 4px;
+}
+
+.foodMainInfo p {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Nutrition block */
+.nutritionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.caloriesRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.caloriesNumber {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.caloriesLabel {
+  font-size: 13px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.macrosRow {
+  display: flex;
+  gap: 16px;
+}
+
+.macroBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.macroBarTrack {
+  width: 100%;
+  height: 6px;
+  background-color: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.macroBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.macroBarFillProtein { background-color: #10b981; }
+.macroBarFillCarbs { background-color: #f59e0b; }
+.macroBarFillFat { background-color: #6366f1; }
+
+.macroBarValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.macroBarLabel {
+  font-size: 10px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Quantity section */
+.quantitySection {
+  display: flex;
+  gap: 12px;
+}
+
+.quantityField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quantityField label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.quantityField input,
+.quantityField select {
+  padding: 10px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #1f2937;
+  outline: none;
+  transition: border-color 0.2s;
+  background-color: white;
+}
+
+.quantityField input:focus,
+.quantityField select:focus {
+  border-color: #10b981;
+}
+
+/* Add button */
+.addButton {
+  width: 100%;
+  padding: 14px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.addButton:hover {
+  background-color: #059669;
+}
+
+.addButton:active {
+  transform: scale(0.98);
+}
+
+.addButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Success state */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 0;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.successState i {
+  font-size: 48px;
+  color: #10b981;
+}
+
+.successState h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.successState p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.backButton {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #e5e7eb;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    width: 100vw;
+  }
+}
