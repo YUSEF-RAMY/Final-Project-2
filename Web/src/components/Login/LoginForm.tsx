@@ -51,18 +51,14 @@ const LoginForm = () => {
     });
 
     try {
-      // --- Stage 1: Login ---
-      const loginFormData = new FormData();
-      loginFormData.append("email", email);
-      loginFormData.append("password", password);
-
       const loginResponse = await fetch(
-        `${import.meta.env.API_BASE_URL}/login`,
+        `${import.meta.env.VITE_API_BASE_URL}/login`,
         {
           method: "POST",
-          body: loginFormData,
+          body: JSON.stringify({ email, password }),
           headers: { 
             "Accept": "application/json",
+            'Content-Type': 'application/json',
             "ngrok-skip-browser-warning": "69420" 
           },
         }
@@ -77,19 +73,19 @@ const LoginForm = () => {
         // --- Stage 2: Manually Register Device ---
         const manualToken = getManualDeviceToken();
         
-        const deviceFormData = new FormData();
-        deviceFormData.append("fcm_token", manualToken); // token manuell send 
-        deviceFormData.append("device_type", "web");
-
         try {
           await fetch(
-            `${import.meta.env.API_BASE_URL}/devices/register`,
+            `${import.meta.env.VITE_API_BASE_URL}/devices/register`,
             {
               method: "POST",
-              body: deviceFormData,
+              body: JSON.stringify({
+                fcm_token: manualToken,
+                device_type: "web"
+              }),
               headers: { 
                 "Authorization": `Bearer ${userToken}`,
                 "Accept": "application/json",
+                "Content-Type": "application/json",
                 "ngrok-skip-browser-warning": "69420" 
               },
             }

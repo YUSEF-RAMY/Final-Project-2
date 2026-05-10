@@ -3,7 +3,7 @@ import InBodyStats from '../components/AnalysisInBody/InBodyStats';
 import type { InBodyData } from '../components/AnalysisInBody/types';
 import styles from '../components/AnalysisInBody/InBody.module.css';
 
-const BASE_URL = import.meta.env.API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 import { useNotification } from '../context/NotificationContext';
 

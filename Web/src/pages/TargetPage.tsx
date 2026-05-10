@@ -28,7 +28,7 @@ const TargetPage: React.FC = () => {
       }
 
       // Use the centralized Environment Variable
-      const baseUrl = import.meta.env.API_BASE_URL;
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
       
       const response = await fetch(`${baseUrl}/daily-target`, {
         headers: {

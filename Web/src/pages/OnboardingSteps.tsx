@@ -34,7 +34,7 @@ const OnboardingSteps: React.FC = () => {
   const [medical, setMedical] = useState<string>('');
   const [formData, setFormData] = useState<FormDataValues>({ age: '', gender: '', height: '', weight: '' });
 
-  const API_URL = import.meta.env.API_BASE_URL;
+  const API_URL = import.meta.env.VITE_API_BASE_URL;
 
   // Converts Base64 string from camera capture to a File object
   const base64ToFile = (base64String: string, fileName: string): File => {
