@@ -28,3 +28,12 @@
   display: block;
 }
 
+/* Prevent iOS/Android auto-zoom on input focus (font-size must be >= 16px) */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+

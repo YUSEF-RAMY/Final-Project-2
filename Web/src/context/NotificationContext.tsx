@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { requestForToken, onMessageListener } from '../services/firebase/messaging';
 
 type NotificationStatus = 'idle' | 'processing' | 'done';
 
@@ -31,7 +32,11 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     isVisible: false,
   });
 
+  // This ref stops FCM and the polling fallback from both firing "Done" at the same time
+  const isFinishedRef = useRef(false);
+
   const startProcessing = useCallback((message: string) => {
+    isFinishedRef.current = false; // clear the lock so the next upload starts fresh
     setState({
       status: 'processing',
       message,
@@ -41,36 +46,76 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   }, []);
 
   const finishProcessing = useCallback((message: string, redirectUrl?: string) => {
-    setState((prev) => ({
-      ...prev,
+    // Make sure only one of the two channels (FCM or polling) can trigger the done state
+    if (isFinishedRef.current) return;
+    isFinishedRef.current = true;
+
+    // Always bring the banner back even if the user dismissed it while we were waiting
+    setState({
       status: 'done',
       message,
       redirectUrl: redirectUrl || null,
-    }));
-
-    // Optional auto-dismiss after 5 seconds if no redirect URL is provided
-    if (!redirectUrl) {
-      setTimeout(() => {
-        setState(prev => ({ ...prev, isVisible: false }));
-      }, 5000);
-    }
+      isVisible: true,
+    });
   }, []);
 
   const closeNotification = useCallback(() => {
     setState((prev) => ({ ...prev, isVisible: false }));
-    // Reset status after animation
+    // Wait for the hide animation to finish before actually clearing the state
     setTimeout(() => {
-      setState((prev) => ({ ...prev, status: 'idle', message: '' }));
+      setState((prev) => {
+        if (prev.status === 'done') {
+          return { ...prev, status: 'idle', message: '' };
+        }
+        return prev;
+      });
     }, 400);
   }, []);
+
+  // Both FCM (foreground) and BroadcastChannel (when the tab was in background) can fire
+  // for the same push. We track whether we've handled it already to avoid showing "Done" twice.
+  useEffect(() => {
+    let isMounted = true;
+    // One flag per push so we don't handle the same notification twice
+    let currentPushHandled = false;
+
+    const handleDone = () => {
+      if (!isMounted || currentPushHandled) return;
+      currentPushHandled = true;
+      finishProcessing('Done ✓', '/analysis-inbody');
+    };
+
+    const listenToFCM = async () => {
+      try {
+        await requestForToken();
+        const payload: any = await onMessageListener();
+        if (payload) handleDone();
+      } catch (err) {
+        console.warn('FCM listener error', err);
+      }
+    };
+
+    listenToFCM();
+
+    const channel = new BroadcastChannel('fcm-messages');
+    channel.onmessage = (event) => {
+      if (event.data) handleDone();
+    };
+
+    return () => {
+      isMounted = false;
+      channel.close();
+    };
+  }, [finishProcessing]);
 
   const uploadAnalysis = useCallback(async (formData: FormData, endpoint: string, token: string, isImageMode: boolean) => {
     let oldCreatedAt: string | null = null;
 
     if (isImageMode) {
       startProcessing("Processing...");
+
+      // Grab the current result's timestamp so we can tell if a new one comes in later
       try {
-        // 1. Fetch current (old) state to get its created_at timestamp
         const latestRes = await fetch(`${BASE_URL}/inbody/latest`, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -85,12 +130,17 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
           }
         }
       } catch (e) {
-        console.warn("Could not fetch old inbody data before upload", e);
+        console.warn("Couldn't read the old InBody result before upload — that's fine", e);
+      }
+
+      // Give the backend our FCM token so it knows where to send the push when it's done
+      const fcmToken = await requestForToken();
+      if (fcmToken) {
+        formData.append('fcm_token', fcmToken);
       }
     }
 
     try {
-      // 2. Perform the upload
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -105,7 +155,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         localStorage.removeItem("analysis_notified");
 
         if (isImageMode) {
-          // 3. Start Polling for the new result
+          // FCM is the primary signal. Polling every 3s is just a safety net in case the push never arrives.
           let isPolling = true;
 
           const checkStatus = async () => {
@@ -123,36 +173,33 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                 const pollResult = await pollRes.json();
                 if (pollResult.status === "success" && pollResult.data) {
                   const newData = pollResult.data;
+                  // Only mark as done if this is genuinely new data that has fully finished processing
                   const isNew = newData.created_at !== oldCreatedAt;
                   const isComplete = newData.protein && (newData.image || newData.inbody_image);
 
                   if (isNew && isComplete) {
                     isPolling = false;
+                    // finishProcessing is guarded by the ref-lock so it's safe to call from both paths
                     finishProcessing("Done ✓", "/analysis-inbody");
                     return;
                   }
                 }
               }
             } catch (pollErr) {
-              console.error("Polling error:", pollErr);
+              console.error("Fallback polling error:", pollErr);
             }
 
-            // If not finished and still polling, schedule the next check quickly
             if (isPolling) {
-              setTimeout(checkStatus, 800); // Very fast 800ms interval
+              setTimeout(checkStatus, 3000);
             }
           };
 
-          // Trigger the very first check instantly
           checkStatus();
-          
-          // Failsafe timeout after 5 minutes
+
+          // Give up after 5 minutes regardless — something must have gone wrong on the server
           setTimeout(() => {
             isPolling = false;
           }, 5 * 60 * 1000);
-          
-        } else {
-          // Manual mode doesn't necessarily need the sticky banner
         }
       } else {
         const err = await response.json();

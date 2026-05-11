@@ -9,10 +9,11 @@ interface DailyEnergyProps {
 }
 
 const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, targetData }) => {
-  const eaten = Math.round(consumedData?.calories || 0);
-  const target = Math.round(targetData?.calories || 2400);
-  const remaining = Math.round(remainingData?.calories || 0);
-  
+  const eaten     = Math.round(consumedData?.calories  || 0);
+  const target    = Math.round(targetData?.calories    || 2400);
+  // Use the API's pre-computed remaining (already corrected by normalizeDailySummary)
+  const remaining = Math.round(remainingData?.calories ?? (target - eaten));
+
   // Circular progress shows % consumed vs target
   const percentage = target > 0 ? Math.min((eaten / target) * 100, 100) : 0;
   const strokeDasharray = `${percentage}, 100`;

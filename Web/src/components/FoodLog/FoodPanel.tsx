@@ -11,21 +11,22 @@ interface FoodPanelProps {
 }
 
 const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSuccess }) => {
-  const [quantity, setQuantity] = useState<number | ''>(1);
+  const [quantity, setQuantity] = useState<number | ''>(100);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Calculate nutrition per gram
-  const parsedQuantity = quantity === '' ? 0 : quantity;
-  const servingBase = parseFloat(food.nutrition.serving_size) || 100;
-  const multiplier = parsedQuantity / servingBase;
-  const dynCalories = Math.round(food.nutrition.calories * multiplier);
+  // The API always returns nutrition values based on 100g serving.
+  // multiplier = userGrams / 100  →  e.g. 1g → 0.01, 100g → 1.0, 200g → 2.0
+  const userGrams = quantity === '' ? 0 : quantity;
+  const multiplier = userGrams / 100;
+
+  const dynCalories = +(food.nutrition.calories * multiplier).toFixed(1);
   const dynProtein = +(food.nutrition.protein * multiplier).toFixed(1);
   const dynCarbs = +(food.nutrition.carbs * multiplier).toFixed(1);
   const dynFat = +(food.nutrition.fat * multiplier).toFixed(1);
 
-  // Max macro for bar width
+  // Max macro for progress-bar proportions
   const maxMacro = Math.max(dynProtein, dynCarbs, dynFat, 1);
 
   const handleAdd = async () => {
@@ -36,9 +37,10 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
     setLoading(true);
     setError(null);
     try {
+      // Send the exact quantity entered by the user to the API
       await addFoodToMeal(mealType, food.id, quantity);
       setSuccess(true);
-      // Trigger success callback
+      // Show success message for 1.5s then trigger refresh callback
       setTimeout(() => {
         onSuccess();
       }, 1500);
@@ -79,7 +81,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
             </div>
           ) : (
             <>
-              {/* Info */}
+              {/* Food info */}
               <div className={styles.foodImageContainer}>
                 {food.image_url ? (
                   <img src={food.image_url} alt={food.name} className={styles.foodImage} />
@@ -90,16 +92,19 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                 )}
                 <div className={styles.foodMainInfo}>
                   <h3>{food.name}</h3>
-                  <p>{food.nutrition.serving_size} serving</p>
+                  <p>Per 100g serving</p>
                 </div>
               </div>
 
-              {/* Macros */}
+              {/* Dynamic macros */}
               <div className={styles.nutritionBlock}>
                 <div className={styles.caloriesRow}>
                   <span className={styles.caloriesNumber}>{dynCalories}</span>
                   <span className={styles.caloriesLabel}>CALORIES</span>
                 </div>
+                <p style={{ fontSize: '11px', color: 'var(--color-text-muted, #9ca3af)', margin: '2px 0 0', textAlign: 'center' }}>
+                  {food.nutrition.calories} kcal per 100g
+                </p>
 
                 <div className={styles.macrosRow}>
                   <div className={styles.macroBar}>
@@ -135,7 +140,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                 </div>
               </div>
 
-              {/* Qty */}
+              {/* Quantity input */}
               <div className={styles.quantitySection}>
                 <div className={styles.quantityField}>
                   <label>Amount (grams)</label>
@@ -166,7 +171,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                 <p style={{ color: '#ef4444', fontSize: '13px', margin: 0 }}>{error}</p>
               )}
 
-              {/* Add */}
+              {/* Add button */}
               <button className={styles.addButton} onClick={handleAdd} disabled={loading}>
                 {loading ? (
                   <>Adding...</>

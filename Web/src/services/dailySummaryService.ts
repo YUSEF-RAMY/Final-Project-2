@@ -1,4 +1,4 @@
-// API calls for daily summary
+// Everything related to fetching the user's daily nutrition summary from the backend
 
 export interface MacroData {
   calories: number;
@@ -7,16 +7,21 @@ export interface MacroData {
   fat: number;
 }
 
-export interface MealItem {
-  id: number | null;
-  name: string;
+export interface TotalNutrition {
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
+}
+
+export interface MealItem {
+  id?: number;
+  food_id: number;
+  name: string;
   image_url: string | null;
   quantity: number;
-  unit: string;
+  total_nutrition: TotalNutrition;
+  entries: { id: number; quantity: number }[];
 }
 
 export interface MealMetrics {
@@ -48,14 +53,58 @@ export interface DailySummaryData {
   meals: Meal[];
 }
 
+// Quick note: the backend has a known bug where it multiplies macro values by the
+// raw quantity instead of dividing by 100 first. So everything comes back 100x
+// too big. We fix that here before any component ever sees the numbers.
+function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
+  const fix = (n: number): number => +(n / 100).toFixed(2);
+
+  const fixMacro = (m: MacroData): MacroData => ({
+    calories: fix(m.calories),
+    protein:  fix(m.protein),
+    carbs:    fix(m.carbs),
+    fat:      fix(m.fat),
+  });
+
+  const correctedConsumed = fixMacro(data.overview.consumed);
+
+  return {
+    ...data,
+    overview: {
+      ...data.overview,
+      consumed: correctedConsumed,
+      // Recalculate remaining ourselves since the API's remaining is also inflated
+      remaining: {
+        calories: Math.max(0, +(data.overview.target.calories - correctedConsumed.calories).toFixed(2)),
+        protein:  Math.max(0, +(data.overview.target.protein  - correctedConsumed.protein ).toFixed(2)),
+        carbs:    Math.max(0, +(data.overview.target.carbs    - correctedConsumed.carbs   ).toFixed(2)),
+        fat:      Math.max(0, +(data.overview.target.fat      - correctedConsumed.fat     ).toFixed(2)),
+      },
+    },
+    meals: data.meals.map((meal) => {
+      const fixedConsumed = fix(meal.metrics.consumed_calories);
+      return {
+        ...meal,
+        metrics: {
+          ...meal.metrics,
+          consumed_calories:  fixedConsumed,
+          remaining_calories: Math.max(0, +(meal.metrics.target_calories - fixedConsumed).toFixed(2)),
+        },
+        items: meal.items.map((item) => ({
+          ...item,
+          total_nutrition: fixMacro(item.total_nutrition),
+        })),
+      };
+    }),
+  };
+}
+
 export async function fetchDailySummary(date: string): Promise<DailySummaryData> {
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');
 
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const fullUrl = `${baseUrl}/foods/daily-summary?date=${date}`;
-  console.log('Full URL Debug:', fullUrl);
-  
   const response = await fetch(fullUrl, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -80,11 +129,9 @@ export async function fetchDailySummary(date: string): Promise<DailySummaryData>
 
   if (response.ok) {
     const finalData = result.data || result;
-    console.log('Daily Summary Debug:', { url: response.url, status: response.status, data: finalData });
-    
-    // Return the data if it's not null/undefined
     if (finalData && typeof finalData === 'object') {
-      return finalData as DailySummaryData;
+      // Run the fix before passing anything to the UI
+      return normalizeDailySummary(finalData as DailySummaryData);
     }
   }
 

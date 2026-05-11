@@ -1,4 +1,4 @@
-import styles from './Login.module.css'; // استدعاء ملف الـ CSS الأصلي بتاعك
+import styles from './Login.module.css';
 
 const LoginHero = () => {
   return (

@@ -29,7 +29,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ food, isSelected, onClick, style })
       <div className={styles.info}>
         <h4 className={styles.name}>{food.name}</h4>
         <div className={styles.macros}>
-          <span><span className={styles.macroBold}>{food.nutrition.calories}</span> kcal</span>
+          <span><span className={styles.macroBold}>{food.nutrition.calories}</span> kcal/100g</span>
           <span>{food.nutrition.protein}g pro</span>
         </div>
       </div>

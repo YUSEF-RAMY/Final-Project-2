@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Meal } from '../../../services/dailySummaryService';
+import { deleteFoodItem } from '../../../services/foodService';
 import styles from './MealPlan.module.css';
 
 interface MealPlanProps {
   meals: Meal[];
+  onRefetch?: () => void;
 }
 
 const MEAL_ORDER: Array<'breakfast' | 'lunch' | 'dinner' | 'snacks'> = [
@@ -15,43 +17,34 @@ const MEAL_ORDER: Array<'breakfast' | 'lunch' | 'dinner' | 'snacks'> = [
 ];
 
 const MEAL_CONFIG = {
-  breakfast: {
-    icon: 'fa-regular fa-sun',
-    color: '#10b981',
-    bg: '#ecfdf5',
-    label: 'Breakfast',
-  },
-  lunch: {
-    icon: 'fa-solid fa-utensils',
-    color: '#10b981',
-    bg: '#ecfdf5',
-    label: 'Lunch',
-  },
-  dinner: {
-    icon: 'fa-regular fa-moon',
-    color: '#6366f1',
-    bg: '#eef2ff',
-    label: 'Dinner',
-  },
-  snacks: {
-    icon: 'fa-solid fa-cookie-bite',
-    color: '#d97706',
-    bg: '#fffbeb',
-    label: 'Snacks',
-  },
+  breakfast: { icon: 'fa-regular fa-sun',       color: '#10b981', bg: '#ecfdf5', label: 'Breakfast' },
+  lunch:     { icon: 'fa-solid fa-utensils',    color: '#10b981', bg: '#ecfdf5', label: 'Lunch'     },
+  dinner:    { icon: 'fa-regular fa-moon',      color: '#6366f1', bg: '#eef2ff', label: 'Dinner'    },
+  snacks:    { icon: 'fa-solid fa-cookie-bite', color: '#d97706', bg: '#fffbeb', label: 'Snacks'    },
 };
 
-const MealPlan: React.FC<MealPlanProps> = ({ meals }) => {
+const MealPlan: React.FC<MealPlanProps> = ({ meals, onRefetch }) => {
   const navigate = useNavigate();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  // Build a map of meal type -> meal data for easy lookup
   const mealMap = React.useMemo(() => {
     const map: Partial<Record<string, Meal>> = {};
-    meals.forEach((m) => {
-      map[m.type] = m;
-    });
+    meals.forEach((m) => { map[m.type] = m; });
     return map;
   }, [meals]);
+
+  const handleDelete = async (itemId: number) => {
+    if (deletingId !== null) return; // prevent double-click
+    setDeletingId(itemId);
+    try {
+      await deleteFoodItem(itemId);
+      onRefetch?.();
+    } catch (err) {
+      console.error('Delete food error:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -61,10 +54,10 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals }) => {
       </div>
 
       {MEAL_ORDER.map((mealType) => {
-        const meal = mealMap[mealType];
+        const meal   = mealMap[mealType];
         const config = MEAL_CONFIG[mealType];
 
-        // If no meal data yet from API, show empty state
+        /* ── Empty state: meal not returned by API yet ── */
         if (!meal) {
           return (
             <div className={styles.card} key={mealType}>
@@ -95,16 +88,17 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals }) => {
         }
 
         const { metrics, items } = meal;
-        const consumed = metrics.consumed_calories || 0;
-        const target = metrics.target_calories || 1;
+        const consumed    = metrics.consumed_calories || 0;
+        const target      = metrics.target_calories  || 1;
         const progressPct = Math.min((consumed / target) * 100, 100);
-        const isEmpty = items.length === 0;
+        const isEmpty     = items.length === 0;
 
         return (
           <div className={styles.card} key={mealType}>
             <div className={styles.iconBox} style={{ color: config.color, backgroundColor: config.bg }}>
               <i className={config.icon}></i>
             </div>
+
             <div className={styles.cardContent}>
               <div className={styles.cardHeader}>
                 <span className={styles.mealName}>{config.label}</span>
@@ -118,10 +112,7 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals }) => {
               </div>
 
               <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${progressPct}%`, backgroundColor: config.color }}
-                />
+                <div className={styles.progressFill} style={{ width: `${progressPct}%`, backgroundColor: config.color }} />
               </div>
 
               {isEmpty ? (
@@ -137,29 +128,57 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals }) => {
                 </div>
               ) : (
                 <div className={styles.itemsList}>
-                  {items.slice(0, 2).map((item, idx) => (
-                    <div className={styles.itemRow} key={idx}>
-                      {item.image_url ? (
-                        <img src={item.image_url} alt={item.name} className={styles.itemImage} />
-                      ) : (
-                        <div className={styles.itemImagePlaceholder} style={{ backgroundColor: config.bg }}>
-                          <i className={config.icon} style={{ color: config.color, fontSize: '12px' }}></i>
+                  {items.slice(0, 3).map((item, idx) => {
+                    const kcal  = Math.round(item.total_nutrition?.calories ?? 0);
+                    const prot  = Math.round(item.total_nutrition?.protein  ?? 0);
+                    const carbs = Math.round(item.total_nutrition?.carbs    ?? 0);
+                    const fat   = Math.round(item.total_nutrition?.fat      ?? 0);
+                    
+                    // The backend might return the log ID as 'id' directly on the item, 
+                    // or inside an 'entries' array. Fallback to food_id if neither is present.
+                    const entryId = item.id || item.entries?.[0]?.id || item.food_id;
+                    const isDeleting = deletingId === entryId;
+
+                    return (
+                      <div className={styles.itemRow} key={idx}>
+                        {item.image_url ? (
+                          <img src={item.image_url} alt={item.name} className={styles.itemImage} />
+                        ) : (
+                          <div className={styles.itemImagePlaceholder} style={{ backgroundColor: config.bg }}>
+                            <i className={config.icon} style={{ color: config.color, fontSize: '12px' }}></i>
+                          </div>
+                        )}
+                        <div className={styles.itemInfo}>
+                          <span className={styles.itemName}>{item.name}</span>
+                          <span className={styles.itemMacros}>
+                            {kcal} kcal &bull; {prot}g protein &bull; {carbs}g carbs &bull; {fat}g fat
+                          </span>
                         </div>
-                      )}
-                      <div className={styles.itemInfo}>
-                        <span className={styles.itemName}>{item.name}</span>
-                        <span className={styles.itemMacros}>
-                          {Math.round(item.calories)} kcal · {Math.round(item.protein)}g protein
-                        </span>
+                        {/* Delete button */}
+                        {entryId && (
+                          <button
+                            className={styles.deleteBtn}
+                            onClick={() => handleDelete(entryId)}
+                            disabled={isDeleting}
+                            title={`Remove ${item.name}`}
+                          >
+                            {isDeleting ? (
+                              <i className="fa-solid fa-spinner fa-spin"></i>
+                            ) : (
+                              <i className="fa-solid fa-trash-can"></i>
+                            )}
+                          </button>
+                        )}
                       </div>
-                    </div>
-                  ))}
-                  {items.length > 2 && (
+                    );
+                  })}
+
+                  {items.length > 3 && (
                     <button
                       className={styles.viewMoreBtn}
                       onClick={() => navigate(`/food-log?meal=${mealType}`)}
                     >
-                      +{items.length - 2} more
+                      +{items.length - 3} more
                     </button>
                   )}
                 </div>

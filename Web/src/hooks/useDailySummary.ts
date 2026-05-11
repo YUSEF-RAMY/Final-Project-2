@@ -1,7 +1,4 @@
-// ======================================================
-// Hook: useDailySummary.ts
-// Manages fetching state for the daily summary API
-// ======================================================
+// Handles all the loading, error, and refetch state for the daily summary page.
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -42,10 +39,32 @@ export function useDailySummary(): UseDailySummaryResult {
     }
   }, [navigate, today]);
 
+  // Kick off the first fetch when the component mounts
   useEffect(() => {
-    Promise.resolve().then(() => loadData());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    loadData();
+  }, [loadData]);
+
+  // Re-fetch whenever the user switches back to this tab or focuses the window.
+  // That way the dashboard always shows fresh numbers after they return from the food log.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadData();
+      }
+    };
+    const handleFocus = () => {
+      loadData();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [loadData]);
 
   return { data, loading, error, refetch: loadData };
 }
+
