@@ -1,7 +1,4 @@
-// ======================================================
-// Hook: useFoods.ts
-// Manages fetching and filtering foods from the API
-// ======================================================
+// Loads the food list from the API and builds a unique category list for the filter tabs.
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +43,7 @@ export function useFoods(): UseFoodsResult {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Extract unique categories from the fetched foods
+  // Pull unique category names out of the food list so we can show the filter tabs
   const categories = useMemo(() => {
     const cats = new Set<string>();
     foods.forEach((f) => {
