@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import type { SweetAlertIcon } from 'sweetalert2';
-import Step1Metric from '../components/OnboardingSteps/Step1Metric';
-import Step2Activity from '../components/OnboardingSteps/Step2Activity';
-import Step3Goal from '../components/OnboardingSteps/Step3Goal';
-import Step4Final from '../components/OnboardingSteps/Step4Final';
-import styles from '../components/OnboardingSteps/OnboardingSteps.module.css';
+import Step1Metric from '../../components/OnboardingSteps/Step1Metric';
+import Step2Activity from '../../components/OnboardingSteps/Step2Activity';
+import Step3Goal from '../../components/OnboardingSteps/Step3Goal';
+import Step4Final from '../../components/OnboardingSteps/Step4Final';
+import styles from '../../components/OnboardingSteps/OnboardingSteps.module.css';
 
 // Removed CustomWindow and declare global for window since we use Context now
 
@@ -18,7 +18,7 @@ interface FormDataValues {
   weight: string;
 }
 
-import { useNotification } from '../context/NotificationContext';
+import { useNotification } from '../../context/NotificationContext';
 
 type OnboardingMode = 'manual' | 'upload' | 'camera';
 

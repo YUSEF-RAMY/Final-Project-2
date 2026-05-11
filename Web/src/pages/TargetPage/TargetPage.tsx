@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from '../components/Target/Target.module.css';
+import styles from '../../components/Target/Target.module.css';
 
 interface TargetData {
   calories: number;
@@ -19,17 +19,17 @@ const TargetPage: React.FC = () => {
   const fetchTargetData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const token = localStorage.getItem("token") || localStorage.getItem("userToken");
-      
+
       if (!token) {
         throw new Error("No authentication token found. Please log in again.");
       }
 
       // Use the centralized Environment Variable
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
-      
+
       const response = await fetch(`${baseUrl}/daily-target`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -104,9 +104,6 @@ const TargetPage: React.FC = () => {
   // Fallback if data is null but not loading/error
   if (!data) return null;
 
-  // Max values for the progress bars (can be dynamic, but setting realistic maxes for visual effect)
-  // Assuming a max protein of 300g, carbs 500g, fats 150g for the bar width percentage calculation.
-  // We use Math.min to ensure it doesn't exceed 100% width.
   const proteinPercent = Math.min((data.protein / 300) * 100, 100);
   const carbsPercent = Math.min((data.carbs / 500) * 100, 100);
   const fatsPercent = Math.min((data.fats / 150) * 100, 100);
@@ -114,7 +111,7 @@ const TargetPage: React.FC = () => {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.bgDecoration}></div>
-      
+
       <main className={styles.mainContent}>
         {/* Header section */}
         <header className={styles.header}>
@@ -124,7 +121,7 @@ const TargetPage: React.FC = () => {
               Your Daily Targets
             </h1>
             <p>
-              <i className="fa-regular fa-clock"></i> 
+              <i className="fa-regular fa-clock"></i>
               Updated {data.updated_at}
             </p>
           </div>
@@ -135,7 +132,7 @@ const TargetPage: React.FC = () => {
 
         {/* Dashboard Grid */}
         <div className={styles.dashboardGrid}>
-          
+
           {/* Calories Highlight Card */}
           <div className={styles.caloriesCard}>
             <div className={styles.cardIconBox}>
@@ -157,13 +154,13 @@ const TargetPage: React.FC = () => {
               <i className="fa-solid fa-chart-pie" style={{ color: '#8b5cf6' }}></i>
               Macronutrient Breakdown
             </h3>
-            
+
             <div className={styles.macrosList}>
               {/* Protein Bar */}
               <div className={styles.macroItem}>
                 <div className={styles.macroHeader}>
                   <div className={styles.macroLabel}>
-                    <i className={`fa-solid fa-drumstick-bite ${styles.colorProtein}`}></i> 
+                    <i className={`fa-solid fa-drumstick-bite ${styles.colorProtein}`}></i>
                     Protein
                   </div>
                   <div className={styles.macroValue}>
@@ -179,7 +176,7 @@ const TargetPage: React.FC = () => {
               <div className={styles.macroItem}>
                 <div className={styles.macroHeader}>
                   <div className={styles.macroLabel}>
-                    <i className={`fa-solid fa-wheat-awn ${styles.colorCarbs}`}></i> 
+                    <i className={`fa-solid fa-wheat-awn ${styles.colorCarbs}`}></i>
                     Carbohydrates
                   </div>
                   <div className={styles.macroValue}>
@@ -195,7 +192,7 @@ const TargetPage: React.FC = () => {
               <div className={styles.macroItem}>
                 <div className={styles.macroHeader}>
                   <div className={styles.macroLabel}>
-                    <i className={`fa-solid fa-cheese ${styles.colorFats}`}></i> 
+                    <i className={`fa-solid fa-cheese ${styles.colorFats}`}></i>
                     Fats
                   </div>
                   <div className={styles.macroValue}>

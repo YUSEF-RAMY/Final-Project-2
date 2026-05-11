@@ -13,17 +13,17 @@ const Splash = () => {
 
   return (
     <div className="relative h-screen w-full flex justify-center items-center bg-white overflow-hidden">
-      
-      {/* 1. الدائرة الخضراء اللي فوق على الشمال - باستخدام كلاسات ثابتة */}
+
+
       <div className="absolute -top-24 -left-24 w-96 h-96 md:w-[600px] md:h-[600px] bg-green-500/20 blur-[100px] rounded-full z-0"></div>
-      
-      {/* 2. الدائرة البرتقالية اللي تحت على اليمين - مكانها في الركن بالظبط */}
+
+
       <div className="absolute -bottom-32 -right-24 w-96 h-96 md:w-[600px] md:h-[600px] bg-[#FFF0DC] blur-[100px] rounded-full z-0"></div>
 
-      {/* المحتوى الرئيسي */}
+
       <div className="relative z-10 text-center flex flex-col items-center">
-        
-        {/* صندوق اللوجو */}
+
+
         <div className="w-24 h-24 bg-gradient-to-br from-green-900/10 to-green-500/5 backdrop-blur-xl rounded-[25px] flex justify-center items-center mb-6 shadow-sm border border-white/20">
           <svg
             width="44"
@@ -42,7 +42,7 @@ const Splash = () => {
         <h1 className="text-4xl font-bold text-gray-900 mb-1">Healthify</h1>
         <p className="text-gray-500 text-lg mb-8">Your AI Nutrition Coach</p>
 
-        {/* النقط اللي بتنور (Loader) */}
+
         <div className="flex justify-center gap-2">
           <span className="w-2.5 h-2.5 bg-gray-300 rounded-full animate-pulse"></span>
           <span className="w-2.5 h-2.5 bg-gray-300 rounded-full animate-pulse [animation-delay:200ms]"></span>
