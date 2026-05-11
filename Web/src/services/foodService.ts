@@ -90,3 +90,32 @@ export async function addFoodToMeal(
 
   throw new Error(result.message || 'Failed to add food to meal');
 }
+
+// Delete a food item from a meal
+export async function deleteFoodItem(itemId: number): Promise<unknown> {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const response = await fetch(`${baseUrl}/foods/delete-item/${itemId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (response.status === 401) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userToken');
+    throw new Error('UNAUTHORIZED');
+  }
+
+  const text = await response.text();
+  let result;
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch {
+    result = {};
+  }
+
+  if (response.ok) {
+    return result;
+  }
+
+  throw new Error(result.message || 'Failed to delete food item');
+}
