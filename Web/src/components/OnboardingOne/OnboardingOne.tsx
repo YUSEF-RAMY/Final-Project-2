@@ -7,7 +7,7 @@ const OnboardingOne = () => {
 
   return (
     <div className="onboarding-container">
-      {/* الجزء الشمال: الصورة */}
+
       <div className="image-section">
         <img src={imge} alt="Healthy Plate" />
         <div className="ai-badge">
@@ -21,7 +21,7 @@ const OnboardingOne = () => {
         </div>
       </div>
 
-      {/* الجزء اليمين: المحتوى */}
+
       <div className="content-section">
         <p className="brand-name">Healthyfy</p>
         <h1 className="main-title">The Digital<br /><span>Nutritionist</span></h1>

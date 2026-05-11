@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import styles from './SignUp.module.css'; 
+import styles from './SignUp.module.css';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const SignUpForm = () => {
   const isNameValid = formData.fullName.trim().split(/\s+/).length >= 4;
   const isPassMatch = formData.confirmPassword === formData.password && formData.confirmPassword !== '';
 
-  // دالة توليد بصمة الجهاز (بديل الفايربيز)
+
   const getManualDeviceToken = () => {
     let deviceToken = localStorage.getItem('manual_device_token');
     if (!deviceToken) {
@@ -43,12 +43,12 @@ const SignUpForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isNameValid || !isEmailValid || !isPassMatch) {
-        Swal.fire({
-            icon: "error",
-            title: "Check Inputs",
-            text: "Please make sure your name is 4 words and passwords match.",
-        });
-        return;
+      Swal.fire({
+        icon: "error",
+        title: "Check Inputs",
+        text: "Please make sure your name is 4 words and passwords match.",
+      });
+      return;
     }
 
     Swal.fire({ title: "Creating Account...", didOpen: () => Swal.showLoading() });
@@ -58,29 +58,29 @@ const SignUpForm = () => {
     data.append("email", formData.email);
     data.append("password", formData.password);
     data.append("password_confirmation", formData.confirmPassword);
-    
-    // التعديل المهم هنا: تغيير الاسم لـ profile_image بناءً على الصورة اللي بعتها
+
+
     if (profileImage) {
-        data.append("profile_image", profileImage); 
+      data.append("profile_image", profileImage);
     }
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/register`, {
         method: "POST",
         body: data,
-        headers: { 
-            "Accept": "application/json", 
-            "ngrok-skip-browser-warning": "69420" 
+        headers: {
+          "Accept": "application/json",
+          "ngrok-skip-browser-warning": "69420"
         },
       });
 
       const result = await response.json();
-      
+
       if (response.ok && result.status === "success") {
         const userToken = result.data.token;
         localStorage.setItem("userToken", userToken);
 
-        // --- ربط الجهاز فوراً بعد نجاح التسجيل ---
+
         const manualToken = getManualDeviceToken();
         const deviceFormData = new FormData();
         deviceFormData.append("fcm_token", manualToken);
@@ -90,10 +90,10 @@ const SignUpForm = () => {
           await fetch(`${import.meta.env.VITE_API_BASE_URL}/devices/register`, {
             method: "POST",
             body: deviceFormData,
-            headers: { 
+            headers: {
               "Authorization": `Bearer ${userToken}`,
               "Accept": "application/json",
-              "ngrok-skip-browser-warning": "69420" 
+              "ngrok-skip-browser-warning": "69420"
             },
           });
           console.log("Device Registered Successfully");
@@ -113,7 +113,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className={styles['right-side']}> 
+    <div className={styles['right-side']}>
       <div className={styles['login-box']}>
         <h2>Create Account</h2>
         <p className={styles.subtitle}>Begin your personalized nutrition journey today.</p>
@@ -130,12 +130,12 @@ const SignUpForm = () => {
           <div className={styles['form-group']}>
             <label>Full Name</label>
             <div className={styles['input-wrapper']}>
-              <input 
-                type="text" 
-                placeholder="Enter your full name" 
+              <input
+                type="text"
+                placeholder="Enter your full name"
                 className={formData.fullName ? (isNameValid ? styles.valid : styles.invalid) : ''}
                 value={formData.fullName}
-                onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               />
             </div>
           </div>
@@ -143,12 +143,12 @@ const SignUpForm = () => {
           <div className={styles['form-group']}>
             <label>Email Address</label>
             <div className={styles['input-wrapper']}>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 placeholder="example@mail.com"
                 className={formData.email ? (isEmailValid ? styles.valid : styles.invalid) : ''}
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
               <i className="fa-regular fa-envelope"></i>
             </div>
@@ -157,27 +157,27 @@ const SignUpForm = () => {
           <div className={styles['form-group']}>
             <label>Password</label>
             <div className={styles['input-wrapper']}>
-              <input 
-                type={showPass ? "text" : "password"} 
+              <input
+                type={showPass ? "text" : "password"}
                 placeholder="••••••••"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
-              <i className={`fa-regular ${showPass ? 'fa-eye' : 'fa-eye-slash'}`} onClick={() => setShowPass(!showPass)} style={{cursor:'pointer'}}></i>
+              <i className={`fa-regular ${showPass ? 'fa-eye' : 'fa-eye-slash'}`} onClick={() => setShowPass(!showPass)} style={{ cursor: 'pointer' }}></i>
             </div>
           </div>
 
           <div className={styles['form-group']}>
             <label>Confirm Password</label>
             <div className={styles['input-wrapper']}>
-              <input 
-                type={showConfirm ? "text" : "password"} 
+              <input
+                type={showConfirm ? "text" : "password"}
                 placeholder="Confirm your password"
                 className={formData.confirmPassword ? (isPassMatch ? styles.valid : styles.invalid) : ''}
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               />
-              <i className={`fa-regular ${showConfirm ? 'fa-eye' : 'fa-eye-slash'}`} onClick={() => setShowConfirm(!showConfirm)} style={{cursor:'pointer'}}></i>
+              <i className={`fa-regular ${showConfirm ? 'fa-eye' : 'fa-eye-slash'}`} onClick={() => setShowConfirm(!showConfirm)} style={{ cursor: 'pointer' }}></i>
             </div>
           </div>
 
