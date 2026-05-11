@@ -1,4 +1,4 @@
-// تأكد من وجود كلمة export في البداية
+
 export interface InBodyData {
   height: string | null;
   weight: string | null;
