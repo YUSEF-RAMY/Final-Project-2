@@ -41,7 +41,7 @@ class DeviceController extends Controller
         return response()->json([
             'status' => 'success',
             'status_code' => 200,
-            'message' => 'Devices retrieved successfully.', 
+            'message' => 'Devices retrieved successfully.',
             'data' => UserDeviceResource::collection($devices),
         ]);
     }

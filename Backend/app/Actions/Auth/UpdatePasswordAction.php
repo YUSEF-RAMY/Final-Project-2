@@ -8,12 +8,12 @@ use Illuminate\Validation\ValidationException;
 
 class UpdatePasswordAction
 {
-    public function __construct(private UserRepository $userRepository){}
-    
+    public function __construct(private UserRepository $userRepository) {}
+
     public function execute($user, array $data)
     {
         // 1. التأكد إن الباسورد الحالية (القديمة) صح
-        if (!Hash::check($data['current_password'], $user->password)) {
+        if (! Hash::check($data['current_password'], $user->password)) {
             throw ValidationException::withMessages([
                 'current_password' => ['كلمة المرور الحالية غير صحيحة.'],
             ]);

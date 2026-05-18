@@ -18,8 +18,8 @@ class UserTarget extends Model
     protected $casts = [
         'daily_calories' => 'float',
         'target_protein' => 'float',
-        'target_carbs'   => 'float',
-        'target_fats'    => 'float',
+        'target_carbs' => 'float',
+        'target_fats' => 'float',
     ];
 
     public function user(): BelongsTo

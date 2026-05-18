@@ -20,10 +20,10 @@ class FoodResource extends JsonResource
             'image_url' => $this->image ? (filter_var($this->image, FILTER_VALIDATE_URL) ? $this->image : url($this->image)) : null,
             'category' => $this->category,
             'nutrition' => [
-                'calories' => (float)$this->calories,
-                'protein' => (float)$this->protein,
-                'carbs' => (float)$this->carbs,
-                'fat' => (float)$this->fat,
+                'calories' => (float) $this->calories,
+                'protein' => (float) $this->protein,
+                'carbs' => (float) $this->carbs,
+                'fat' => (float) $this->fat,
                 'serving_size' => $this->serving_size,
             ],
         ];

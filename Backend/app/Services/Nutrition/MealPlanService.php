@@ -6,10 +6,9 @@ use App\Repositories\FoodRepository;
 
 class MealPlanService
 {
-
     public function __construct(
         private FoodRepository $foodRepository
-    ){}
+    ) {}
 
     public function generatePlan($nutrition)
     {
@@ -22,14 +21,13 @@ class MealPlanService
 
         return [
 
-            'breakfast'=>[$proteins[0],$carbs[0]],
+            'breakfast' => [$proteins[0], $carbs[0]],
 
-            'lunch'=>[$proteins[1],$carbs[1]],
+            'lunch' => [$proteins[1], $carbs[1]],
 
-            'snack'=>[$fats[0]]
+            'snack' => [$fats[0]],
 
         ];
 
     }
-
 }

@@ -9,15 +9,11 @@ class LogService
     /**
      * Log a structured event.
      *
-     * @param string $channel The domain channel (auth, jobs, ai, notifications)
-     * @param string $event The event name (e.g., user_login_success)
-     * @param string $layer The system layer (auth, job, ai, notification, retry)
-     * @param string $status success|failed|pending
-     * @param int|null $userId
-     * @param string|null $jobId
-     * @param int|null $durationMs
-     * @param array $context Additional metadata
-     * @return void
+     * @param  string  $channel  The domain channel (auth, jobs, ai, notifications)
+     * @param  string  $event  The event name (e.g., user_login_success)
+     * @param  string  $layer  The system layer (auth, job, ai, notification, retry)
+     * @param  string  $status  success|failed|pending
+     * @param  array  $context  Additional metadata
      */
     public static function log(
         string $channel,

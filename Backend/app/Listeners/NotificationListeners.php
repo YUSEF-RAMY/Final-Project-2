@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Services\LogService;
-use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Notifications\Events\NotificationFailed;
+use Illuminate\Notifications\Events\NotificationSent;
 
 class NotificationListeners
 {

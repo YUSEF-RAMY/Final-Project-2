@@ -4,9 +4,9 @@ namespace App\Http\Requests\Inbody\Manual;
 
 use App\Enums\ActivityLevel;
 use App\Enums\PrimaryObjective;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\ValidationRule;
 
 class StoreManualProfileRequest extends FormRequest
 {

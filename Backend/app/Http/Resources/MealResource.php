@@ -23,17 +23,17 @@ class MealResource extends JsonResource
                 'food_id' => $first->food_id,
                 'name' => $food->name ?? 'Unknown Food',
                 'image_url' => $food ? ($food->image ? (filter_var($food->image, FILTER_VALIDATE_URL) ? $food->image : url($food->image)) : null) : null,
-                'total_quantity' => (float)$items->sum('quantity'),
+                'total_quantity' => (float) $items->sum('quantity'),
                 'total_nutrition' => [
-                    'calories' => (float)$items->sum('calories'),
-                    'protein' => (float)$items->sum('protein'),
-                    'carbs' => (float)$items->sum('carbs'),
-                    'fat' => (float)$items->sum('fat'),
+                    'calories' => (float) $items->sum('calories'),
+                    'protein' => (float) $items->sum('protein'),
+                    'carbs' => (float) $items->sum('carbs'),
+                    'fat' => (float) $items->sum('fat'),
                 ],
                 // Return individual entries if needed for history
-                'entries' => $items->map(fn($item) => [
+                'entries' => $items->map(fn ($item) => [
                     'id' => $item->id,
-                    'quantity' => (float)$item->quantity,
+                    'quantity' => (float) $item->quantity,
                     'created_at' => $item->created_at ? $item->created_at->format('Y-m-d h:i A') : null,
                 ]),
             ];

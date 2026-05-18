@@ -6,6 +6,6 @@ class UserTargetService
 {
     public function getUserDailyTarget($user)
     {
-        return $user->target; 
+        return $user->target;
     }
 }

@@ -16,16 +16,16 @@ class FoodRepository
 
     public function getProteinFoods()
     {
-        return Food::where('category','protein')->get();
+        return Food::where('category', 'protein')->get();
     }
 
     public function getCarbFoods()
     {
-        return Food::where('category','carb')->get();
+        return Food::where('category', 'carb')->get();
     }
 
     public function getFatFoods()
     {
-        return Food::where('category','fat')->get();
+        return Food::where('category', 'fat')->get();
     }
 }

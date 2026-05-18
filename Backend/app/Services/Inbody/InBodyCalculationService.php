@@ -15,6 +15,7 @@ class InBodyCalculationService
         }
 
         $heightMeters = $heightCm / 100;
+
         return round($weight / ($heightMeters * $heightMeters), 2);
     }
 
@@ -25,7 +26,7 @@ class InBodyCalculationService
     {
         // Formula: (10 * weight) + (6.25 * height) - (5 * age)
         $bmr = (10 * $weight) + (6.25 * $heightCm) - (5 * $age);
-        
+
         return $gender === 'male' ? $bmr + 5 : $bmr - 161;
     }
 }

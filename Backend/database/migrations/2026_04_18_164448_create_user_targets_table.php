@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             // ربط الهدف باليوزر
             $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
-            
+
             $table->decimal('daily_calories', 8, 2)->default(0);
             $table->decimal('target_protein', 8, 2)->default(0);
             $table->decimal('target_carbs', 8, 2)->default(0);
             $table->decimal('target_fats', 8, 2)->default(0);
-            
+
             $table->timestamps();
         });
     }

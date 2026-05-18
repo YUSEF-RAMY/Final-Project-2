@@ -32,10 +32,10 @@ class MealTrackingService
                 'meal_id' => $meal->id,
                 'food_id' => $food->id,
                 'quantity' => $quantity,
-                'calories' => (float)$food->calories * $quantity,
-                'protein' => (float)$food->protein * $quantity,
-                'carbs' => (float)$food->carbs * $quantity,
-                'fat' => (float)$food->fat * $quantity,
+                'calories' => (float) $food->calories * $quantity,
+                'protein' => (float) $food->protein * $quantity,
+                'carbs' => (float) $food->carbs * $quantity,
+                'fat' => (float) $food->fat * $quantity,
             ]);
         });
     }
@@ -43,6 +43,7 @@ class MealTrackingService
     public function removeFoodFromMeal(int $mealFoodId): bool
     {
         $mealFood = MealFood::findOrFail($mealFoodId);
+
         return $mealFood->delete();
     }
 
@@ -52,11 +53,11 @@ class MealTrackingService
     public function getDailySummary(User $user, ?string $date = null): array
     {
         $date = $date ?: Carbon::today()->toDateString();
-        
+
         // Performance: Eager load meal targets and meals with items
         $user->loadMissing(['target', 'mealPlans']);
         $target = $user->target ?: $this->getDefaultTarget($user);
-        
+
         $meals = Meal::where('user_id', $user->id)
             ->where('date', $date)
             ->with(['mealFoods.food']) // Eager load foods to avoid N+1
@@ -71,18 +72,18 @@ class MealTrackingService
 
         foreach ($meals as $meal) {
             foreach ($meal->mealFoods as $mealFood) {
-                $consumed['calories'] += (float)$mealFood->calories;
-                $consumed['protein'] += (float)$mealFood->protein;
-                $consumed['carbs'] += (float)$mealFood->carbs;
-                $consumed['fat'] += (float)$mealFood->fat;
+                $consumed['calories'] += (float) $mealFood->calories;
+                $consumed['protein'] += (float) $mealFood->protein;
+                $consumed['carbs'] += (float) $mealFood->carbs;
+                $consumed['fat'] += (float) $mealFood->fat;
             }
         }
 
         $remaining = [
-            'calories' => max(0.0, (float)$target->daily_calories - $consumed['calories']),
-            'protein' => max(0.0, (float)$target->target_protein - $consumed['protein']),
-            'carbs' => max(0.0, (float)$target->target_carbs - $consumed['carbs']),
-            'fat' => max(0.0, (float)$target->target_fats - $consumed['fat']),
+            'calories' => max(0.0, (float) $target->daily_calories - $consumed['calories']),
+            'protein' => max(0.0, (float) $target->target_protein - $consumed['protein']),
+            'carbs' => max(0.0, (float) $target->target_carbs - $consumed['carbs']),
+            'fat' => max(0.0, (float) $target->target_fats - $consumed['fat']),
         ];
 
         // Progress Indicators
@@ -121,8 +122,8 @@ class MealTrackingService
         $mealsWithMetrics = $meals->map(function ($meal) use ($mealDistributionTargets) {
             $mTarget = $mealDistributionTargets[$meal->type];
             $mConsumed = [
-                'calories' => (float)$meal->mealFoods->sum('calories'),
-                'protein' => (float)$meal->mealFoods->sum('protein'),
+                'calories' => (float) $meal->mealFoods->sum('calories'),
+                'protein' => (float) $meal->mealFoods->sum('protein'),
             ];
 
             $meal->metrics = [
@@ -133,18 +134,18 @@ class MealTrackingService
                 'target_protein' => $mTarget['protein'],
                 'remaining_protein' => max(0.0, $mTarget['protein'] - $mConsumed['protein']),
             ];
-            
+
             return $meal;
         });
 
         // Add empty meal structures for the UI
         $existingMealTypes = $mealsWithMetrics->pluck('type')->toArray();
         $finalMeals = $mealsWithMetrics->all();
-        
+
         foreach ($mealTypes as $type) {
-            if (!in_array($type, $existingMealTypes)) {
+            if (! in_array($type, $existingMealTypes)) {
                 $mTarget = $mealDistributionTargets[$type];
-                $finalMeals[] = (object)[
+                $finalMeals[] = (object) [
                     'id' => null,
                     'type' => $type,
                     'date' => $date,
@@ -162,17 +163,17 @@ class MealTrackingService
         }
 
         // Sort by type order
-        usort($finalMeals, function($a, $b) use ($mealTypes) {
+        usort($finalMeals, function ($a, $b) use ($mealTypes) {
             return array_search($a->type, $mealTypes) <=> array_search($b->type, $mealTypes);
         });
 
         return [
             'overview' => [
                 'target' => [
-                    'calories' => (float)$target->daily_calories,
-                    'protein' => (float)$target->target_protein,
-                    'carbs' => (float)$target->target_carbs,
-                    'fat' => (float)$target->target_fats,
+                    'calories' => (float) $target->daily_calories,
+                    'protein' => (float) $target->target_protein,
+                    'carbs' => (float) $target->target_carbs,
+                    'fat' => (float) $target->target_fats,
                 ],
                 'consumed' => $consumed,
                 'remaining' => $remaining,

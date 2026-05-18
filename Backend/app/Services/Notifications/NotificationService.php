@@ -2,9 +2,6 @@
 
 namespace App\Services\Notifications;
 
-use App\Http\Resources\Notify\NotificationResource;
-use Illuminate\Http\Request;
-
 class NotificationService
 {
     public function getUserNotifications($user)
@@ -16,6 +13,7 @@ class NotificationService
     {
         $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
+
         return $notification;
     }
 
