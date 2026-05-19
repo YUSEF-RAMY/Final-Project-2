@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Actions\Auth\HandleSocialLoginAction;
 use App\Contracts\Auth\SocialProviderFactoryInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +57,7 @@ class SocialAuthController extends Controller
             return response()->json([
                 'message' => 'Successfully authenticated.',
                 'status_code' => Response::HTTP_OK,
-                'user' => $result['user'],
+                'user' => new UserResource($result['user']),
                 'token' => $result['token'],
             ], Response::HTTP_OK);
         } catch (InvalidArgumentException $e) {
