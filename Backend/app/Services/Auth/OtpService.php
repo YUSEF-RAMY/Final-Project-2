@@ -2,8 +2,8 @@
 
 namespace App\Services\Auth;
 
-use App\Repositories\Auth\OtpRepository;
 use App\Mail\OtpMail;
+use App\Repositories\Auth\OtpRepository;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -24,7 +24,7 @@ class OtpService
     {
         $otp = $this->otpRepo->findOtp($email, $code);
 
-        if (!$otp) {
+        if (! $otp) {
             throw ValidationException::withMessages(['code' => ['Invalid verification code.']]);
         }
 

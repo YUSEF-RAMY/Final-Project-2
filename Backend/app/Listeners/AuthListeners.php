@@ -3,9 +3,9 @@
 namespace App\Listeners;
 
 use App\Services\LogService;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Events\Failed;
 
 class AuthListeners
 {

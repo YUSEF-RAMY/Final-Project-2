@@ -24,17 +24,17 @@ class NutritionAnalysisInputDTO
     {
         $weight = (float) $data['weight'];
         $height = (float) $data['height'];
-        
+
         // Calculate BMI if not provided
         $bmi = $data['bmi'] ?? 0;
-        if (!$bmi && $height > 0) {
+        if (! $bmi && $height > 0) {
             $heightMeters = $height / 100;
             $bmi = round($weight / ($heightMeters * $heightMeters), 2);
         }
 
         // Calculate BMR if not provided
         $bmr = $data['bmr'] ?? 0;
-        if (!$bmr) {
+        if (! $bmr) {
             $bmr = (10 * $weight) + (6.25 * $height) - (5 * (int) $data['age']);
             $bmr = $data['gender'] === 'male' ? $bmr + 5 : $bmr - 161;
         }
@@ -45,7 +45,7 @@ class NutritionAnalysisInputDTO
             age: (int) $data['age'],
             bmi: (float) $bmi,
             bmr: (float) $bmr,
-            gender: $data['gender'],    
+            gender: $data['gender'],
             activityLevel: $data['activity_level'] instanceof ActivityLevel
                 ? $data['activity_level']
                 : ActivityLevel::from($data['activity_level']),

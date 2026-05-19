@@ -18,8 +18,11 @@ class UserMeResource extends JsonResource
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'profile_image' => $this->profile_image ? asset('storage/'.$this->profile_image) : null,
-            
+            'phone' => $this->phone,
+            'profile_image' => $this->profile_image
+                ? (filter_var($this->profile_image, FILTER_VALIDATE_URL) ? $this->profile_image : asset('storage/'.$this->profile_image))
+                : null,
+
             // Physical Profile Details
             'physical_profile' => new UserProfileResource($this->profile),
 

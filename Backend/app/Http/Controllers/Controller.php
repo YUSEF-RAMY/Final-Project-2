@@ -46,7 +46,7 @@ abstract class Controller
             'message' => $error,
         ];
 
-        if (!empty($errorMessages)) {
+        if (! empty($errorMessages)) {
             $response['errors'] = $errorMessages;
         }
 

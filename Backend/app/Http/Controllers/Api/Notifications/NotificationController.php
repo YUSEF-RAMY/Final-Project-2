@@ -11,26 +11,25 @@ class NotificationController extends Controller
 {
     public function __construct(protected NotificationService $notificationService) {}
 
-
     public function index(Request $request)
     {
         $notifications = $this->notificationService->getUserNotifications($request->user());
+
         return $this->standardResponse($request->user(), $notifications, 'Notifications retrieved successfully.');
     }
-
 
     public function markAsRead(Request $request)
     {
         $request->validate(['notification_id' => 'required|exists:notifications,id']);
         $this->notificationService->markAsRead($request->user(), $request->notification_id);
-        
-        return $this->index($request); 
-    }
 
+        return $this->index($request);
+    }
 
     public function clearAll(Request $request)
     {
         $this->notificationService->clearAll($request->user());
+
         return $this->standardResponse($request->user(), collect([]), 'All notifications cleared.');
     }
 
@@ -40,15 +39,14 @@ class NotificationController extends Controller
     private function standardResponse($user, $notifications, $message)
     {
         return response()->json([
-            'status'      => 'success',
+            'status' => 'success',
             'status_code' => 200,
-            'message'     => $message,
-            'meta'        => [
-                'total_count'  => $user->notifications()->count(),
+            'message' => $message,
+            'meta' => [
+                'total_count' => $user->notifications()->count(),
                 'unread_count' => $user->unreadNotifications()->count(),
             ],
-            'data'        => NotificationResource::collection($notifications),
+            'data' => NotificationResource::collection($notifications),
         ], 200);
     }
 }
-

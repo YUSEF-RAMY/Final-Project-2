@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\UserDevices;
-use App\Models\UserProfile;
-use App\Models\UserTarget;
-use Database\Factories\UserFactory;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -24,7 +21,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'email', 'password', 'profile_image'];
+    protected $fillable = ['name', 'email', 'password', 'profile_image', 'phone'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,6 +43,14 @@ class User extends Authenticatable
             'updated_at' => 'datetime:Y-m-d h:i:s A',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's linked social accounts.
+     */
+    public function linkedSocialAccounts(): HasMany
+    {
+        return $this->hasMany(LinkedSocialAccount::class);
     }
 
     public function devices()

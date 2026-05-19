@@ -15,9 +15,9 @@ beforeEach(function () {
         'protein' => 20,
         'carbs' => 0,
         'fat' => 2,
-        'serving_size' => '100g'
+        'serving_size' => '100g',
     ]);
-    
+
     UserTarget::create([
         'user_id' => $this->user->id,
         'daily_calories' => 2000,
@@ -64,9 +64,9 @@ test('summary returns full macro distribution per meal', function () {
             'data' => [
                 'meal_targets' => [
                     'breakfast' => ['calories', 'protein', 'carbs', 'fat'],
-                    'lunch', 'dinner', 'snacks'
-                ]
-            ]
+                    'lunch', 'dinner', 'snacks',
+                ],
+            ],
         ]);
 });
 
@@ -82,9 +82,9 @@ test('summary returns progress indicators and status', function () {
         ->getJson('/api/foods/daily-summary');
 
     $response->assertStatus(200);
-    
+
     $progress = $response->json('data.overview.progress.calories_percentage');
-    expect((float)$progress)->toBe(10.0);
+    expect((float) $progress)->toBe(10.0);
     $response->assertJsonPath('data.overview.status', 'under_target');
 });
 

@@ -8,7 +8,6 @@ trait PasswordValidationRules
 {
     /**
      * Get the validation rules used to validate passwords.
-     *
      */
     protected function passwordRules(): array
     {
@@ -17,7 +16,6 @@ trait PasswordValidationRules
 
     /**
      * Get the validation rules used to validate the current password.
-     *
      */
     protected function currentPasswordRules(): array
     {

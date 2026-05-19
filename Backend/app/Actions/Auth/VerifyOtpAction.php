@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions\Auth;
 
 use App\Services\Auth\OtpService;

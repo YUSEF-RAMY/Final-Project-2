@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Actions\Auth;
 
 use App\Mail\WelcomeUserMail;
 use App\Repositories\Auth\UserRepository;
-use App\Repositories\Auth\UserRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;

@@ -8,31 +8,31 @@ use Illuminate\Http\Request;
 
 class UserTargetController extends Controller
 {
-    public function __construct(protected UserTargetService $targetService){}
+    public function __construct(protected UserTargetService $targetService) {}
 
     public function getDailyTarget(Request $request)
     {
         $target = $this->targetService->getUserDailyTarget($request->user());
 
-        if (!$target) {
+        if (! $target) {
             return response()->json([
-                'status'      => 'error',
+                'status' => 'error',
                 'status_code' => 404,
-                'message'     => 'No targets found. Please analyze the InBody image first.',
+                'message' => 'No targets found. Please analyze the InBody image first.',
             ], 404);
         }
 
         return response()->json([
-            'status'      => 'success',
+            'status' => 'success',
             'status_code' => 200,
-            'message'     => 'Daily targets retrieved successfully.',
-            'data'        => [
+            'message' => 'Daily targets retrieved successfully.',
+            'data' => [
                 'calories' => $target->daily_calories,
-                'protein'  => $target->target_protein,
-                'carbs'    => $target->target_carbs,
-                'fats'     => $target->target_fats,
+                'protein' => $target->target_protein,
+                'carbs' => $target->target_carbs,
+                'fats' => $target->target_fats,
                 'updated_at' => $target->updated_at->diffForHumans(),
-            ]
+            ],
         ], 200);
     }
 }

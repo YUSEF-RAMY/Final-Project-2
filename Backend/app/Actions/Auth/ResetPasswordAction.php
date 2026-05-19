@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions\Auth;
 
 use App\Repositories\Auth\OtpRepository;
@@ -13,15 +14,15 @@ class ResetPasswordAction
     {
         $otpRecord = $this->otpRepo->isValidResetToken($data['email'], $data['token']);
 
-        if (!$otpRecord) {
+        if (! $otpRecord) {
             throw ValidationException::withMessages(['token' => ['Invalid or expired reset session.']]);
         }
 
         $user = $this->userRepo->findByEmail($data['email']);
 
-        if (!$user) {
-        throw ValidationException::withMessages(['email' => ['User not found.']]);
-    }
+        if (! $user) {
+            throw ValidationException::withMessages(['email' => ['User not found.']]);
+        }
 
         $this->userRepo->updatePassword($user, $data['password']);
 

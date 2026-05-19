@@ -2,23 +2,21 @@
 
 namespace App\Providers;
 
+use App\Listeners\AuthListeners;
+use App\Listeners\NotificationListeners;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
+// Events
+use Illuminate\Notifications\Events\NotificationFailed;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+// Listeners
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-
-// Events
-use Illuminate\Auth\Events\Login;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Events\Failed;
-use Illuminate\Notifications\Events\NotificationSent;
-use Illuminate\Notifications\Events\NotificationFailed;
-
-// Listeners
-use App\Listeners\AuthListeners;
-use App\Listeners\NotificationListeners;
 
 class AppServiceProvider extends ServiceProvider
 {

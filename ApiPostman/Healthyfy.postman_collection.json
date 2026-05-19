@@ -10,6 +10,19 @@
       "name": "Auth",
       "item": [
         {
+          "name": "OAuth",
+          "item": [
+            {
+              "name": "Redirect Google OAuth",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "Login",
           "event": [
             {

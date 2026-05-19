@@ -11,9 +11,7 @@ use Illuminate\Http\Request;
 
 class MealController extends Controller
 {
-    public function __construct(protected MealTrackingService $mealTrackingService)
-    {
-    }
+    public function __construct(protected MealTrackingService $mealTrackingService) {}
 
     /**
      * Get all foods for UI selection
@@ -21,6 +19,7 @@ class MealController extends Controller
     public function index()
     {
         $foods = Food::all();
+
         return FoodResource::collection($foods);
     }
 
@@ -35,7 +34,7 @@ class MealController extends Controller
             'date' => 'nullable|date_format:Y-m-d',
         ]);
 
-        if (!in_array($mealType, ['breakfast', 'lunch', 'dinner', 'snacks'])) {
+        if (! in_array($mealType, ['breakfast', 'lunch', 'dinner', 'snacks'])) {
             return response()->json(['message' => 'Invalid meal type'], 422);
         }
 
@@ -50,7 +49,7 @@ class MealController extends Controller
 
             return response()->json([
                 'message' => 'Food added successfully',
-                'data' => $mealFood
+                'data' => $mealFood,
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to add food', 'error' => $e->getMessage()], 500);
@@ -64,6 +63,7 @@ class MealController extends Controller
     {
         try {
             $this->mealTrackingService->removeFoodFromMeal($id);
+
             return response()->json(['message' => 'Item removed successfully']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Item not found or failed to delete'], 404);

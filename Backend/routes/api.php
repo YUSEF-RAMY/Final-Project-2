@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\SocialAuthController;
 use App\Http\Controllers\Api\Food\NutritionController;
 use App\Http\Controllers\Api\InBody\InBodyController;
 use App\Http\Controllers\Api\MealController;
@@ -9,6 +10,12 @@ use App\Http\Controllers\Api\Notifications\NotificationController;
 use App\Http\Controllers\Api\Profile\ProfileController;
 use App\Http\Controllers\Api\UserTarget\UserTargetController;
 use Illuminate\Support\Facades\Route;
+
+// Social Authentication Routes
+Route::prefix('auth')->controller(SocialAuthController::class)->group(function () {
+    Route::get('/{provider}/redirect', 'redirect');
+    Route::get('/{provider}/callback', 'callback');
+});
 
 // Group Auth Controller without middleware (register, login, forgot-password, verify-otp, reset-password)
 Route::controller(AuthController::class)->group(function () {
