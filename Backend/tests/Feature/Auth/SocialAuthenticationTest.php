@@ -100,3 +100,83 @@ test('unsupported provider returns 400 bad request', function () {
     $response->assertStatus(400)
         ->assertJson(['error' => 'Unsupported provider.']);
 });
+
+test('facebook redirect returns a valid redirect url', function () {
+    $mockUrl = 'https://www.facebook.com/v3.3/dialog/oauth?client_id=1667161467666707';
+
+    Socialite::shouldReceive('driver')
+        ->with('facebook')
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('stateless')
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('scopes')
+        ->with(['email'])
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('redirect')
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('getTargetUrl')
+        ->once()
+        ->andReturn($mockUrl);
+
+    $response = $this->getJson('/api/auth/facebook/redirect');
+
+    $response->assertOk()
+        ->assertJson(['url' => $mockUrl]);
+});
+
+test('facebook callback handles login and registration correctly', function () {
+    $socialiteUser = Mockery::mock(SocialiteUser::class);
+    $socialiteUser->shouldReceive('getId')->andReturn('facebook-123');
+    $socialiteUser->shouldReceive('getEmail')->andReturn('fb-test@example.com');
+    $socialiteUser->shouldReceive('getName')->andReturn('FB Test User');
+    $socialiteUser->shouldReceive('getAvatar')->andReturn('https://example.com/fb-avatar.jpg');
+    $socialiteUser->token = 'mock-facebook-token';
+
+    Socialite::shouldReceive('driver')
+        ->with('facebook')
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('stateless')
+        ->once()
+        ->andReturnSelf();
+
+    Socialite::shouldReceive('user')
+        ->once()
+        ->andReturn($socialiteUser);
+
+    $response = $this->getJson('/api/auth/facebook/callback?code=valid-auth-code');
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'message',
+            'user' => [
+                'id',
+                'name',
+                'email',
+            ],
+            'token',
+        ]);
+
+    $this->assertDatabaseHas('users', [
+        'email' => 'fb-test@example.com',
+        'name' => 'FB Test User',
+    ]);
+});
+
+test('facebook callback handles cancellation/errors gracefully', function () {
+    $response = $this->getJson('/api/auth/facebook/callback?error=access_denied&error_code=200&error_description=Permissions+error');
+
+    $response->assertStatus(500)
+        ->assertJsonFragment([
+            'error' => 'An error occurred during authentication.',
+        ]);
+});
