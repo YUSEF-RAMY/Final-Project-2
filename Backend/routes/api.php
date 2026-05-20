@@ -26,7 +26,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/reset-password', 'resetPassword');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['CheckTokenExpiration', 'auth:sanctum'])->group(function () {
     // Group Auth Controller with middleware (auth:sanctum) => (logout, change-password)
     Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout');
@@ -87,6 +87,6 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['CheckTokenExpiration', 'auth:sanctum'])->group(function () {
     Route::post('/nutrition-plan', [NutritionController::class, 'generate']);
 });

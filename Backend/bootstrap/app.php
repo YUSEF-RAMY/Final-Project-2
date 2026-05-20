@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Middleware\CheckTokenExpiration;
 use App\Http\Middleware\TraceIdMiddleware;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,7 +24,21 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Register TraceIdMiddleware globally to ensure every request has a trace_id
         $middleware->prepend(TraceIdMiddleware::class);
+        $middleware->alias([
+            'CheckTokenExpiration' => CheckTokenExpiration::class,
+        ]);
+        $middleware->priority([
+            CheckTokenExpiration::class,
+            Authenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Unauthenticated',
+                    'code' => 'UNAUTHENTICATED',
+                ], 401);
+            }
+        });
     })->create();
