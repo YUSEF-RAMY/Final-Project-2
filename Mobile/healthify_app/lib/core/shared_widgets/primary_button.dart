@@ -12,29 +12,36 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF12A046),
+          backgroundColor: const Color(0xFF0B8F3E),
           foregroundColor: Colors.white,
           elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
           ),
+        ).copyWith(
+          elevation: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.pressed)) return 0;
+            return 0;
+          }),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Start Your Journey',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w600,
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF12A84A).withOpacity(0.25),
+                blurRadius: 18.r,
+                offset: Offset(0, 8.h),
               ),
+            ],
+          ),
+          child: Text(
+            'Sign In',
+            style: TextStyle(
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w700,
             ),
-            SizedBox(width: 10.w),
-            Icon(
-              Icons.arrow_forward_rounded,
-              size: 24.sp,
-            ),
-          ],
+          ),
         ),
       ),
     );
