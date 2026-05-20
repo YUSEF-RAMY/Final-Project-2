@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BottomSignupText extends StatelessWidget {
-  const BottomSignupText({super.key});
+class SigninBottomSignupText extends StatelessWidget {
+  const SigninBottomSignupText({super.key});
 
   @override
   Widget build(BuildContext context) {

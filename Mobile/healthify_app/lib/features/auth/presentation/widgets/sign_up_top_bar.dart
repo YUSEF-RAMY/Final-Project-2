@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class TopBar extends StatelessWidget {
-  const TopBar({super.key});
+class SignUpTopBar extends StatelessWidget {
+  const SignUpTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {

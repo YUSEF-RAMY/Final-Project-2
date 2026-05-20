@@ -20,13 +20,13 @@ class SignInScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 18.h),
-                  const _TopBar(),
+                  const SigninTopBar(),
                   SizedBox(height: 42.h),
-                  const HeaderSection(),
+                  const SigninHeaderSection(),
                   SizedBox(height: 34.h),
-                  const _SignInCard(),
+                  const SignInCard(),
                   SizedBox(height: 34.h),
-                  const _BottomSignupText(),
+                  const SigninBottomSignupText(),
                 ],
               ),
             ),
