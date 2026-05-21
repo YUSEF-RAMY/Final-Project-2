@@ -735,14 +735,14 @@
                 },
                 {
                   "key": "activity_level",
-                  "value": "",
+                  "value": "lightly_active",
                   "description": "sedentary || lightly_active || moderately_active ||very_active",
                   "type": "text",
                   "uuid": "29dc495b-b855-4385-b82f-70741395b512"
                 },
                 {
                   "key": "primary_objective",
-                  "value": "",
+                  "value": "build_muscle",
                   "description": "build_muscle || lose_weight || maintain",
                   "type": "text",
                   "uuid": "2ca1e38f-c53b-479a-b503-7b0ce8032d4a"
@@ -757,9 +757,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/inbody/analyze",
+              "raw": "{{docker_url}}/inbody/analyze",
               "host": [
-                "{{ngrok_url}}"
+                "{{docker_url}}"
               ],
               "path": [
                 "inbody",
@@ -880,9 +880,9 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/notifications",
+              "raw": "{{ngrok_url}}/notifications",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "notifications"
@@ -937,7 +937,79 @@
           "response": []
         },
         {
-          "name": "Clear All Notifications",
+          "name": "Make All Notification As Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{ngrok_url}}/notifications/read-all",
+              "host": [
+                "{{ngrok_url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{ngrok_url}}/notifications/cf1359a0-a823-475b-9870-d0c1b0f23bb5",
+              "host": [
+                "{{ngrok_url}}"
+              ],
+              "path": [
+                "notifications",
+                "cf1359a0-a823-475b-9870-d0c1b0f23bb5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete All Notifications",
           "request": {
             "auth": {
               "type": "bearer",
