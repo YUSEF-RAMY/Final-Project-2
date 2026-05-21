@@ -33,6 +33,29 @@ class NotificationController extends Controller
         return $this->standardResponse($request->user(), collect([]), 'All notifications cleared.');
     }
 
+    public function deleteNotificationById(Request $request, $notification_id)
+    {
+        $this->notificationService->deleteNotificationById($request->user(), $notification_id);
+
+        return response()->json([
+            'status' => 'success',
+            'status_code' => 200,
+            'message' => 'Notification deleted successfully.',
+        ], 200);
+    }
+
+    public function markAllAsRead(Request $request)
+    {
+        $this->notificationService->markAllAsRead($request->user());
+
+        return response()->json([
+            'status' => 'success',
+            'status_code' => 200,
+            'message' => 'All notifications marked as read.',
+            'data' => NotificationResource::collection($this->notificationService->getUserNotifications($request->user())),
+        ], 200);
+    }
+
     /**
      * ميثود موحدة عشان الـ JSON يفضل ثابت في كل الـ Endpoints
      */

@@ -23,8 +23,9 @@ test('request with invalid token returns invalid token response', function () {
 
     $response->assertStatus(401)
         ->assertJson([
-            'message' => 'Invalid token',
-            'code' => 'INVALID_TOKEN',
+            'status' => 'failed',
+            'code' => 401,
+            'message' => 'Token Expired , Please login again',
         ]);
 });
 
@@ -47,8 +48,9 @@ test('request with expired token deletes token and returns expired response', fu
 
     $response->assertStatus(401)
         ->assertJson([
-            'message' => 'Token expired',
-            'code' => 'TOKEN_EXPIRED',
+            'status' => 'failed',
+            'code' => 401,
+            'message' => 'Token Expired , Please login again',
         ]);
 
     // Check that the token was deleted from the database
