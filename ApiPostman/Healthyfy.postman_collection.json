@@ -757,9 +757,9 @@
               ]
             },
             "url": {
-              "raw": "{{docker_url}}/inbody/analyze",
+              "raw": "{{ngrok_url}}}/inbody/analyze",
               "host": [
-                "{{docker_url}}"
+                "{{ngrok_url}}}"
               ],
               "path": [
                 "inbody",
