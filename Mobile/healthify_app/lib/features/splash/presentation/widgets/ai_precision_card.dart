@@ -2,8 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class _AiPrecisionCard extends StatelessWidget {
-  const _AiPrecisionCard();
+/// Public wrapper around the AI Precision info card shown on the splash screen.
+class AiPrecisionCard extends StatelessWidget {
+  const AiPrecisionCard({super.key});
 
   @override
   Widget build(BuildContext context) {
