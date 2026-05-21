@@ -1,9 +1,10 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-class _BackgroundDecorations extends StatelessWidget {
-  const _BackgroundDecorations();
+/// Public background decoration widget for the splash screen.
+class BackgroundDecorations extends StatelessWidget {
+  const BackgroundDecorations({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +35,13 @@ class _BackgroundDecorations extends StatelessWidget {
     );
   }
 
-  Widget _blurCircle({
-    required double size,
-    required Color color,
-  }) {
+  Widget _blurCircle({required double size, required Color color}) {
     return ImageFiltered(
       imageFilter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
       child: Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       ),
     );
   }
