@@ -73,7 +73,9 @@ Route::middleware(['CheckTokenExpiration', 'auth:sanctum'])->group(function () {
         ->group(function () {
             Route::get('/', 'index');
             Route::post('/read', 'markAsRead');
+            Route::post('/read-all', 'markAllAsRead');
             Route::delete('/clear-all', 'clearAll');
+            Route::delete('/{notification_id}', 'deleteNotificationById');
         });
 
     // Group Food Tracking
