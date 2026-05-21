@@ -4,9 +4,11 @@ use App\Http\Middleware\CheckTokenExpiration;
 use App\Http\Middleware\TraceIdMiddleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // Force override of incorrect Firebase path in .env that cannot be edited due to root permissions
 $firebasePath = dirname(__DIR__).'/storage/app/private/firebase/healthyfy-a3314-firebase-adminsdk-fbsvc-f5814396b1.json';
@@ -39,6 +41,24 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Unauthenticated',
                     'code' => 'UNAUTHENTICATED',
                 ], 401);
+            }
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                $previous = $e->getPrevious();
+                if ($previous instanceof ModelNotFoundException) {
+                    $modelName = class_basename($previous->getModel());
+                    $message = $modelName === 'DatabaseNotification' ? 'Notification not found.' : "{$modelName} not found.";
+                } else {
+                    $message = 'Resource not found.';
+                }
+
+                return response()->json([
+                    'status' => 'failed',
+                    'status_code' => 404,
+                    'message' => $message,
+                ], 404);
             }
         });
     })->create();
