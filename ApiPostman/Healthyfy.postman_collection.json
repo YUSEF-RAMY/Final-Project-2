@@ -16,7 +16,24 @@
               "name": "Redirect Google OAuth",
               "request": {
                 "method": "GET",
-                "header": []
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/auth/google/redirect",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "google",
+                    "redirect"
+                  ]
+                }
               },
               "response": []
             }
@@ -80,9 +97,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/login",
+              "raw": "{{url}}/login",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "login"
@@ -141,6 +158,12 @@
                   "uuid": "13fedb52-663a-4142-b780-9226434d640e"
                 },
                 {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "89b47539-d6bb-44be-bc30-a9bdd3374c4d"
+                },
+                {
                   "key": "profile_image",
                   "type": "file",
                   "uuid": "00f2a1c9-db27-4f0c-9fbe-fcdcc9a22664",
@@ -148,7 +171,7 @@
                 },
                 {
                   "key": "email",
-                  "value": "test@gmail.com",
+                  "value": "test12@gmail.com",
                   "type": "text",
                   "uuid": "d2a75bfd-c314-4e54-b5a5-de7adb2e18f1"
                 },
@@ -167,9 +190,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/register",
+              "raw": "{{url}}/register",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "register"
@@ -216,9 +239,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/logout",
+              "raw": "{{url}}/logout",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "logout"
@@ -272,9 +295,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/change-password",
+              "raw": "{{url}}/change-password",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "change-password"
@@ -337,9 +360,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/forgot-password",
+              "raw": "{{url}}/forgot-password",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "forgot-password"
@@ -400,9 +423,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/verify-otp",
+              "raw": "{{url}}/verify-otp",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "verify-otp"
@@ -452,9 +475,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/reset-password",
+              "raw": "{{url}}/reset-password",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "reset-password"
@@ -542,9 +565,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/devices/register",
+              "raw": "{{url}}/devices/register",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "devices",
@@ -600,9 +623,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/devices/update",
+              "raw": "{{url}}/devices/update",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "devices",
@@ -645,9 +668,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/devices/unregister",
+              "raw": "{{url}}/devices/unregister",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "devices",
@@ -691,9 +714,9 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{ngrok_url}}/inbody/latest",
+              "raw": "{{url}}/inbody/latest",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "inbody",
@@ -757,9 +780,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}}/inbody/analyze",
+              "raw": "{{url}}/inbody/analyze",
               "host": [
-                "{{ngrok_url}}}"
+                "{{url}}"
               ],
               "path": [
                 "inbody",
@@ -842,9 +865,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/inbody/manual",
+              "raw": "{{url}}/inbody/manual",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "inbody",
@@ -880,9 +903,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/notifications",
+              "raw": "{{url}}/notifications",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "notifications"
@@ -924,9 +947,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/notifications/read",
+              "raw": "{{url}}/notifications/read",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "notifications",
@@ -958,9 +981,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/notifications/read-all",
+              "raw": "{{url}}/notifications/read-all",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "notifications",
@@ -996,9 +1019,9 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{ngrok_url}}/notifications/cf1359a0-a823-475b-9870-d0c1b0f23bb5",
+              "raw": "{{url}}/notifications/cf1359a0-a823-475b-9870-d0c1b0f23bb5",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "notifications",
@@ -1030,9 +1053,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/notifications/clear-all",
+              "raw": "{{url}}/notifications/clear-all",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "notifications",
@@ -1083,9 +1106,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/foods/daily-summary",
+              "raw": "{{url}}/foods/daily-summary",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "foods",
@@ -1117,9 +1140,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/daily-target",
+              "raw": "{{url}}/daily-target",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "daily-target"
@@ -1155,9 +1178,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/profile",
+              "raw": "{{url}}/profile",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "profile"
@@ -1193,9 +1216,9 @@
               }
             ],
             "url": {
-              "raw": "{{ngrok_url}}/foods",
+              "raw": "{{url}}/foods",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "foods"
@@ -1316,9 +1339,9 @@
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/foods/meals/items",
+              "raw": "{{url}}/foods/meals/items",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "foods",
