@@ -10,6 +10,36 @@
       "name": "Auth",
       "item": [
         {
+          "name": "OAuth",
+          "item": [
+            {
+              "name": "Redirect Google OAuth",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/auth/google/redirect",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "google",
+                    "redirect"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "Login",
           "event": [
             {
@@ -54,13 +84,13 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "test@example.com",
                   "description": "test@example.com",
                   "type": "text"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "password",
                   "description": "password",
                   "type": "text"
                 }
@@ -123,9 +153,15 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "",
+                  "value": "test",
                   "type": "text",
                   "uuid": "13fedb52-663a-4142-b780-9226434d640e"
+                },
+                {
+                  "key": "phone",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "89b47539-d6bb-44be-bc30-a9bdd3374c4d"
                 },
                 {
                   "key": "profile_image",
@@ -135,28 +171,28 @@
                 },
                 {
                   "key": "email",
-                  "value": "",
+                  "value": "test12@gmail.com",
                   "type": "text",
                   "uuid": "d2a75bfd-c314-4e54-b5a5-de7adb2e18f1"
                 },
                 {
                   "key": "password",
-                  "value": "",
+                  "value": "password",
                   "type": "text",
                   "uuid": "f0337cff-6962-4c52-89a2-d53d733308f3"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "",
+                  "value": "password",
                   "type": "text",
                   "uuid": "34b13316-2aad-4e1f-849b-f3bacc9834d1"
                 }
               ]
             },
             "url": {
-              "raw": "{{ngrok_url}}/register",
+              "raw": "{{url}}/register",
               "host": [
-                "{{ngrok_url}}"
+                "{{url}}"
               ],
               "path": [
                 "register"
@@ -722,14 +758,14 @@
                 },
                 {
                   "key": "activity_level",
-                  "value": "",
+                  "value": "lightly_active",
                   "description": "sedentary || lightly_active || moderately_active ||very_active",
                   "type": "text",
                   "uuid": "29dc495b-b855-4385-b82f-70741395b512"
                 },
                 {
                   "key": "primary_objective",
-                  "value": "",
+                  "value": "build_muscle",
                   "description": "build_muscle || lose_weight || maintain",
                   "type": "text",
                   "uuid": "2ca1e38f-c53b-479a-b503-7b0ce8032d4a"
@@ -924,7 +960,79 @@
           "response": []
         },
         {
-          "name": "Clear All Notifications",
+          "name": "Make All Notification As Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notifications/read-all",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{url}}/notifications/cf1359a0-a823-475b-9870-d0c1b0f23bb5",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "notifications",
+                "cf1359a0-a823-475b-9870-d0c1b0f23bb5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete All Notifications",
           "request": {
             "auth": {
               "type": "bearer",
@@ -962,6 +1070,54 @@
     {
       "name": "Daily User Target",
       "item": [
+        {
+          "name": "GET Daily Summary",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "date",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/foods/daily-summary",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "foods",
+                "daily-summary"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Get User Target",
           "request": {
@@ -1041,8 +1197,33 @@
         {
           "name": "Get All Food",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/foods",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "foods"
+              ]
+            }
           },
           "response": []
         },
@@ -1120,54 +1301,6 @@
                 "meals",
                 "{{meal_type}}",
                 "items"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "GET Daily Summary",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "date",
-                  "value": "",
-                  "type": "text",
-                  "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{url}}/foods/daily-summary",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "foods",
-                "daily-summary"
               ]
             }
           },
