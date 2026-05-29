@@ -24,7 +24,7 @@ export interface UserProfile {
   name: string;
   email: string;
   profile_image: string | null;
-  physical_profile: {
+  physical_profile?: {
     age: number;
     height: number;
     weight: number;
@@ -33,13 +33,13 @@ export interface UserProfile {
     primary_objective: string;
     medical_conditions: string | null;
     last_updated: string;
-  };
-  nutritional_targets: {
+  } | null;
+  nutritional_targets?: {
     calories: number;
     protein: number;
     carbs: number;
     fats: number;
-  };
+  } | null;
   latest_body_report: LatestBodyReport | null;
   created_at: string;
 }

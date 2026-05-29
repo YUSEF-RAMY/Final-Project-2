@@ -10,6 +10,7 @@ import Home from './pages/Home/Home';
 import FoodLogPage from './pages/FoodLogPage/FoodLogPage';
 import ProfilePage from './pages/Profile/Profile';
 import PlanPage from './pages/PlanPage/PlanPage';
+import AnalyticsPage from './pages/AnalyticsPage/AnalyticsPage';
 
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalNotification from './components/GlobalNotification/GlobalNotification';
@@ -47,6 +48,8 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
 
           <Route path="/plan" element={<PlanPage />} />
+
+          <Route path="/analytics" element={<AnalyticsPage />} />
 
         </Routes>
       </Router>

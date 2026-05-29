@@ -8,7 +8,8 @@ import styles from './Profile.module.css';
 import { resolveImageUrl } from '../../services/api';
 
 
-function formatObjective(raw: string): string {
+function formatObjective(raw?: string): string {
+  if (!raw || typeof raw !== 'string') return 'N/A';
   return raw
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -82,7 +83,10 @@ const Profile: React.FC = () => {
   const renderContent = () => {
     if (!profile) return null;
 
-    const { name, email, profile_image, physical_profile: pp, nutritional_targets: nt, latest_body_report: lbr } = profile;
+    const { name = 'Unknown', email = '', profile_image } = profile;
+    const pp = profile.physical_profile || null;
+    const nt = profile.nutritional_targets || null;
+    const lbr = profile.latest_body_report || null;
     const avatarUrl = resolveImageUrl(profile_image);
 
     return (
@@ -102,10 +106,12 @@ const Profile: React.FC = () => {
           <div className={styles.heroInfo}>
             <h2>{name}</h2>
             <p>{email}</p>
-            <span className={styles.heroBadge}>
-              <i className="fa-solid fa-dumbbell" />
-              {formatObjective(pp.primary_objective)}
-            </span>
+            {pp?.primary_objective && (
+              <span className={styles.heroBadge}>
+                <i className="fa-solid fa-dumbbell" />
+                {formatObjective(pp.primary_objective)}
+              </span>
+            )}
           </div>
         </div>
 
@@ -142,17 +148,17 @@ const Profile: React.FC = () => {
             </div>
             <div className={styles.statsGrid}>
               <div className={styles.statTile}>
-                <div className={styles.statValue}>{pp.age}</div>
+                <div className={styles.statValue}>{pp?.age || '-'}</div>
                 <div className={styles.statUnit}>yrs</div>
                 <div className={styles.statLabel}>Age</div>
               </div>
               <div className={styles.statTile}>
-                <div className={styles.statValue}>{pp.height}</div>
+                <div className={styles.statValue}>{pp?.height || '-'}</div>
                 <div className={styles.statUnit}>cm</div>
                 <div className={styles.statLabel}>Height</div>
               </div>
               <div className={styles.statTile}>
-                <div className={styles.statValue}>{pp.weight}</div>
+                <div className={styles.statValue}>{pp?.weight || '-'}</div>
                 <div className={styles.statUnit}>kg</div>
                 <div className={styles.statLabel}>Weight</div>
               </div>
@@ -167,38 +173,40 @@ const Profile: React.FC = () => {
             </div>
 
             {/* Primary objective badge */}
-            <div className={styles.objectiveBadge}>
-              <i className="fa-solid fa-trophy" />
-              {formatObjective(pp.primary_objective)}
-            </div>
+            {pp?.primary_objective && (
+              <div className={styles.objectiveBadge}>
+                <i className="fa-solid fa-trophy" />
+                {formatObjective(pp.primary_objective)}
+              </div>
+            )}
 
             {/* Nutritional targets */}
             <div className={styles.macroGrid}>
               <div className={`${styles.macroPill} ${styles.macroPillCal}`}>
                 <span className={styles.macroLabel}>Calories</span>
                 <div className={styles.macroValueRow}>
-                  <span className={styles.macroNum}>{Math.round(nt.calories)}</span>
+                  <span className={styles.macroNum}>{Math.round(nt?.calories || 0)}</span>
                   <span className={styles.macroUnit}>kcal</span>
                 </div>
               </div>
               <div className={`${styles.macroPill} ${styles.macroPillProt}`}>
                 <span className={styles.macroLabel}>Protein</span>
                 <div className={styles.macroValueRow}>
-                  <span className={styles.macroNum}>{Math.round(nt.protein)}</span>
+                  <span className={styles.macroNum}>{Math.round(nt?.protein || 0)}</span>
                   <span className={styles.macroUnit}>g</span>
                 </div>
               </div>
               <div className={`${styles.macroPill} ${styles.macroPillCarb}`}>
                 <span className={styles.macroLabel}>Carbs</span>
                 <div className={styles.macroValueRow}>
-                  <span className={styles.macroNum}>{Math.round(nt.carbs)}</span>
+                  <span className={styles.macroNum}>{Math.round(nt?.carbs || 0)}</span>
                   <span className={styles.macroUnit}>g</span>
                 </div>
               </div>
               <div className={`${styles.macroPill} ${styles.macroPillFat}`}>
                 <span className={styles.macroLabel}>Fats</span>
                 <div className={styles.macroValueRow}>
-                  <span className={styles.macroNum}>{Math.round(nt.fats)}</span>
+                  <span className={styles.macroNum}>{Math.round(nt?.fats || 0)}</span>
                   <span className={styles.macroUnit}>g</span>
                 </div>
               </div>
