@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import styles from './SignUp.module.css';
+import { API_BASE_URL } from '../../services/api';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const SignUpForm = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/register`, {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         body: data,
         headers: {
@@ -87,7 +88,7 @@ const SignUpForm = () => {
         deviceFormData.append("device_type", "web");
 
         try {
-          await fetch(`${import.meta.env.VITE_API_BASE_URL}/devices/register`, {
+          await fetch(`${API_BASE_URL}/devices/register`, {
             method: "POST",
             body: deviceFormData,
             headers: {

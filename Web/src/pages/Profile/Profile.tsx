@@ -5,23 +5,8 @@ import Header from '../../components/home/header/Header';
 import { fetchProfile, logout } from '../../services/profileService';
 import type { UserProfile } from '../../services/profileService';
 import styles from './Profile.module.css';
+import { resolveImageUrl } from '../../services/api';
 
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-function resolveImageUrl(rawUrl: string | null): string | null {
-  if (!rawUrl) return null;
-  const apiBase = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
-  if (!rawUrl.startsWith('http')) return `${apiBase}/${rawUrl.replace(/^\//, '')}`;
-  if (rawUrl.includes('localhost') || rawUrl.includes('127.0.0.1')) {
-    try {
-      const u = new URL(rawUrl);
-      return `${apiBase}${u.pathname}${u.search}`;
-    } catch {
-      return rawUrl;
-    }
-  }
-  return rawUrl;
-}
 
 function formatObjective(raw: string): string {
   return raw

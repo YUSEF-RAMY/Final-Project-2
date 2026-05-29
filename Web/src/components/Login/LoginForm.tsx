@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import styles from './Login.module.css';
+import { API_BASE_URL } from '../../services/api';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -52,7 +53,7 @@ const LoginForm = () => {
 
     try {
       const loginResponse = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/login`,
+        `${API_BASE_URL}/login`,
         {
           method: "POST",
           body: JSON.stringify({ email, password }),
@@ -75,7 +76,7 @@ const LoginForm = () => {
         
         try {
           await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/devices/register`,
+            `${API_BASE_URL}/devices/register`,
             {
               method: "POST",
               body: JSON.stringify({

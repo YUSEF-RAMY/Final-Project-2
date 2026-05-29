@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { requestForToken, onMessageListener } from '../services/firebase/messaging';
+import { API_BASE_URL } from '../services/api';
 
 type NotificationStatus = 'idle' | 'processing' | 'done';
 
@@ -22,7 +23,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = API_BASE_URL;
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, setState] = useState<NotificationState>({

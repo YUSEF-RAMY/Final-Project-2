@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchProfile } from '../../../services/profileService';
 import NotificationPanel from '../NotificationPanel/NotificationPanel';
 import styles from './Header.module.css';
+import { resolveImageUrl } from '../../../services/api';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -20,23 +21,7 @@ const Header: React.FC = () => {
         if (cancelled) return;
         const firstName = profile.name?.split(' ')[0] || 'User';
         setName(firstName);
-        
-        let imageUrl = profile.profile_image;
-        if (imageUrl) {
-          const apiBase = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
-          if (!imageUrl.startsWith('http')) {
-            imageUrl = `${apiBase}/${imageUrl.replace(/^\//, '')}`;
-          } else if (imageUrl.includes('localhost') || imageUrl.includes('127.0.0.1')) {
-            // Backend might return localhost URL while accessed via ngrok
-            try {
-              const urlObj = new URL(imageUrl);
-              imageUrl = `${apiBase}${urlObj.pathname}${urlObj.search}`;
-            } catch (e) {
-              // Ignore invalid URL
-            }
-          }
-        }
-        setProfileImage(imageUrl || null);
+        setProfileImage(resolveImageUrl(profile.profile_image));
       })
       .catch((err) => {
         if (err?.message === 'UNAUTHORIZED') navigate('/login');

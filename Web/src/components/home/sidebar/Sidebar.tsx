@@ -24,6 +24,14 @@ const Sidebar: React.FC = () => {
           Dashboard
         </NavLink>
 
+        <NavLink
+          to="/plan"
+          className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+        >
+          <i className="fa-solid fa-calendar-check"></i>
+          Plan
+        </NavLink>
+
         <NavLink 
           to="/analytics" 
           className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}

@@ -7,6 +7,7 @@ import Step2Activity from '../../components/OnboardingSteps/Step2Activity';
 import Step3Goal from '../../components/OnboardingSteps/Step3Goal';
 import Step4Final from '../../components/OnboardingSteps/Step4Final';
 import styles from '../../components/OnboardingSteps/OnboardingSteps.module.css';
+import { API_BASE_URL } from '../../services/api';
 
 // Removed CustomWindow and declare global for window since we use Context now
 
@@ -34,7 +35,7 @@ const OnboardingSteps: React.FC = () => {
   const [medical, setMedical] = useState<string>('');
   const [formData, setFormData] = useState<FormDataValues>({ age: '', gender: '', height: '', weight: '' });
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_URL = API_BASE_URL;
 
   // Converts Base64 string from camera capture to a File object
   const base64ToFile = (base64String: string, fileName: string): File => {

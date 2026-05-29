@@ -21,10 +21,10 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
   const userGrams = quantity === '' ? 0 : quantity;
   const multiplier = userGrams / 100;
 
-  const dynCalories = +(food.nutrition.calories * multiplier).toFixed(1);
-  const dynProtein = +(food.nutrition.protein * multiplier).toFixed(1);
-  const dynCarbs = +(food.nutrition.carbs * multiplier).toFixed(1);
-  const dynFat = +(food.nutrition.fat * multiplier).toFixed(1);
+  const dynCalories = +(Number(food.nutrition.calories) * multiplier).toFixed(1);
+  const dynProtein  = +(Number(food.nutrition.protein)  * multiplier).toFixed(1);
+  const dynCarbs    = +(Number(food.nutrition.carbs)    * multiplier).toFixed(1);
+  const dynFat      = +(Number(food.nutrition.fat)      * multiplier).toFixed(1);
 
   // Max macro for progress-bar proportions
   const maxMacro = Math.max(dynProtein, dynCarbs, dynFat, 1);
