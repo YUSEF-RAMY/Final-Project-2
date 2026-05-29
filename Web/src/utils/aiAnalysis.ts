@@ -11,7 +11,8 @@ export interface AIInsight {
   type: 'positive' | 'warning' | 'info';
 }
 
-function formatGoal(raw: string): string {
+function formatGoal(raw?: string): string {
+  if (!raw || typeof raw !== 'string') return 'Weight Loss';
   return raw.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
@@ -20,13 +21,13 @@ export function generateInsight(
   averages: SevenDayAverages,
   history: InBodyRecord[]
 ): AIInsight {
-  const bmi         = Number(profile.latest_body_report?.bmi               ?? 0);
-  const bodyFat     = Number(profile.latest_body_report?.body_fat_percentage ?? 0);
-  const goal        = profile.physical_profile?.primary_objective ?? 'weight_loss';
+  const bmi         = Number(profile?.latest_body_report?.bmi               ?? 0);
+  const bodyFat     = Number(profile?.latest_body_report?.body_fat_percentage ?? 0);
+  const goal        = profile?.physical_profile?.primary_objective ?? 'weight_loss';
   const goalLabel   = formatGoal(goal);
 
-  const proteinTarget  = Number(profile.nutritional_targets?.protein  ?? 100);
-  const calorieTarget  = Number(profile.nutritional_targets?.calories ?? 2000);
+  const proteinTarget  = Number(profile?.nutritional_targets?.protein  ?? 100);
+  const calorieTarget  = Number(profile?.nutritional_targets?.calories ?? 2000);
 
   // Compute trends from history (newest first assumed)
   const sorted = [...history].sort((a, b) =>

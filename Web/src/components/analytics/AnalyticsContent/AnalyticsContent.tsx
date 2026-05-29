@@ -50,7 +50,7 @@ const AnalyticsContent: React.FC = () => {
   }
 
   const { profile, history, averages, insight } = data;
-  const bmi         = Number(profile.latest_body_report?.bmi ?? 0);
+  const bmi         = Number(profile?.latest_body_report?.bmi ?? 0);
   const waterTarget = Number(localStorage.getItem('hfy_water_target')) || 2.5;
 
   return (

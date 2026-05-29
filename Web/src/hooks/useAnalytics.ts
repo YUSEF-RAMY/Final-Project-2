@@ -1,6 +1,6 @@
 // Fetches and assembles all data required by the Analytics page.
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProfile } from '../services/profileService';
 import type { UserProfile } from '../services/profileService';
