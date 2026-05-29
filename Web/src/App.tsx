@@ -9,6 +9,7 @@ import TargetPage from './pages/TargetPage/TargetPage';
 import Home from './pages/Home/Home';
 import FoodLogPage from './pages/FoodLogPage/FoodLogPage';
 import ProfilePage from './pages/Profile/Profile';
+import PlanPage from './pages/PlanPage/PlanPage';
 
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalNotification from './components/GlobalNotification/GlobalNotification';
@@ -44,6 +45,8 @@ function App() {
           <Route path="/food-log" element={<FoodLogPage />} />
 
           <Route path="/profile" element={<ProfilePage />} />
+
+          <Route path="/plan" element={<PlanPage />} />
 
         </Routes>
       </Router>

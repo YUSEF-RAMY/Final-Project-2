@@ -1,0 +1,23 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+}
+
+@media (max-width: 768px) {
+  .scrollable { padding: 16px; }
+}

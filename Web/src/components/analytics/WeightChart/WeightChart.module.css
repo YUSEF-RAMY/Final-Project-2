@@ -1,0 +1,109 @@
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.chartTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px;
+}
+
+.statsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.chipGreen  { background: #dcfce7; color: #16a34a; }
+.chipOrange { background: #fff7ed; color: #f97316; }
+
+.chipSub {
+  font-weight: 400;
+  opacity: .75;
+}
+
+.periodTabs {
+  display: flex;
+  gap: 2px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.tab:hover   { background: #e5e7eb; color: #374151; }
+.tabActive   { background: #fff; color: #16a34a; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+.tooltip {
+  background: #111827;
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.tooltipWeight {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tooltipDate {
+  display: block;
+  font-size: 11px;
+  opacity: .7;
+  margin-top: 2px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 180px;
+  color: #9ca3af;
+  font-size: 13px;
+  text-align: center;
+}
+
+.emptyState i {
+  font-size: 28px;
+  color: #d1d5db;
+}
