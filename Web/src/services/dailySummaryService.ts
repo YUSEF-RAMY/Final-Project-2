@@ -1,5 +1,7 @@
 // Everything related to fetching the user's daily nutrition summary from the backend
 
+import { API_BASE_URL, getAuthHeaders, handleUnauthorized } from './api';
+
 export interface MacroData {
   calories: number;
   protein: number;
@@ -60,10 +62,10 @@ function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
   const fix = (n: number): number => +(n / 100).toFixed(2);
 
   const fixMacro = (m: MacroData): MacroData => ({
-    calories: fix(m.calories),
-    protein:  fix(m.protein),
-    carbs:    fix(m.carbs),
-    fat:      fix(m.fat),
+    calories: fix(Number(m.calories)),
+    protein:  fix(Number(m.protein)),
+    carbs:    fix(Number(m.carbs)),
+    fat:      fix(Number(m.fat)),
   });
 
   const correctedConsumed = fixMacro(data.overview.consumed);
@@ -82,13 +84,13 @@ function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
       },
     },
     meals: data.meals.map((meal) => {
-      const fixedConsumed = fix(meal.metrics.consumed_calories);
+      const fixedConsumed = fix(Number(meal.metrics.consumed_calories));
       return {
         ...meal,
         metrics: {
           ...meal.metrics,
           consumed_calories:  fixedConsumed,
-          remaining_calories: Math.max(0, +(meal.metrics.target_calories - fixedConsumed).toFixed(2)),
+          remaining_calories: Math.max(0, +(Number(meal.metrics.target_calories) - fixedConsumed).toFixed(2)),
         },
         items: meal.items.map((item) => ({
           ...item,
@@ -103,21 +105,11 @@ export async function fetchDailySummary(date: string): Promise<DailySummaryData>
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const fullUrl = `${baseUrl}/foods/daily-summary?date=${date}`;
-  const response = await fetch(fullUrl, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-      'ngrok-skip-browser-warning': '69420',
-    },
+  const response = await fetch(`${API_BASE_URL}/foods/daily-summary?date=${date}`, {
+    headers: getAuthHeaders(),
   });
 
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userToken');
-    throw new Error('UNAUTHORIZED');
-  }
+  if (response.status === 401) handleUnauthorized();
 
   const text = await response.text();
   let result;

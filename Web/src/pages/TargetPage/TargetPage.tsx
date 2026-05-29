@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../../components/Target/Target.module.css';
+import { API_BASE_URL, getAuthHeaders } from '../../services/api';
 
 interface TargetData {
   calories: number;
@@ -27,15 +28,9 @@ const TargetPage: React.FC = () => {
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      // Use the centralized Environment Variable
-      const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
-      const response = await fetch(`${baseUrl}/daily-target`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-          'ngrok-skip-browser-warning': '69420'
-        }
+      // Use the centralized API configuration
+      const response = await fetch(`${API_BASE_URL}/daily-target`, {
+        headers: getAuthHeaders(),
       });
 
       if (response.status === 401) {

@@ -1,0 +1,30 @@
+.planLayout {
+  display: flex;
+  height: 100vh;
+  background-color: #f9fafb;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scrollableContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 36px;
+}
+
+@media (max-width: 768px) {
+  .planLayout {
+    padding-bottom: 70px;
+  }
+
+  .scrollableContent {
+    padding: 20px 16px;
+  }
+}

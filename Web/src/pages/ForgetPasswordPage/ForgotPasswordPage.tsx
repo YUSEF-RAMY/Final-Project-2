@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import styles from '../../components/ForgetPassword/ForgotPassword.module.css'; // 
+import styles from '../../components/ForgetPassword/ForgotPassword.module.css';
 import Step1 from '../../components/ForgetPassword/Step1';
 import Step2 from '../../components/ForgetPassword/Step2';
 import Step3 from '../../components/ForgetPassword/Step3';
 import Swal from 'sweetalert2';
+import { API_BASE_URL } from '../../services/api';
 
 const ForgotPasswordPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -13,7 +14,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState('05:00');
 
-  const API_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_URL = API_BASE_URL;
 
 
   const commonHeaders = {

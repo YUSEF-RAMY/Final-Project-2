@@ -1,0 +1,182 @@
+/* ── Card list ───────────────────────────────────────────────────────────────── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Single card ─────────────────────────────────────────────────────────────── */
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  border-left: 4px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Active card (Breakfast) gets a green left accent */
+.activeCard {
+  border-left-color: #10b981;
+}
+
+/* ── Left section ────────────────────────────────────────────────────────────── */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 160px;
+}
+
+.iconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.mealMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mealName {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.mealTime {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Centre: calorie target ──────────────────────────────────────────────────── */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 12px;
+  border-left: 1px solid #f3f4f6;
+  border-right: 1px solid #f3f4f6;
+  min-width: 130px;
+}
+
+.targetLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.calorieRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.calorieNum {
+  font-size: 48px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.calorieUnit {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+/* ── Right: macros ───────────────────────────────────────────────────────────── */
+.macros {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.macroRow {
+  display: grid;
+  grid-template-columns: 50px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+}
+
+.macroName {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.barTrack {
+  height: 4px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.macroVal {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+
+  .left {
+    min-width: unset;
+  }
+
+  .center {
+    border: none;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 10px 0;
+    min-width: unset;
+    align-items: flex-start;
+  }
+
+  .calorieNum {
+    font-size: 38px;
+  }
+
+  .macros {
+    min-width: unset;
+  }
+}

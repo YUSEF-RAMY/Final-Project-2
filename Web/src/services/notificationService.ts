@@ -1,5 +1,7 @@
 // API calls for notifications
 
+import { API_BASE_URL, getAuthHeaders } from './api';
+
 export interface AppNotification {
   id: number;
   title: string;
@@ -9,21 +11,9 @@ export interface AppNotification {
   created_at: string;
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-  if (!token) throw new Error('No authentication token found. Please log in again.');
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': '69420',
-  };
-}
-
 // GET /notifications
 export async function fetchNotifications(): Promise<AppNotification[]> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/notifications`, {
+  const response = await fetch(`${API_BASE_URL}/notifications`, {
     headers: getAuthHeaders(),
   });
 
@@ -47,8 +37,7 @@ export async function fetchNotifications(): Promise<AppNotification[]> {
 
 // POST /notifications/mark-as-read
 export async function markNotificationsAsRead(): Promise<void> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/notifications/mark-as-read`, {
+  const response = await fetch(`${API_BASE_URL}/notifications/mark-as-read`, {
     method: 'POST',
     headers: getAuthHeaders(),
   });
@@ -63,8 +52,7 @@ export async function markNotificationsAsRead(): Promise<void> {
 
 // DELETE /notifications/clear
 export async function clearAllNotifications(): Promise<void> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/notifications/clear`, {
+  const response = await fetch(`${API_BASE_URL}/notifications/clear`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });

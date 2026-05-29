@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import InBodyStats from '../../components/AnalysisInBody/InBodyStats';
 import type { InBodyData } from '../../components/AnalysisInBody/types';
 import styles from '../../components/AnalysisInBody/InBody.module.css';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL, resolveImageUrl } from '../../services/api';
 
 import { useNotification } from '../../context/NotificationContext';
 
@@ -29,7 +28,7 @@ const AnalysisInBodyPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/inbody/latest`, {
+      const response = await fetch(`${API_BASE_URL}/inbody/latest`, {
         signal,
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -99,7 +98,7 @@ const AnalysisInBodyPage: React.FC = () => {
     if (!inBodyData) return null;
     const path = inBodyData.image || inBodyData.inbody_image || inBodyData.file_path;
     if (!path) return null;
-    return path.startsWith('http') ? path : `${BASE_URL}${path}`;
+    return resolveImageUrl(path);
   }, [inBodyData]);
 
   return (
