@@ -1,0 +1,164 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1200px;
+  position: relative;
+  padding-bottom: 80px; /* room for the Log Meal button */
+}
+
+/* ── Page header ────────────────────────────────────────────────────────────── */
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ── Two-column grid ─────────────────────────────────────────────────────────── */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.mealColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryColumn {
+  position: sticky;
+  top: 0;
+}
+
+/* ── "+ Log Meal" fixed button ───────────────────────────────────────────────── */
+.logMealBtn {
+  position: fixed;
+  bottom: 28px;
+  left: 125px; /* center of sidebar */
+  transform: translateX(-50%);
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  z-index: 100;
+}
+
+.logMealBtn:hover {
+  background-color: #059669;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+}
+
+.logMealBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Skeletons ───────────────────────────────────────────────────────────────── */
+.skeletonBlock {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+
+.skeletonTitle  { height: 32px; width: 260px; }
+.skeletonSubtitle { height: 18px; width: 340px; margin-top: 6px; }
+.skeletonCard   { height: 120px; border-radius: 16px; }
+.skeletonPanel  { height: 480px; border-radius: 20px; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ── Error state ─────────────────────────────────────────────────────────────── */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
+  gap: 12px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.errorState i {
+  font-size: 40px;
+  color: #f97316;
+  margin-bottom: 8px;
+}
+
+.errorState h3 {
+  font-size: 18px;
+  color: #374151;
+  margin: 0;
+}
+
+.errorState p {
+  font-size: 14px;
+  margin: 0;
+  max-width: 320px;
+}
+
+.errorState button {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.errorState button:hover { background-color: #059669; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+  .summaryColumn {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageTitle { font-size: 22px; }
+  .logMealBtn {
+    left: 50%;
+    bottom: 80px; /* above mobile nav bar */
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}

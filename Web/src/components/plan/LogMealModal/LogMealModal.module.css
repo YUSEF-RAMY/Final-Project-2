@@ -1,0 +1,267 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.headerIcon {
+  width: 44px;
+  height: 44px;
+  background: #ecfdf5;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 2px 0 0;
+}
+
+.closeBtn {
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.closeBtn:hover { background: #e5e7eb; color: #374151; }
+
+/* ── Form ─────────────────────────────────────────────────────────────────────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ── Meal type tabs ──────────────────────────────────────────────────────────── */
+.mealTabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mealTab {
+  padding: 8px 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 50px;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mealTab:hover { border-color: #10b981; color: #10b981; }
+
+.mealTabActive {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+/* ── Search ──────────────────────────────────────────────────────────────────── */
+.searchWrap {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 14px 12px 38px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.searchInput:focus { border-color: #10b981; background: white; }
+
+/* ── Results ─────────────────────────────────────────────────────────────────── */
+.results {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+  background: white;
+}
+
+.loadingRow,
+.noResults {
+  padding: 16px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.resultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border: none;
+  border-bottom: 1px solid #f3f4f6;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.resultItem:last-child { border-bottom: none; }
+.resultItem:hover { background: #f9fafb; }
+
+.foodName  { font-size: 14px; color: #111827; font-weight: 500; }
+.foodKcal  { font-size: 12px; color: #9ca3af; }
+
+/* ── Amount ──────────────────────────────────────────────────────────────────── */
+.amountWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.amountInput {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.amountInput:focus { border-color: #10b981; background: white; }
+
+.amountBadge {
+  background: #ecfdf5;
+  color: #10b981;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ── Error ───────────────────────────────────────────────────────────────────── */
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Submit ──────────────────────────────────────────────────────────────────── */
+.submitBtn {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.submitBtn:hover:not(:disabled) { background: #059669; transform: translateY(-1px); }
+.submitBtn:disabled { opacity: 0.55; cursor: not-allowed; }
