@@ -1,0 +1,60 @@
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+.label  { font-size: 13px; font-weight: 600; color: #374151; margin: 0; }
+.range  { font-size: 11px; color: #9ca3af; margin: 2px 0 12px; }
+
+.bmiValue {
+  font-size: 48px;
+  font-weight: 800;
+  color: #16a34a;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.statusGreen  { background: #dcfce7; color: #16a34a; }
+.statusBlue   { background: #dbeafe; color: #2563eb; }
+.statusOrange { background: #fff7ed; color: #f97316; }
+.statusRed    { background: #fee2e2; color: #ef4444; }
+
+.gaugeWrap { margin-top: 8px; }
+
+.gaugeTrack {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #3b82f6 0%, #22c55e 30%, #22c55e 65%, #f97316 80%, #ef4444 100%);
+  margin-bottom: 4px;
+}
+
+.gaugeDot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #111827;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+
+.gaugeLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #9ca3af;
+}

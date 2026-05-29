@@ -16,6 +16,7 @@
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.1",
     "react-webcam": "^7.2.0",
+    "recharts": "^2.15.4",
     "sweetalert2": "^11.26.24"
   },
   "devDependencies": {
