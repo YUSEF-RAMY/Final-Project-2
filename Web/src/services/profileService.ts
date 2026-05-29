@@ -1,5 +1,7 @@
 // API calls for user profile
 
+import { API_BASE_URL, getAuthHeaders, handleUnauthorized } from './api';
+
 export interface LatestBodyReport {
   height: number;
   weight: number;
@@ -42,28 +44,12 @@ export interface UserProfile {
   created_at: string;
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-  if (!token) throw new Error('No authentication token found. Please log in again.');
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': '69420',
-  };
-}
-
 export async function fetchProfile(): Promise<UserProfile> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/profile`, {
+  const response = await fetch(`${API_BASE_URL}/profile`, {
     headers: getAuthHeaders(),
   });
 
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userToken');
-    throw new Error('UNAUTHORIZED');
-  }
+  if (response.status === 401) handleUnauthorized();
 
   const text = await response.text();
   let result;
@@ -82,9 +68,8 @@ export async function fetchProfile(): Promise<UserProfile> {
 }
 
 export async function logout(): Promise<void> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const headers = getAuthHeaders();
-  await fetch(`${baseUrl}/logout`, {
+  await fetch(`${API_BASE_URL}/logout`, {
     method: 'POST',
     headers,
   });

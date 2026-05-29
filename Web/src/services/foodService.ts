@@ -1,5 +1,7 @@
 // API calls for foods and meals
 
+import { API_BASE_URL, getAuthHeaders, handleUnauthorized } from './api';
+
 export interface FoodNutrition {
   calories: number;
   protein: number;
@@ -16,29 +18,13 @@ export interface Food {
   nutrition: FoodNutrition;
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');
-  if (!token) throw new Error('No authentication token found. Please log in again.');
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': '69420',
-  };
-}
-
 // Fetch all foods
 export async function fetchFoods(): Promise<Food[]> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/foods`, {
+  const response = await fetch(`${API_BASE_URL}/foods`, {
     headers: getAuthHeaders(),
   });
 
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userToken');
-    throw new Error('UNAUTHORIZED');
-  }
+  if (response.status === 401) handleUnauthorized();
 
   const text = await response.text();
   let result;
@@ -63,18 +49,13 @@ export async function addFoodToMeal(
   foodId: number,
   quantity: number
 ): Promise<unknown> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/foods/meals/${mealType}/items`, {
+  const response = await fetch(`${API_BASE_URL}/foods/meals/${mealType}/items`, {
     method: 'POST',
     headers: getAuthHeaders(),
     body: JSON.stringify({ food_id: foodId, quantity }),
   });
 
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userToken');
-    throw new Error('UNAUTHORIZED');
-  }
+  if (response.status === 401) handleUnauthorized();
 
   const text = await response.text();
   let result;
@@ -93,17 +74,12 @@ export async function addFoodToMeal(
 
 // Delete a food item from a meal
 export async function deleteFoodItem(itemId: number): Promise<unknown> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
-  const response = await fetch(`${baseUrl}/foods/delete-item/${itemId}`, {
+  const response = await fetch(`${API_BASE_URL}/foods/delete-item/${itemId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
 
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userToken');
-    throw new Error('UNAUTHORIZED');
-  }
+  if (response.status === 401) handleUnauthorized();
 
   const text = await response.text();
   let result;
