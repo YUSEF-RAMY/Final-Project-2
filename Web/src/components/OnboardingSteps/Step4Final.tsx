@@ -99,7 +99,7 @@ const Step4Final: React.FC<Step4FinalProps> = ({ medical, setMedical, selectedGo
       )}
 
       <div className={styles['card-body']} style={{ marginTop: '15px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '5px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '5px' }}>
           {diseasesList.map(d => (
             <label key={d.id} style={{ display: 'flex', alignItems: 'center', padding: '10px', background: medical.includes(d.id) ? '#e3f2fd' : '#f9f9f9', border: medical.includes(d.id) ? '1px solid #90caf9' : '1px solid #ddd', borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s' }}>
               <input

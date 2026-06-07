@@ -194,6 +194,22 @@ const ProfileContent: React.FC = () => {
             <StatTile value={pp.height} unit="cm"  label="Height" />
             <StatTile value={pp.weight} unit="kg"  label="Weight" />
           </div>
+
+          {/* Diseases */}
+          {pp.medical_conditions && pp.medical_conditions !== 'healthy' && (
+            <div className={styles.diseasesSection} style={{ marginTop: '16px', padding: '12px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#b91c1c', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <i className="fa-solid fa-notes-medical" /> Medical Conditions
+              </h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {pp.medical_conditions.split(',').map(disease => (
+                  <span key={disease} style={{ background: '#fca5a5', color: '#7f1d1d', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>
+                    {formatLabel(disease)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 3 ─ Goals & Targets */}

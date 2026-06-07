@@ -28,4 +28,5 @@ export interface InBodyData {
   created_at: string | null;
   image: string | null;
   inbody_image?: string;
+  previous_report?: InBodyData | null;
 }
