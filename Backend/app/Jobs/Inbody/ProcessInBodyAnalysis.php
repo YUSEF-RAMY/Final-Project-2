@@ -155,7 +155,7 @@ class ProcessInBodyAnalysis implements ShouldQueue
         $numericFields = [
             'weight', 'height', 'bmi', 'bmr', 'smm', 'pbf', 'body_fat_mass', 'water', 'protein', 'minerals',
             'visceral_fat_level', 'waist_hip_ratio', 'trunk_fat_mass', 'trunk_lean_mass', 'lbm', 'tdee',
-            'calories', 'target_protein', 'target_carbs', 'target_fats'
+            'calories', 'target_protein', 'target_carbs', 'target_fats',
         ];
 
         foreach ($numericFields as $field) {

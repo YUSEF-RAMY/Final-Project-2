@@ -42,7 +42,7 @@ class InBodyService
             $activityLevel = $extraData['activity_level'] ?? 3;
             $goal = $extraData['goal'] ?? 'maintain';
             $fitnessLevel = $extraData['fitness_level'] ?? 3;
-            
+
             $disease = $extraData['disease_condition'] ?? 'healthy';
             if (empty(trim($disease))) {
                 $disease = 'healthy';

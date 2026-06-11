@@ -16,6 +16,7 @@ use App\Models\InBodyRequest;
 use App\Services\Inbody\InBodyCalculationService;
 use App\Services\Inbody\InBodyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class InBodyController extends Controller
@@ -139,5 +140,57 @@ class InBodyController extends Controller
             'message' => 'Latest report retrieved successfully.',
             'data' => new BodyReportResource($report),
         ]);
+    }
+
+    public function classifyBodyType(Request $request)
+    {
+        $report = $request->user()->body_report()->latest()->firstOrFail();
+
+        try {
+            $response = Http::timeout(30)->post('https://heba15-body-classifier.hf.space/classify', [
+                'height' => (float) ($report->height ?? 0),
+                'weight' => (float) ($report->weight ?? 0),
+                'age' => (int) ($report->age ?? 0),
+                'gender' => strtolower($report->gender ?? 'male'),
+                'pbf' => (float) ($report->pbf ?? 0),
+                'smm' => (float) ($report->smm ?? 0),
+                'body_fat_mass' => max(0.5, (float) ($report->body_fat_mass ?? 0.5)),
+                'water' => (float) ($report->water ?? 0),
+                'protein' => (float) ($report->protein ?? 0),
+                'minerals' => (float) ($report->minerals ?? 0),
+            ]);
+
+            if ($response->failed()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to classify body type from ML service.',
+                    'details' => $response->json(),
+                ], 500);
+            }
+
+            $data = $response->json();
+
+            $classification = $report->classification()->updateOrCreate(
+                ['body_report_id' => $report->id],
+                [
+                    'category' => $data['category'] ?? null,
+                    'reasoning' => $data['reasoning'] ?? null,
+                    'metrics' => $data['metrics'] ?? null,
+                ],
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'status_code' => 200,
+                'message' => 'Body type classified successfully.',
+                'data' => [
+                    'category' => $classification->category,
+                    'reasoning' => $classification->reasoning,
+                    'metrics' => $classification->metrics,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 }
