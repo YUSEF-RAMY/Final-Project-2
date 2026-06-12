@@ -21,7 +21,7 @@ class ProfileController extends Controller
             'linkedSocialAccounts',
             'devices',
             'meals',
-            'mealPlans'
+            'mealPlans',
         ]);
 
         return response()->json([
