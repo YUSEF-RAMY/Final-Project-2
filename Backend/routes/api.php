@@ -43,6 +43,7 @@ Route::middleware(['CheckTokenExpiration', 'auth:sanctum'])->group(function () {
             Route::post('/update-goals', 'updateGoals');
 
             Route::get('/latest', 'getLatestReport');
+            Route::post('/classify', 'classifyBodyType');
             Route::get('/status/{traceId}', 'checkStatus');
         });
 
