@@ -140,7 +140,9 @@ class InBodyController extends Controller
 
     public function getLatestReport(Request $request)
     {
-        $report = $this->inBodyService->getLatestReport($request->user());
+        $history = $this->inBodyService->getHistory($request->user());
+        $report = $history->first();
+        $previous = $history->count() > 1 ? $history->get(1) : null;
 
         if (! $report) {
             return response()->json([
@@ -151,11 +153,14 @@ class InBodyController extends Controller
             ]);
         }
 
+        $data = (new BodyReportResource($report))->resolve();
+        $data['previous_report'] = $previous ? (new BodyReportResource($previous))->resolve() : null;
+
         return response()->json([
             'status' => 'success',
             'status_code' => 200,
             'message' => 'Latest report retrieved successfully.',
-            'data' => new BodyReportResource($report),
+            'data' => $data,
         ]);
     }
 
@@ -214,6 +219,7 @@ class InBodyController extends Controller
                     'category' => $data['category'] ?? null,
                     'reasoning' => $data['reasoning'] ?? null,
                     'metrics' => $data['metrics'] ?? null,
+                    'disease_condition' => $request->user()->profile?->medical_conditions ?? 'healthy',
                 ],
             );
 
