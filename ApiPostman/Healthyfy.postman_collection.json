@@ -97,9 +97,9 @@
               ]
             },
             "url": {
-              "raw": "{{url}}/login",
+              "raw": "{{docker_url}}/login",
               "host": [
-                "{{url}}"
+                "{{docker_url}}"
               ],
               "path": [
                 "login"
@@ -754,35 +754,41 @@
                   "key": "image",
                   "type": "file",
                   "uuid": "18aeffd2-f54a-4d1e-be4b-967d6d480871",
-                  "value": null
+                  "src": "/home/yusef/Documents/inbody1.jpeg"
+                },
+                {
+                  "key": "goal",
+                  "value": "maintain",
+                  "description": "lose_fat, maintain , gain_muscle",
+                  "type": "text",
+                  "uuid": "8726de5a-54ff-45e9-93be-4a22204a7c66"
                 },
                 {
                   "key": "activity_level",
-                  "value": "lightly_active",
-                  "description": "sedentary || lightly_active || moderately_active ||very_active",
+                  "value": "3",
+                  "description": "1 , 2 , 3 , 4 ,5 ",
                   "type": "text",
                   "uuid": "29dc495b-b855-4385-b82f-70741395b512"
                 },
                 {
-                  "key": "primary_objective",
-                  "value": "build_muscle",
-                  "description": "build_muscle || lose_weight || maintain",
+                  "key": "fitness_level",
+                  "value": "3",
+                  "description": "1 , 2 , 3 , 4 ,5 ",
                   "type": "text",
-                  "uuid": "2ca1e38f-c53b-479a-b503-7b0ce8032d4a"
+                  "uuid": "7f348b40-382b-4a86-aa24-9db37a81d065"
                 },
                 {
-                  "key": "medical_conditions",
-                  "value": "",
-                  "description": "nullable",
+                  "key": "disease_condition",
+                  "value": "healthy",
                   "type": "text",
-                  "uuid": "c03b3f2b-6fcb-4037-8aca-5d6ebdb6759f"
+                  "uuid": "44e1795e-5888-43e0-9d43-b9c4560906df"
                 }
               ]
             },
             "url": {
-              "raw": "{{url}}/inbody/analyze",
+              "raw": "{{ngrok_url}}/inbody/analyze",
               "host": [
-                "{{url}}"
+                "{{ngrok_url}}"
               ],
               "path": [
                 "inbody",
@@ -872,6 +878,44 @@
               "path": [
                 "inbody",
                 "manual"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Body Classification",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{docker_url}}/inbody/classify",
+              "host": [
+                "{{docker_url}}"
+              ],
+              "path": [
+                "inbody",
+                "classify"
               ]
             }
           },
