@@ -1,13 +1,12 @@
 // Fetches and assembles all data required by the Analytics page.
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProfile } from '../services/profileService';
 import type { UserProfile } from '../services/profileService';
 import {
-  fetchInBodyHistory,
-  fetchLatestInBody,
   fetch7DayAverages,
+  normaliseRecord,
 } from '../services/analyticsService';
 import type { InBodyRecord, SevenDayAverages } from '../services/analyticsService';
 import { generateInsight } from '../utils/aiAnalysis';
@@ -37,17 +36,20 @@ export function useAnalytics(): UseAnalyticsResult {
     setLoading(true);
     setError(null);
     try {
-      // Fetch profile, history, and 7-day averages in parallel
-      const [profile, history, latest, averages] = await Promise.all([
+      // Fetch profile and 7-day averages in parallel
+      const [profile, averages] = await Promise.all([
         fetchProfile(),
-        fetchInBodyHistory(),
-        fetchLatestInBody(),
         fetch7DayAverages(),
       ]);
 
-      // If history API isn't available but latest is, use latest as the only record
-      const records: InBodyRecord[] =
-        history.length > 0 ? history : latest ? [latest] : [];
+      // Use body_reports from the profile response
+      const rawReports = Array.isArray(profile.body_reports) ? profile.body_reports : [];
+      let records: InBodyRecord[] = rawReports.map(normaliseRecord);
+
+      // Fallback: If no body_reports array exists but latest_body_report exists, use that
+      if (records.length === 0 && profile.latest_body_report) {
+        records = [normaliseRecord(profile.latest_body_report as unknown as Record<string, unknown>)];
+      }
 
       const insight = generateInsight(profile, averages, records);
 
@@ -65,7 +67,13 @@ export function useAnalytics(): UseAnalyticsResult {
     }
   }, [navigate]);
 
-  useEffect(() => { load(); }, [load]);
+  const initialLoadRef = useRef(false);
+  useEffect(() => {
+    if (!initialLoadRef.current) {
+      initialLoadRef.current = true;
+      load();
+    }
+  }, [load]);
 
   // Refresh on tab focus
   useEffect(() => {
@@ -91,7 +99,7 @@ export interface ChartPoint {
   fatMass:  number;     // weight - muscle_mass (used for dashed line)
 }
 
-const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 
 export function buildChartData(history: InBodyRecord[], period: ChartPeriod): ChartPoint[] {
   const currentRecord = history[0] || { weight: 68.4, muscle_mass: 32.1 };
@@ -154,11 +162,25 @@ export function buildChartData(history: InBodyRecord[], period: ChartPeriod): Ch
       new Date(b.measured_at ?? b.created_at ?? '').getTime()
     );
 
+  // Track how many times a label string appears to make it unique
+  const labelCounts: Record<string, number> = {};
+
   return sorted.map((r) => {
     const d = new Date(r.measured_at ?? r.created_at ?? '');
     const w  = Number(r.weight);
     const m  = Number(r.muscle_mass);
-    const labelStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    
+    let labelStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    
+    if (labelCounts[labelStr]) {
+      labelCounts[labelStr]++;
+      // Add time to make it unique if multiple scans on the same day
+      const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      labelStr = `${labelStr} (${timeStr})`;
+    } else {
+      labelCounts[labelStr] = 1;
+    }
+
     return {
       label:   labelStr,
       date:    (r.measured_at ?? r.created_at ?? '').slice(0, 10),

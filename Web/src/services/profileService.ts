@@ -41,6 +41,7 @@ export interface UserProfile {
     fats: number;
   } | null;
   latest_body_report: LatestBodyReport | null;
+  body_reports?: any[];
   created_at: string;
 }
 

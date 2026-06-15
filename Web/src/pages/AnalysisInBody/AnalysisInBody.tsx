@@ -163,13 +163,23 @@ const AnalysisInBodyPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          className={styles.continueButton}
-          onClick={() => window.location.href = '/target'}
-          disabled={!inBodyData}
-        >
-          Continue to Target Page <i className="fa-solid fa-arrow-right"></i>
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button
+            className={styles.continueButton}
+            onClick={() => window.location.href = '/target'}
+            disabled={!inBodyData}
+          >
+            Continue to Target Page <i className="fa-solid fa-arrow-right"></i>
+          </button>
+          
+          <button
+            className={styles.continueButton}
+            style={{ background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb' }}
+            onClick={() => window.location.href = '/analytics'}
+          >
+            View Progress Analytics <i className="fa-solid fa-chart-line"></i>
+          </button>
+        </div>
       </aside>
 
       <main className={styles.mainContent}>
