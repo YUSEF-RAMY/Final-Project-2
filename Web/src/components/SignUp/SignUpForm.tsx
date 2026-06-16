@@ -2,7 +2,11 @@ import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import styles from './SignUp.module.css';
-import { API_BASE_URL } from '../../services/api';
+import {
+  registerWithEmail,
+  saveToken,
+  registerDevice,
+} from '../../services/authService';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -23,16 +27,6 @@ const SignUpForm = () => {
   const isNameValid = formData.fullName.trim().split(/\s+/).length >= 4;
   const isPassMatch = formData.confirmPassword === formData.password && formData.confirmPassword !== '';
 
-
-  const getManualDeviceToken = () => {
-    let deviceToken = localStorage.getItem('manual_device_token');
-    if (!deviceToken) {
-      deviceToken = `web-${crypto.randomUUID()}-${Date.now()}`;
-      localStorage.setItem('manual_device_token', deviceToken);
-    }
-    return deviceToken;
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -45,71 +39,38 @@ const SignUpForm = () => {
     e.preventDefault();
     if (!isNameValid || !isEmailValid || !isPassMatch) {
       Swal.fire({
-        icon: "error",
-        title: "Check Inputs",
-        text: "Please make sure your name is 4 words and passwords match.",
+        icon: 'error',
+        title: 'Check Inputs',
+        text: 'Please make sure your name is 4 words and passwords match.',
       });
       return;
     }
 
-    Swal.fire({ title: "Creating Account...", didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: 'Creating Account...', didOpen: () => Swal.showLoading() });
 
     const data = new FormData();
-    data.append("name", formData.fullName);
-    data.append("email", formData.email);
-    data.append("password", formData.password);
-    data.append("password_confirmation", formData.confirmPassword);
-
+    data.append('name', formData.fullName);
+    data.append('email', formData.email);
+    data.append('password', formData.password);
+    data.append('password_confirmation', formData.confirmPassword);
 
     if (profileImage) {
-      data.append("profile_image", profileImage);
+      data.append('profile_image', profileImage);
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
-        method: "POST",
-        body: data,
-        headers: {
-          "Accept": "application/json",
-          "ngrok-skip-browser-warning": "69420"
-        },
-      });
+      const result = await registerWithEmail(data);
+      const token = result.data.token;
 
-      const result = await response.json();
+      saveToken(token);
+      await registerDevice(token);
 
-      if (response.ok && result.status === "success") {
-        const userToken = result.data.token;
-        localStorage.setItem("userToken", userToken);
-
-
-        const manualToken = getManualDeviceToken();
-        const deviceFormData = new FormData();
-        deviceFormData.append("fcm_token", manualToken);
-        deviceFormData.append("device_type", "web");
-
-        try {
-          await fetch(`${API_BASE_URL}/devices/register`, {
-            method: "POST",
-            body: deviceFormData,
-            headers: {
-              "Authorization": `Bearer ${userToken}`,
-              "Accept": "application/json",
-              "ngrok-skip-browser-warning": "69420"
-            },
-          });
-          console.log("Device Registered Successfully");
-        } catch (err) {
-          console.error("Device registration skipped", err);
-        }
-
-        Swal.fire({ icon: "success", title: "Welcome!", text: result.message, timer: 2000, showConfirmButton: false })
-          .then(() => navigate("/onboarding1"));
-      } else {
-        Swal.fire({ icon: "error", title: "Oops...", text: result.message || "Registration failed" });
-      }
+      Swal.fire({ icon: 'success', title: 'Welcome!', text: result.message, timer: 2000, showConfirmButton: false })
+        .then(() => navigate('/onboarding1'));
     } catch (err) {
       console.error(err);
-      Swal.fire({ icon: "error", title: "Error", text: "Server is unreachable" });
+      const message = err instanceof Error ? err.message : 'Server is unreachable';
+      Swal.fire({ icon: 'error', title: 'Oops...', text: message });
     }
   };
 

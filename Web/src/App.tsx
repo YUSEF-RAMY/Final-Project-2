@@ -11,6 +11,7 @@ import FoodLogPage from './pages/FoodLogPage/FoodLogPage';
 import ProfilePage from './pages/Profile/Profile';
 import PlanPage from './pages/PlanPage/PlanPage';
 import AnalyticsPage from './pages/AnalyticsPage/AnalyticsPage';
+import GoogleCallback from './pages/GoogleCallback/GoogleCallback';
 
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalNotification from './components/GlobalNotification/GlobalNotification';
@@ -23,6 +24,7 @@ function App() {
         <GlobalNotification />
         <Routes>
           <Route path="/" element={<Splash />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
 
           <Route path="/login" element={<div className="login-wrapper"><Login /></div>} />
 

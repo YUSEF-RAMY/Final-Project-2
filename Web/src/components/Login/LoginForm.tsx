@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import styles from './Login.module.css';
-import { API_BASE_URL } from '../../services/api';
+import {
+  loginWithEmail,
+  saveToken,
+  registerDevice,
+  initiateGoogleLogin,
+} from '../../services/authService';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -10,121 +15,72 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // 1.validation functions
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-  const getManualDeviceToken = () => {
-    let deviceToken = localStorage.getItem('manual_device_token');
-    if (!deviceToken) {
-      // generate a unique token 
-      deviceToken = `web-${crypto.randomUUID()}-${Date.now()}`;
-      localStorage.setItem('manual_device_token', deviceToken);
-    }
-    return deviceToken;
-  };
+  const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
-  const handleTogglePassword = () => {
-    setShowPassword(!showPassword);
-  };
+  // ─── Email / Password login ──────────────────────────────────────────────
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateEmail(email) || password.length < 6) {
       Swal.fire({
-        icon: "error",
-        title: "خطأ في البيانات",
-        text: "يرجى التأكد من كتابة الإيميل والباسورد بشكل صحيح قبل الإرسال.",
-        confirmButtonColor: "#1a7a44",
+        icon: 'error',
+        title: 'خطأ في البيانات',
+        text: 'يرجى التأكد من كتابة الإيميل والباسورد بشكل صحيح قبل الإرسال.',
+        confirmButtonColor: '#1a7a44',
       });
       return;
     }
 
-    Swal.fire({
-      title: "Logging in....",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+    Swal.fire({ title: 'Logging in....', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     try {
-      const loginResponse = await fetch(
-        `${API_BASE_URL}/login`,
-        {
-          method: "POST",
-          body: JSON.stringify({ email, password }),
-          headers: { 
-            "Accept": "application/json",
-            'Content-Type': 'application/json',
-            "ngrok-skip-browser-warning": "69420" 
-          },
-        }
-      );
+      const result = await loginWithEmail(email, password);
+      const token = result.data.token;
 
-      const loginResult = await loginResponse.json();
+      saveToken(token);
+      await registerDevice(token);
 
-      if (loginResponse.ok && loginResult.status === "success") {
-        const userToken = loginResult.data.token;
-        localStorage.setItem("userToken", userToken);
-
-        // --- Stage 2: Manually Register Device ---
-        const manualToken = getManualDeviceToken();
-        
-        try {
-          await fetch(
-            `${API_BASE_URL}/devices/register`,
-            {
-              method: "POST",
-              body: JSON.stringify({
-                fcm_token: manualToken,
-                device_type: "web"
-              }),
-              headers: { 
-                "Authorization": `Bearer ${userToken}`,
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "69420" 
-              },
-            }
-          );
-          console.log("Device registered manually:", manualToken);
-        } catch (deviceError) {
-          console.error("Manual device registration failed:", deviceError);
-        }
-
-        // success message and redirect
-        Swal.fire({
-          icon: "success",
-          title: "Successfully completed",
-          text: loginResult.message,
-          timer: 2000,
-          showConfirmButton: false,
-        }).then(() => {
-          navigate("/dashboard"); 
-        });
-
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Login failed...",
-          text: loginResult.message || "Incorrect email or password",
-          confirmButtonColor: "#e74c3c",
-        });
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
       Swal.fire({
-        icon: "error",
-        title: "Sorry",
-        text: "An error occurred while connecting to the server.",
-        confirmButtonColor: "#e74c3c",
+        icon: 'success',
+        title: 'Successfully completed',
+        text: result.message,
+        timer: 2000,
+        showConfirmButton: false,
+      }).then(() => navigate('/dashboard'));
+    } catch (error) {
+      console.error('Login Error:', error);
+      const message = error instanceof Error ? error.message : 'An error occurred while connecting to the server.';
+      Swal.fire({
+        icon: 'error',
+        title: 'Login failed...',
+        text: message,
+        confirmButtonColor: '#e74c3c',
       });
     }
   };
+
+  // ─── Google OAuth ────────────────────────────────────────────────────────
+
+  const handleGoogleLogin = async () => {
+    Swal.fire({ title: 'Redirecting to Google...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    try {
+      await initiateGoogleLogin();
+      // Swall will be closed by navigation to the Google page
+    } catch (error) {
+      console.error('Google Login Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Login failed',
+        text: 'Could not connect to Google login. Please try again.',
+        confirmButtonColor: '#e74c3c',
+      });
+    }
+  };
+
+  // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
     <div className={styles['login-box']}>
@@ -140,7 +96,7 @@ const LoginForm = () => {
             <input
               type="email"
               placeholder="name@example.com"
-              className={`${email ? (validateEmail(email) ? styles.valid : styles.invalid) : ""}`}
+              className={`${email ? (validateEmail(email) ? styles.valid : styles.invalid) : ''}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -152,15 +108,15 @@ const LoginForm = () => {
           <label>Password</label>
           <div className={styles['input-wrapper']}>
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className={`${password ? (password.length >= 6 ? styles.valid : styles.invalid) : ""}`}
+              className={`${password ? (password.length >= 6 ? styles.valid : styles.invalid) : ''}`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <i
               className={`fa-regular ${showPassword ? 'fa-eye' : 'fa-eye-slash'}`}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: 'pointer' }}
               onClick={handleTogglePassword}
             ></i>
           </div>
@@ -175,11 +131,8 @@ const LoginForm = () => {
       <div className={styles.divider}>OR CONTINUE WITH</div>
 
       <div className={styles['social-btns']}>
-        <button className={styles['social-btn']}>
-          <i className="fa-brands fa-google" style={{ color: "#db4437" }}></i> Google
-        </button>
-        <button className={styles['social-btn']}>
-          <i className="fa-brands fa-facebook" style={{ color: "#4267b2" }}></i> Facebook
+        <button type="button" className={styles['social-btn']} onClick={handleGoogleLogin}>
+          <i className="fa-brands fa-google" style={{ color: '#db4437' }}></i> Google
         </button>
       </div>
 
@@ -189,4 +142,5 @@ const LoginForm = () => {
     </div>
   );
 };
+
 export default LoginForm;
