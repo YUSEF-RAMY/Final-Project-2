@@ -53,7 +53,7 @@ const HomeContent: React.FC = () => {
 
       {/* Mid col */}
       <div className={styles.column}>
-        <MealPlan meals={data.meals} onRefetch={refetch} />
+        <MealPlan meals={data.meals} mealTargets={data.meal_targets} onRefetch={refetch} />
       </div>
 
       {/* Right col */}
