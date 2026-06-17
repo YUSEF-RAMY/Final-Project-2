@@ -56,6 +56,10 @@ export async function addFoodToMeal(
   formData.append('food_id', foodId.toString());
   formData.append('quantity', quantity.toString());
 
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  formData.append('date', today);
+
   const response = await fetch(`${API_BASE_URL}/foods/meals/${mealType}/items`, {
     method: 'POST',
     headers: getAuthHeadersMultipart(),

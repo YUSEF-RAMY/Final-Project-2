@@ -20,7 +20,10 @@ export function usePlan(): UsePlanResult {
   const [error, setError] = useState<string | null>(null);
 
   // Memoized so it never changes identity mid-session — avoids infinite refetch loop
-  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const today = useMemo(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }, []);
 
   const loadData = useCallback(async (force = false) => {
     setLoading(true);
