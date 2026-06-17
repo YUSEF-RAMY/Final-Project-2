@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7c74ea56658cb8f7bb6b0e37dcccbd5",
+    "content-hash": "1a3752d38f6586b8f0d498c71207299b",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -9288,6 +9288,128 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.1"
             },
             "time": "2025-03-19T14:43:43+00:00"
+        },
+        {
+            "name": "laramint/laravel-brain",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laramint/laravel-brain.git",
+                "reference": "4194817ea3202ff04587ff04e45fc2b3a271a33f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laramint/laravel-brain/zipball/4194817ea3202ff04587ff04e45fc2b3a271a33f",
+                "reference": "4194817ea3202ff04587ff04e45fc2b3a271a33f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "laramint/laravel-stress": "^1.0",
+                "nikic/php-parser": "^5.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "laramint/laravel-security-scanner": "^0.1",
+                "larastan/larastan": "^3.9",
+                "laravel/pint": "^1.29",
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
+                "pestphp/pest": "^3.0"
+            },
+            "suggest": {
+                "laramint/laravel-security-scanner": "Install in your app (--dev) to replace Brain's built-in source security rules with the more rigorous taint-based scanner. Brain auto-detects vendor/bin/php-security-scanner and falls back to built-in rules if absent."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaraMint\\LaravelBrain\\LaravelBrainServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaraMint\\LaravelBrain\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Visualize your Laravel request lifecycle as an interactive graph",
+            "support": {
+                "issues": "https://github.com/laramint/laravel-brain/issues",
+                "source": "https://github.com/laramint/laravel-brain/tree/v2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/mrmarchone",
+                    "type": "buy_me_a_coffee"
+                },
+                {
+                    "url": "https://github.com/mrmarchone",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-19T09:14:37+00:00"
+        },
+        {
+            "name": "laramint/laravel-stress",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laramint/laravel-stress.git",
+                "reference": "adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laramint/laravel-stress/zipball/adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb",
+                "reference": "adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "larastan/larastan": "^2.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5 || ^10.0 || ^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaraMint\\LaravelStress\\LaravelStressServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaraMint\\LaravelStress\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Fire-and-forget HTTP stress testing runner for Laravel development environments",
+            "keywords": [
+                "development",
+                "http",
+                "laravel",
+                "load-test",
+                "stress-test"
+            ],
+            "support": {
+                "issues": "https://github.com/laramint/laravel-stress/issues",
+                "source": "https://github.com/laramint/laravel-stress/tree/v1.0.2"
+            },
+            "time": "2026-05-06T18:24:33+00:00"
         },
         {
             "name": "laravel/boost",

@@ -17,6 +17,7 @@
     "sail": false,
     "skills": [
         "laravel-best-practices",
+        "socialite-development",
         "fluxui-development",
         "livewire-development",
         "pest-testing",
