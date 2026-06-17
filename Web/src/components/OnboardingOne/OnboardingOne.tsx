@@ -23,7 +23,7 @@ const OnboardingOne = () => {
 
 
       <div className="content-section">
-        <p className="brand-name">Healthyfy</p>
+        <p className="brand-name">Healthify</p>
         <h1 className="main-title">The Digital<br /><span>Nutritionist</span></h1>
         <p className="description">
           Step into a new era of wellness. Experience a highly curated,

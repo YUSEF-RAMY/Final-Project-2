@@ -119,7 +119,7 @@ const AnalysisInBodyPage: React.FC = () => {
     <div className={styles.pageWrapper}>
       <aside className={styles.sidebar}>
         <div className={styles.sidebarLogo}>
-          <i className="fa-solid fa-leaf"></i> Healthyfy
+          <i className="fa-solid fa-leaf"></i> Healthify
         </div>
 
         <h2 className={styles.sidebarTitle}>Precision starts here.</h2>
