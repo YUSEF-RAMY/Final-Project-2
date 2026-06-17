@@ -19,10 +19,10 @@ Route::prefix('auth')->controller(SocialAuthController::class)->group(function (
 
 // Group Auth Controller without middleware (register, login, forgot-password, verify-otp, reset-password)
 Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
+    Route::post('/register', 'register')->middleware('throttle:5,1');
+    Route::post('/login', 'login')->middleware('throttle:5,1');
     Route::post('/forgot-password', 'forgotPassword');
-    Route::post('/verify-otp', 'verifyOtp');
+    Route::post('/verify-otp', 'verifyOtp')->middleware('throttle:3,1');
     Route::post('/reset-password', 'resetPassword');
 });
 
