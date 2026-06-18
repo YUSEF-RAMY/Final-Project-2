@@ -27,20 +27,20 @@ dependencies:
   json_annotation: ^4.9.0
 
   # ── Responsive UI ────────────────────────────────────────────────
-  flutter_screenutil: ^5.9.3
+  flutter_screenutil: ^5.10.5
 
   # ── Navigation ───────────────────────────────────────────────────
-  go_router: ^14.6.2
+  go_router: ^15.0.0
 
   # ── Local Storage ────────────────────────────────────────────────
-  shared_preferences: ^2.3.3
-  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.5.0
+  flutter_secure_storage: ^9.2.3
 
   # ── Assets / UI ──────────────────────────────────────────────────
-  flutter_svg: ^2.0.10+1
-  cached_network_image: ^3.4.1
-  lottie: ^3.1.3
-  google_fonts: ^6.2.1
+  flutter_svg: ^2.3.0+1
+  cached_network_image: ^3.7.0
+  lottie: ^3.2.0
+  google_fonts: ^6.3.2
 
   # ── Utilities ────────────────────────────────────────────────────
   dartz: ^0.10.1
@@ -52,8 +52,14 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
   # ── Code Generation ──────────────────────────────────────────────
-  build_runner: ^2.4.13
-  json_serializable: ^6.8.0
+  build_runner: ^2.5.4
+  json_serializable: ^6.10.2
 
 flutter:
   uses-material-design: true
+
+assets:
+  - assets/images/
+  - assets/icons/
+  - assets/animations/
+  - assets/fonts/
