@@ -35,13 +35,63 @@ inbody-ai-vision/Training/data/
 *.sublime-project
 *.sublime-workspace
 
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+pip-log.txt
+
+# Environment variables
+.env
+.env.local
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Model artifacts
+**/*.keras
+**/*.pkl
+**/*.h5
+**/*.pb
+!**/saved_model/metadata.json
+!**/saved_model/.gitkeep
+
+# Datasets
+**/data/*.csv
+**/data/*.parquet
+!**/data/.gitkeep
+
+# Training images & viz
+**/training_curves.png
+**/training_history.png
+**/viz_*.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs and temp files
+# Logs
 *.log
 *.tmp
-*.cache/pycache__/
-.ipynb_checkpoints/
-.vercel
+
+# Vercel
+.vercel/
