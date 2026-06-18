@@ -53,9 +53,14 @@ class SocialAuthController extends Controller
 
             // Handle the login/registration business logic
             $result = $this->handleSocialLoginAction->execute($socialUserDTO);
+            $user = $result['user'];
+
+            // Check if user is newly created or pre-existing
+            $isNewUser = $result['is_new_user'];
+            $needsOnboarding = $isNewUser ? 'true' : 'false';
 
             $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
-            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $result['token'] . '&name=' . urlencode($result['user']->name);
+            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $result['token'] . '&name=' . urlencode($user->name) . '&needs_onboarding=' . $needsOnboarding;
 
             return redirect($redirectUrl);
         } catch (InvalidArgumentException $e) {
