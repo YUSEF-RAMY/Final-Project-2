@@ -44,3 +44,4 @@ Thumbs.db
 *.tmp
 *.cache/pycache__/
 .ipynb_checkpoints/
+.vercel
