@@ -1,0 +1,97 @@
+{
+  "trained_at": "2026-05-11T14:10:11.841522",
+  "input_dim": 36,
+  "metrics": {
+    "calories": {
+      "mae": 40.406,
+      "r2": 0.9906
+    },
+    "protein": {
+      "mae": 12.873,
+      "r2": 0.7536
+    },
+    "carbs": {
+      "mae": 20.16,
+      "r2": 0.9115
+    },
+    "fat": {
+      "mae": 9.668,
+      "r2": 0.7259
+    }
+  },
+  "output_names": [
+    "calories",
+    "protein",
+    "carbs",
+    "fat"
+  ],
+  "valid_goals": [
+    "lose_fat",
+    "maintain",
+    "gain_muscle"
+  ],
+  "valid_diseases": [
+    "healthy",
+    "overweight",
+    "insulin_resistance",
+    "underweight",
+    "diabetes_type2",
+    "hypertension",
+    "obesity",
+    "fatty_liver",
+    "heart_disease",
+    "hypothyroidism",
+    "kidney_disease",
+    "pcos"
+  ],
+  "training_config": {
+    "epochs": 80,
+    "batch_size": 256,
+    "loss": "huber",
+    "optimizer": "adamw"
+  },
+  "feature_layout": {
+    "numeric_cols": [
+      "height",
+      "weight",
+      "age",
+      "activity_level",
+      "fitness_level",
+      "muscle_mass",
+      "body_fat_percentage",
+      "body_fat_mass",
+      "water",
+      "protein_intake",
+      "minerals",
+      "visceral_fat_level",
+      "waist_hip_ratio",
+      "trunk_fat_mass",
+      "trunk_lean_mass",
+      "inbody_score",
+      "bmr",
+      "lbm",
+      "tdee",
+      "bmi"
+    ],
+    "gender": "binary [19]",
+    "goal_onehot": [
+      "lose_fat",
+      "maintain",
+      "gain_muscle"
+    ],
+    "disease_onehot": [
+      "healthy",
+      "overweight",
+      "insulin_resistance",
+      "underweight",
+      "diabetes_type2",
+      "hypertension",
+      "obesity",
+      "fatty_liver",
+      "heart_disease",
+      "hypothyroidism",
+      "kidney_disease",
+      "pcos"
+    ]
+  }
+}

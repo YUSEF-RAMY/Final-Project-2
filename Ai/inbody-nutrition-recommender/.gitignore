@@ -1,0 +1,54 @@
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Model artifacts (too large for Git)
+saved_model/*.keras
+saved_model/*.pkl
+saved_model/*.h5
+saved_model/*.pb
+saved_model/variables/
+!saved_model/metadata.json
+!saved_model/.gitkeep
+
+# Dataset (too large for Git)
+data/*.csv
+data/*.parquet
+data/*.feather
+!data/.gitkeep
+
+# Training outputs
+*.png
+mlruns/
+wandb/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
