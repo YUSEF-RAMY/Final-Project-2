@@ -53,6 +53,63 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
           <span className={styles.statValue}>{target.toLocaleString()} kcal</span>
         </div>
       </div>
+
+      {/* Macros Section */}
+      <div className={styles.macrosContainer}>
+        <div className={styles.macroItem}>
+          <div className={styles.macroHeader}>
+            <span className={styles.macroName} style={{ color: '#ef4444' }}>Protein</span>
+            <span className={styles.macroValue}>
+              {Math.round(consumedData?.protein || 0)} / {Math.round(targetData?.protein || 0)}g
+            </span>
+          </div>
+          <div className={styles.macroProgressBg}>
+            <div 
+              className={styles.macroProgressFill} 
+              style={{ 
+                width: `${Math.min(((consumedData?.protein || 0) / (targetData?.protein || 1)) * 100, 100)}%`,
+                backgroundColor: '#ef4444' 
+              }} 
+            />
+          </div>
+        </div>
+
+        <div className={styles.macroItem}>
+          <div className={styles.macroHeader}>
+            <span className={styles.macroName} style={{ color: '#eab308' }}>Carbs</span>
+            <span className={styles.macroValue}>
+              {Math.round(consumedData?.carbs || 0)} / {Math.round(targetData?.carbs || 0)}g
+            </span>
+          </div>
+          <div className={styles.macroProgressBg}>
+            <div 
+              className={styles.macroProgressFill} 
+              style={{ 
+                width: `${Math.min(((consumedData?.carbs || 0) / (targetData?.carbs || 1)) * 100, 100)}%`,
+                backgroundColor: '#eab308' 
+              }} 
+            />
+          </div>
+        </div>
+
+        <div className={styles.macroItem}>
+          <div className={styles.macroHeader}>
+            <span className={styles.macroName} style={{ color: '#3b82f6' }}>Fat</span>
+            <span className={styles.macroValue}>
+              {Math.round(consumedData?.fat || 0)} / {Math.round(targetData?.fat || 0)}g
+            </span>
+          </div>
+          <div className={styles.macroProgressBg}>
+            <div 
+              className={styles.macroProgressFill} 
+              style={{ 
+                width: `${Math.min(((consumedData?.fat || 0) / (targetData?.fat || 1)) * 100, 100)}%`,
+                backgroundColor: '#3b82f6' 
+              }} 
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
