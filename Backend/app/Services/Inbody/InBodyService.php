@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class InBodyService
 {
-    public function __construct() {}
-
-    public function processInBodyImage($user, $image)
+    public function processInBodyImage($user, $image, $extraData = [])
     {
         $startTime = Carbon::now();
         $traceId = app()->bound('trace_id') ? app('trace_id') : 'unknown';
@@ -41,10 +39,26 @@ class InBodyService
                 context: ['endpoint' => '/predict']
             );
 
+            $activityLevel = $extraData['activity_level'] ?? 3;
+            $goal = $extraData['goal'] ?? 'maintain';
+            $fitnessLevel = $extraData['fitness_level'] ?? 3;
+            
+            $disease = $extraData['disease_condition'] ?? 'healthy';
+            if (empty(trim($disease))) {
+                $disease = 'healthy';
+            }
+
+            $queryParams = http_build_query([
+                'goal' => $goal,
+                'activity_level' => $activityLevel,
+                'fitness_level' => $fitnessLevel,
+                'disease_condition' => $disease,
+            ]);
+
             $response = Http::timeout(240)
                 ->withHeaders(['X-Trace-Id' => $traceId])
-                ->attach('image', $stream, basename($imagePath))
-                ->post(config('services.ai.url').'/predict');
+                ->attach('file', $stream, basename($imagePath))
+                ->post(config('services.ai.url').'/predict?'.$queryParams);
 
             fclose($stream);
 
@@ -64,11 +78,11 @@ class InBodyService
 
             $data = $response->json();
 
-            if (! isset($data['data'])) {
-                throw new \Exception('Invalid AI response format');
+            if (! isset($data['inbody_data'])) {
+                throw new \Exception('Invalid AI response format: Missing inbody_data');
             }
 
-            $aiData = $data['data'];
+            $aiData = $this->normalizeAiResponse($data);
 
             // Log AI Response Success with Summary
             LogService::log(
@@ -95,6 +109,54 @@ class InBodyService
             LogService::error($e, ['user_id' => $user->id, 'image' => $image]);
             throw $e;
         }
+    }
+
+    /**
+     * Normalize AI extractor response keys to match internal field conventions.
+     *
+     * @param  array<string, string>  $data  Raw response from the AI extractor
+     * @return array<string, mixed>
+     */
+    private function normalizeAiResponse(array $data): array
+    {
+        $inbodyData = $data['inbody_data'] ?? [];
+
+        // Flatten the response
+        $flatData = array_merge($inbodyData, [
+            'calories' => $data['calories'] ?? null,
+            'target_protein' => $data['protein'] ?? null,
+            'target_carbs' => $data['carbs'] ?? null,
+            'target_fats' => $data['fat'] ?? null,
+        ]);
+
+        /** @var array<string, string> Map API field names → internal field names */
+        $keyMap = [
+            'muscle_mass' => 'smm',
+            'body_fat_percentage' => 'pbf',
+            'measured_at' => 'measured_at',
+        ];
+
+        $normalized = [];
+
+        foreach ($flatData as $key => $value) {
+            $normalizedKey = $keyMap[$key] ?? $key;
+            $normalized[$normalizedKey] = $value;
+        }
+
+        // Convert height from meters to centimeters (API returns meters, app expects cm)
+        if (isset($normalized['height'])) {
+            $height = (float) $normalized['height'];
+            if ($height < 3) {
+                $normalized['height'] = round($height * 100, 2);
+            }
+        }
+
+        // Normalize gender to lowercase
+        if (isset($normalized['gender'])) {
+            $normalized['gender'] = strtolower($normalized['gender']);
+        }
+
+        return $normalized;
     }
 
     public function getLatestReport($user)

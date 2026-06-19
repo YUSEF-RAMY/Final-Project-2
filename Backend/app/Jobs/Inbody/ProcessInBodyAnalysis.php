@@ -4,6 +4,8 @@ namespace App\Jobs\Inbody;
 
 use App\Actions\Nutrition\SyncNutritionStateAction;
 use App\DTOs\InBody\NutritionAnalysisInputDTO;
+use App\Enums\ActivityLevel;
+use App\Enums\PrimaryObjective;
 use App\Jobs\Middleware\JobLoggingMiddleware;
 use App\Models\AiRetryQueue;
 use App\Models\InBodyRequest;
@@ -98,8 +100,24 @@ class ProcessInBodyAnalysis implements ShouldQueue
 
     public function executeAnalysisPipeline(InBodyService $inBodyService, SyncNutritionStateAction $syncAction): void
     {
-        $ocrResult = $inBodyService->processInBodyImage($this->user, $this->imagePath);
+        $ocrResult = $inBodyService->processInBodyImage($this->user, $this->imagePath, $this->extraData);
         $aiData = $this->sanitizeAiData($ocrResult['ai_data']);
+
+        $activityMap = [
+            1 => ActivityLevel::SEDENTARY,
+            2 => ActivityLevel::LIGHTLY_ACTIVE,
+            3 => ActivityLevel::MODERATELY_ACTIVE,
+            4 => ActivityLevel::VERY_ACTIVE,
+            5 => ActivityLevel::EXTRA_ACTIVE,
+        ];
+        $internalActivity = $activityMap[$this->extraData['activity_level'] ?? 3] ?? ActivityLevel::MODERATELY_ACTIVE;
+
+        $goalMap = [
+            'lose_fat' => PrimaryObjective::LOSE_WEIGHT,
+            'maintain' => PrimaryObjective::MAINTAIN,
+            'gain_muscle' => PrimaryObjective::BUILD_MUSCLE,
+        ];
+        $internalObjective = $goalMap[$this->extraData['goal'] ?? 'maintain'] ?? PrimaryObjective::MAINTAIN;
 
         $inputDto = NutritionAnalysisInputDTO::fromArray([
             'weight' => $aiData['weight'] ?? $this->user->profile?->weight ?? 0,
@@ -108,20 +126,12 @@ class ProcessInBodyAnalysis implements ShouldQueue
             'gender' => $aiData['gender'] ?? $this->user->profile?->gender ?? 'male',
             'bmi' => $aiData['bmi'] ?? 0,
             'bmr' => $aiData['bmr'] ?? 0,
-            'activity_level' => $this->extraData['activity_level'],
-            'primary_objective' => $this->extraData['primary_objective'],
-            'medical_conditions' => $this->extraData['medical_conditions'] ?? null,
-            'inbody_data' => [
+            'activity_level' => $internalActivity,
+            'primary_objective' => $internalObjective,
+            'medical_conditions' => $this->extraData['disease_condition'] ?? null,
+            'inbody_data' => array_merge([
                 'report_image' => $ocrResult['image_path'],
-                'smm' => $aiData['smm'] ?? 0,
-                'pbf' => $aiData['pbf'] ?? 0,
-                'body_fat_mass' => $aiData['body_fat_mass'] ?? 0,
-                'bmi' => $aiData['bmi'] ?? 0,
-                'bmr' => $aiData['bmr'] ?? 0,
-                'water' => $aiData['water'] ?? 0,
-                'protein' => $aiData['protein'] ?? 0,
-                'minerals' => $aiData['minerals'] ?? 0,
-            ],
+            ], $aiData),
         ]);
 
         $report = $syncAction->execute($this->user, $inputDto);
@@ -142,7 +152,11 @@ class ProcessInBodyAnalysis implements ShouldQueue
 
     private function sanitizeAiData(array $data): array
     {
-        $numericFields = ['weight', 'height', 'bmi', 'bmr', 'smm', 'pbf', 'body_fat_mass', 'water', 'protein', 'minerals'];
+        $numericFields = [
+            'weight', 'height', 'bmi', 'bmr', 'smm', 'pbf', 'body_fat_mass', 'water', 'protein', 'minerals',
+            'visceral_fat_level', 'waist_hip_ratio', 'trunk_fat_mass', 'trunk_lean_mass', 'lbm', 'tdee',
+            'calories', 'target_protein', 'target_carbs', 'target_fats'
+        ];
 
         foreach ($numericFields as $field) {
             if (isset($data[$field])) {
@@ -155,8 +169,8 @@ class ProcessInBodyAnalysis implements ShouldQueue
                 }
 
                 // Clamp values to fit decimal(5,2) which is max 999.99
-                // BMR is decimal(8,2) so it can be larger
-                if ($field === 'bmr') {
+                // bmr, tdee are decimal(8,2), and calories is int, so they can be larger
+                if (in_array($field, ['bmr', 'tdee', 'calories'])) {
                     $data[$field] = min($val, 999999.99);
                 } else {
                     $data[$field] = min($val, 999.99);
