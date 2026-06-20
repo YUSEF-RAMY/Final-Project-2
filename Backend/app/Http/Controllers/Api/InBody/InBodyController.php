@@ -39,7 +39,7 @@ class InBodyController extends Controller
                 'status' => 'processing',
             ]);
 
-            $extraData = $request->only(['activity_level', 'primary_objective', 'medical_conditions']);
+            $extraData = $request->only(['activity_level', 'goal', 'fitness_level', 'disease_condition']);
 
             ProcessInBodyAnalysis::dispatch($request->user(), $path, $extraData);
 
