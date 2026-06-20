@@ -1,6 +1,6 @@
 // API calls for foods and meals
 
-import { API_BASE_URL, getAuthHeaders, handleUnauthorized } from './api';
+import { API_BASE_URL, getAuthHeaders, getAuthHeadersMultipart, handleUnauthorized } from './api';
 
 export interface FoodNutrition {
   calories: number;
@@ -49,10 +49,14 @@ export async function addFoodToMeal(
   foodId: number,
   quantity: number
 ): Promise<unknown> {
+  const formData = new FormData();
+  formData.append('food_id', foodId.toString());
+  formData.append('quantity', quantity.toString());
+
   const response = await fetch(`${API_BASE_URL}/foods/meals/${mealType}/items`, {
     method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ food_id: foodId, quantity }),
+    headers: getAuthHeadersMultipart(),
+    body: formData,
   });
 
   if (response.status === 401) handleUnauthorized();
@@ -74,7 +78,7 @@ export async function addFoodToMeal(
 
 // Delete a food item from a meal
 export async function deleteFoodItem(itemId: number): Promise<unknown> {
-  const response = await fetch(`${API_BASE_URL}/foods/delete-item/${itemId}`, {
+  const response = await fetch(`${API_BASE_URL}/foods/meals/items/${itemId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
