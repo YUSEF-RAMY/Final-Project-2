@@ -44,8 +44,17 @@ class SyncNutritionStateAction
             'datetime' => now(),
         ], $input->inBodyData));
 
-        // 3. Calculate New Targets
-        $results = $this->calculator->calculate($input);
+        // 3. Calculate New Targets or use AI targets
+        if (isset($input->inBodyData['calories'], $input->inBodyData['target_protein'])) {
+            $results = [
+                'daily_calories' => $input->inBodyData['calories'],
+                'target_protein' => $input->inBodyData['target_protein'],
+                'target_carbs' => $input->inBodyData['target_carbs'],
+                'target_fats' => $input->inBodyData['target_fats'],
+            ];
+        } else {
+            $results = $this->calculator->calculate($input);
+        }
 
         // 4. Update User Targets
         UserTarget::updateOrCreate(

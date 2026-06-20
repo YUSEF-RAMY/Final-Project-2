@@ -6,6 +6,7 @@
 /storage/*.key
 /storage/pail
 /vendor
+/.github/skills
 .env
 .env.backup
 .env.production
@@ -29,3 +30,6 @@ yarn-error.log
 .skills/
 *.md.agents
 /secrets/
+GEMINI.md 
+CLAUDE.md 
+AGENTS.md 

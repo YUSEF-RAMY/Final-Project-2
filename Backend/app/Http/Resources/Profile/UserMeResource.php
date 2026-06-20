@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Profile;
 
 use App\Http\Resources\Inbody\BodyReportResource;
+use App\Http\Resources\MealResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,10 +35,20 @@ class UserMeResource extends JsonResource
                 'fats' => $this->target?->target_fats,
             ],
 
-            // Latest Body Composition (InBody)
-            'latest_body_report' => $this->when($this->body_report()->exists(), function () {
-                return new BodyReportResource($this->body_report()->latest()->first());
-            }),
+            // Body Reports (InBody)
+            'body_reports' => BodyReportResource::collection($this->whenLoaded('body_report')),
+
+            // Meals
+            'meals' => MealResource::collection($this->whenLoaded('meals')),
+
+            // Meal Plans
+            'meal_plans' => $this->whenLoaded('mealPlans'),
+
+            // Linked Social Accounts
+            'linked_social_accounts' => $this->whenLoaded('linkedSocialAccounts'),
+
+            // Devices
+            'devices' => $this->whenLoaded('devices'),
 
             'created_at' => $this->created_at->format('Y-m-d h:i A'),
         ];
