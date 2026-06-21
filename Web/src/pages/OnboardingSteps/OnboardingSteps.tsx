@@ -8,6 +8,7 @@ import Step3Goal from '../../components/OnboardingSteps/Step3Goal';
 import Step4Final from '../../components/OnboardingSteps/Step4Final';
 import styles from '../../components/OnboardingSteps/OnboardingSteps.module.css';
 import { API_BASE_URL } from '../../services/api';
+import { forbiddenRules } from '../../components/OnboardingSteps/Step4Final';
 
 // Removed CustomWindow and declare global for window since we use Context now
 
@@ -32,7 +33,8 @@ const OnboardingSteps: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<string>(localStorage.getItem('user_selected_goal') || '');
   const [activity, setActivity] = useState<string>('');
-  const [medical, setMedical] = useState<string>('');
+  const [fitness, setFitness] = useState<string>('');
+  const [medical, setMedical] = useState<string[]>(['healthy']);
   const [formData, setFormData] = useState<FormDataValues>({ age: '', gender: '', height: '', weight: '' });
 
   const API_URL = API_BASE_URL;
@@ -86,6 +88,17 @@ const OnboardingSteps: React.FC = () => {
       return showAlert("Warning", "Select your objective", "warning");
     }
 
+    if (currentStep === 4) {
+      // Check for forbidden combination
+      const isForbidden = medical.some((disease: string) => {
+        const rules = forbiddenRules[disease] || [];
+        return rules.includes(selectedGoal);
+      });
+      if (isForbidden) {
+        return showAlert("Forbidden Combination", "Your selected goal is not compatible with one or more of your medical conditions. Please adjust them.", "error");
+      }
+    }
+
     if (currentStep < 4) {
       setCurrentStep(prev => prev + 1);
     } else {
@@ -107,8 +120,9 @@ const OnboardingSteps: React.FC = () => {
       data.append("gender", formData.gender === 'm' ? 'male' : 'female');
     }
     data.append("activity_level", activity);
-    data.append("primary_objective", selectedGoal);
-    data.append("medical_conditions", medical || "None");
+    data.append("fitness_level", fitness);
+    data.append("goal", selectedGoal);
+    data.append("disease_condition", medical.length > 0 ? medical.join(',') : "healthy");
 
     if (isImageMode) {
       // Start background upload and immediately navigate to dashboard
@@ -131,7 +145,7 @@ const OnboardingSteps: React.FC = () => {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json",
-            "ngrok-skip-browser-warning": "true"
+            "ngrok-skip-browser-warning": "69420"
           },
           body: data
         });
@@ -200,7 +214,7 @@ const OnboardingSteps: React.FC = () => {
 
             <div className={`${styles['step-item']} ${currentStep === 2 ? styles.active : (currentStep > 2 ? styles.completed : styles.waiting)}`}>
               <div className={styles['status-marker']}>2</div>
-              <Step2Activity activity={activity} setActivity={setActivity} />
+              <Step2Activity activity={activity} setActivity={setActivity} fitness={fitness} setFitness={setFitness} />
             </div>
 
             <div className={`${styles['step-item']} ${currentStep === 3 ? styles.active : (currentStep > 3 ? styles.completed : styles.waiting)}`}>
@@ -210,7 +224,7 @@ const OnboardingSteps: React.FC = () => {
 
             <div className={`${styles['step-item']} ${currentStep === 4 ? styles.active : styles.waiting}`}>
               <div className={styles['status-marker']}>4</div>
-              <Step4Final medical={medical} setMedical={setMedical} />
+              <Step4Final medical={medical} setMedical={setMedical} selectedGoal={selectedGoal} />
             </div>
 
           </div>
