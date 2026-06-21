@@ -101,6 +101,16 @@ function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
 const summaryCache: Record<string, { data: DailySummaryData; time: number }> = {};
 const summaryCachePromises: Record<string, Promise<DailySummaryData>> = {};
 
+export function clearDailySummaryCache(date?: string) {
+  if (date) {
+    delete summaryCache[date];
+    delete summaryCachePromises[date];
+  } else {
+    for (const key in summaryCache) delete summaryCache[key];
+    for (const key in summaryCachePromises) delete summaryCachePromises[key];
+  }
+}
+
 export async function fetchDailySummary(date: string, force = false): Promise<DailySummaryData> {
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');

@@ -89,6 +89,12 @@ let averagesCache: SevenDayAverages | null = null;
 let averagesCachePromise: Promise<SevenDayAverages> | null = null;
 let averagesCacheTime = 0;
 
+export function clear7DayAveragesCache() {
+  averagesCache = null;
+  averagesCachePromise = null;
+  averagesCacheTime = 0;
+}
+
 export function prefetch7DayAverages() {
   fetch7DayAverages().catch(() => {});
 }
