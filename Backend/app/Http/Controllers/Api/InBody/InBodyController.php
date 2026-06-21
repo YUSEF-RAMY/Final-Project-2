@@ -77,6 +77,23 @@ class InBodyController extends Controller
     {
         $data = $request->validated();
 
+        $activityMap = [
+            1 => ActivityLevel::SEDENTARY,
+            2 => ActivityLevel::LIGHTLY_ACTIVE,
+            3 => ActivityLevel::MODERATELY_ACTIVE,
+            4 => ActivityLevel::VERY_ACTIVE,
+            5 => ActivityLevel::EXTRA_ACTIVE,
+        ];
+        $data['activity_level'] = $activityMap[$data['activity_level'] ?? 3] ?? ActivityLevel::MODERATELY_ACTIVE;
+
+        $goalMap = [
+            'lose_fat' => PrimaryObjective::LOSE_WEIGHT,
+            'maintain' => PrimaryObjective::MAINTAIN,
+            'gain_muscle' => PrimaryObjective::BUILD_MUSCLE,
+        ];
+        $data['primary_objective'] = $goalMap[$data['goal'] ?? 'maintain'] ?? PrimaryObjective::MAINTAIN;
+        $data['medical_conditions'] = $data['disease_condition'] ?? null;
+
         // Calculate BMI automatically
         $data['bmi'] = $this->calculationService->calculateBMI($data['weight'], $data['height']);
 

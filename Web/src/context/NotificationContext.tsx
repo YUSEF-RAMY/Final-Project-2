@@ -138,6 +138,21 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       const fcmToken = await requestForToken();
       if (fcmToken) {
         formData.append('fcm_token', fcmToken);
+        
+        // Ensure device is registered to receive FCM
+        try {
+          await fetch(`${BASE_URL}/devices/register`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true'
+            },
+            body: JSON.stringify({ fcm_token: fcmToken, device_type: 'web' })
+          });
+        } catch (e) {
+          console.warn("Failed to register device token", e);
+        }
       }
     }
 
