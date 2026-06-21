@@ -60,13 +60,24 @@ export function getOrCreateDeviceToken(): string {
 
 /** Register this browser as a device for push notifications. */
 export async function registerDevice(authToken: string): Promise<void> {
-  const fcmToken = getOrCreateDeviceToken();
   try {
+    const { requestForToken } = await import('./firebase/messaging');
+    const fcmToken = await requestForToken();
+    
+    // If we couldn't get a token (e.g. user denied permission), we can fallback to the web-uuid or just return.
+    // Since notifications are required, let's use the real token if available.
+    const finalToken = fcmToken || getOrCreateDeviceToken();
+
+    const data = new FormData();
+    data.append('fcm_token', finalToken);
+    data.append('device_type', 'web');
+
     await fetch(`${API_BASE_URL}/devices/register`, {
       method: 'POST',
-      body: JSON.stringify({ fcm_token: fcmToken, device_type: 'web' }),
+      body: data,
       headers: {
-        ...DEFAULT_HEADERS,
+        Accept: 'application/json',
+        'ngrok-skip-browser-warning': '69420',
         Authorization: `Bearer ${authToken}`,
       },
     });
