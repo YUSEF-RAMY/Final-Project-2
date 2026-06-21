@@ -3,12 +3,13 @@
 import { API_BASE_URL, getAuthHeaders } from './api';
 
 export interface AppNotification {
-  id: number;
+  notification_id: string;
   title: string;
-  message: string;
-  type: string;
+  body: string;
+  type?: string;
   is_read: boolean;
   created_at: string;
+  full_date?: string;
 }
 
 // GET /notifications
@@ -51,7 +52,7 @@ export async function markAllNotificationsAsRead(): Promise<void> {
 }
 
 // POST /notifications/read (single)
-export async function markNotificationAsRead(notificationId: number): Promise<void> {
+export async function markNotificationAsRead(notificationId: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/notifications/read`, {
     method: 'POST',
     headers: getAuthHeaders(),
@@ -82,7 +83,7 @@ export async function clearAllNotifications(): Promise<void> {
 }
 
 // DELETE /notifications/{id} (single)
-export async function deleteNotification(notificationId: number): Promise<void> {
+export async function deleteNotification(notificationId: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
     method: 'DELETE',
     headers: getAuthHeaders(),

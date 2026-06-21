@@ -72,28 +72,28 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
     }
   };
 
-  const handleMarkSingleRead = async (id: number) => {
-    const notif = notifications.find(n => n.id === id);
+  const handleMarkSingleRead = async (id: string) => {
+    const notif = notifications.find(n => n.notification_id === id);
     if (!notif || notif.is_read) return;
 
     try {
       await markNotificationAsRead(id);
-      setNotifications((prev) => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
-      onUnreadCountChange(notifications.filter(n => !n.is_read && n.id !== id).length);
+      setNotifications((prev) => prev.map(n => n.notification_id === id ? { ...n, is_read: true } : n));
+      onUnreadCountChange(notifications.filter(n => !n.is_read && n.notification_id !== id).length);
     } catch (err) {
       console.error('Mark single read error:', err);
     }
   };
 
-  const handleDeleteSingle = async (e: React.MouseEvent, id: number) => {
+  const handleDeleteSingle = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation(); // prevent clicking the notification which would trigger mark as read
     try {
       await deleteNotification(id);
-      setNotifications((prev) => prev.filter(n => n.id !== id));
+      setNotifications((prev) => prev.filter(n => n.notification_id !== id));
       // update unread count if we deleted an unread notification
-      const notif = notifications.find(n => n.id === id);
+      const notif = notifications.find(n => n.notification_id === id);
       if (notif && !notif.is_read) {
-        onUnreadCountChange(notifications.filter(n => !n.is_read && n.id !== id).length);
+        onUnreadCountChange(notifications.filter(n => !n.is_read && n.notification_id !== id).length);
       }
     } catch (err) {
       console.error('Delete notification error:', err);
@@ -117,8 +117,8 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type.toLowerCase()) {
+  const getTypeIcon = (type?: string) => {
+    switch ((type || '').toLowerCase()) {
       case 'alert': return 'fa-solid fa-triangle-exclamation';
       case 'success': return 'fa-solid fa-circle-check';
       case 'info': return 'fa-solid fa-circle-info';
@@ -126,8 +126,8 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
+  const getTypeColor = (type?: string) => {
+    switch ((type || '').toLowerCase()) {
       case 'alert': return '#ef4444';
       case 'success': return '#10b981';
       case 'info': return '#3b82f6';
@@ -182,9 +182,9 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
             <div className={styles.notificationList}>
               {notifications.map((n) => (
                 <div
-                  key={n.id}
+                  key={n.notification_id}
                   className={`${styles.notificationItem} ${!n.is_read ? styles.unread : ''}`}
-                  onClick={() => handleMarkSingleRead(n.id)}
+                  onClick={() => handleMarkSingleRead(n.notification_id)}
                   style={{ cursor: !n.is_read ? 'pointer' : 'default' }}
                 >
                   <div className={styles.notifIcon} style={{ color: getTypeColor(n.type) }}>
@@ -192,15 +192,15 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
                   </div>
                   <div className={styles.notifContent}>
                     <span className={styles.notifTitle}>{n.title}</span>
-                    <p className={styles.notifMessage}>{n.message}</p>
-                    <span className={styles.notifTime}>{formatTime(n.created_at)}</span>
+                    <p className={styles.notifMessage}>{n.body}</p>
+                    <span className={styles.notifTime}>{n.full_date || formatTime(n.created_at)}</span>
                   </div>
                   
                   <div className={styles.notifActions}>
-                    {!n.is_read && <div className={styles.unreadDot}></div>}
+                    <div className={styles.unreadDot} style={{ visibility: n.is_read ? 'hidden' : 'visible' }}></div>
                     <button 
                       className={styles.deleteSingleBtn} 
-                      onClick={(e) => handleDeleteSingle(e, n.id)}
+                      onClick={(e) => handleDeleteSingle(e, n.notification_id)}
                       title="Delete notification"
                     >
                       <i className="fa-solid fa-xmark"></i>
