@@ -11,10 +11,10 @@ export interface PlanData {
   profile: UserProfile;
 }
 
-export async function fetchPlanData(date: string): Promise<PlanData> {
+export async function fetchPlanData(date: string, force = false): Promise<PlanData> {
   const [summary, profile] = await Promise.all([
-    fetchDailySummary(date),
-    fetchProfile(),
+    fetchDailySummary(date, force),
+    fetchProfile(force),
   ]);
   return { summary, profile };
 }

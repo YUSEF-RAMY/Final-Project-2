@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPlanData } from '../services/planService';
 import type { PlanData } from '../services/planService';
+import { clearDailySummaryCache } from '../services/dailySummaryService';
 
 interface UsePlanResult {
   data: PlanData | null;
@@ -21,11 +22,12 @@ export function usePlan(): UsePlanResult {
   // Memoized so it never changes identity mid-session — avoids infinite refetch loop
   const today = useMemo(() => new Date().toISOString().split('T')[0], []);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (force = false) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchPlanData(today);
+      if (force) clearDailySummaryCache(today);
+      const result = await fetchPlanData(today, force);
       setData(result);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -47,12 +49,12 @@ export function usePlan(): UsePlanResult {
   // Refresh when the user switches back to this tab.
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === 'visible') loadData();
+      if (document.visibilityState === 'visible') loadData(true);
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [loadData]);
 
-  return { data, loading, error, refetch: loadData };
+  return { data, loading, error, refetch: () => loadData(true) };
 }
 

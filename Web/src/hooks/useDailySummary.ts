@@ -1,8 +1,6 @@
-// Handles all the loading, error, and refetch state for the daily summary page.
-
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchDailySummary } from '../services/dailySummaryService';
+import { fetchDailySummary, clearDailySummaryCache } from '../services/dailySummaryService';
 import type { DailySummaryData } from '../services/dailySummaryService';
 
 interface UseDailySummaryResult {
@@ -20,11 +18,12 @@ export function useDailySummary(): UseDailySummaryResult {
 
   const today = new Date().toISOString().split('T')[0];
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (force = false) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchDailySummary(today);
+      if (force) clearDailySummaryCache(today);
+      const result = await fetchDailySummary(today, force);
       setData(result);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -49,11 +48,11 @@ export function useDailySummary(): UseDailySummaryResult {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        loadData();
+        loadData(true);
       }
     };
     const handleFocus = () => {
-      loadData();
+      loadData(true);
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -65,6 +64,6 @@ export function useDailySummary(): UseDailySummaryResult {
     };
   }, [loadData]);
 
-  return { data, loading, error, refetch: loadData };
+  return { data, loading, error, refetch: () => loadData(true) };
 }
 
