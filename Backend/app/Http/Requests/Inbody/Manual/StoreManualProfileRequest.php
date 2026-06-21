@@ -30,9 +30,9 @@ class StoreManualProfileRequest extends FormRequest
             'height' => 'required|numeric',
             'weight' => 'required|numeric',
             'gender' => 'required|in:male,female',
-            'activity_level' => ['required', Rule::enum(ActivityLevel::class)],
-            'primary_objective' => ['required', Rule::enum(PrimaryObjective::class)],
-            'medical_conditions' => 'nullable|string',
+            'activity_level' => 'required',
+            'goal' => 'required|string',
+            'disease_condition' => 'nullable|string',
         ];
     }
 }
