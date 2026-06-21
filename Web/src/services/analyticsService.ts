@@ -85,43 +85,70 @@ export async function fetchLatestInBody(): Promise<InBodyRecord | null> {
   return null;
 }
 
+let averagesCache: SevenDayAverages | null = null;
+let averagesCachePromise: Promise<SevenDayAverages> | null = null;
+let averagesCacheTime = 0;
+
+export function prefetch7DayAverages() {
+  fetch7DayAverages().catch(() => {});
+}
+
 // Fetch the last 7 daily summaries and return averaged macro values
-export async function fetch7DayAverages(): Promise<SevenDayAverages> {
-  const today = new Date();
-  const dates: string[] = [];
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    dates.push(d.toISOString().split('T')[0]);
+export async function fetch7DayAverages(force = false): Promise<SevenDayAverages> {
+  if (!force && averagesCache && Date.now() - averagesCacheTime < 60000) {
+    return averagesCache;
+  }
+  if (!force && averagesCachePromise) {
+    return averagesCachePromise;
   }
 
-  const settled = await Promise.allSettled(dates.map((date) => fetchDailySummary(date)));
+  averagesCachePromise = (async () => {
+    try {
+      const today = new Date();
+      const dates: string[] = [];
 
-  let totalCalories = 0;
-  let totalProtein = 0;
-  let daysWithData = 0;
-
-  for (const result of settled) {
-    if (result.status === 'fulfilled') {
-      const overview = result.value.overview;
-      if (overview.consumed.calories > 0) {
-        totalCalories += overview.consumed.calories;
-        totalProtein  += overview.consumed.protein;
-        daysWithData++;
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
       }
+
+      const settled = await Promise.allSettled(dates.map((date) => fetchDailySummary(date)));
+
+      let totalCalories = 0;
+      let totalProtein = 0;
+      let daysWithData = 0;
+
+      for (const result of settled) {
+        if (result.status === 'fulfilled') {
+          const overview = result.value.overview;
+          if (overview.consumed.calories > 0) {
+            totalCalories += overview.consumed.calories;
+            totalProtein  += overview.consumed.protein;
+            daysWithData++;
+          }
+        }
+      }
+
+      const days = daysWithData || 1;
+      const waterTarget = Number(localStorage.getItem('hfy_water_target')) || 2.5;
+
+      averagesCache = {
+        calories:     +(totalCalories / days).toFixed(1),
+        protein:      +(totalProtein  / days).toFixed(1),
+        hydration:    waterTarget,
+        daysWithData,
+      };
+      averagesCacheTime = Date.now();
+      averagesCachePromise = null;
+      return averagesCache;
+    } catch (error) {
+      averagesCachePromise = null;
+      throw error;
     }
-  }
+  })();
 
-  const days = daysWithData || 1;
-  const waterTarget = Number(localStorage.getItem('hfy_water_target')) || 2.5;
-
-  return {
-    calories:     +(totalCalories / days).toFixed(1),
-    protein:      +(totalProtein  / days).toFixed(1),
-    hydration:    waterTarget,
-    daysWithData,
-  };
+  return averagesCachePromise;
 }
 
 // Coerce all numeric string fields the API might return

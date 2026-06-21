@@ -25,7 +25,7 @@ class UserMeResource extends JsonResource
                 : null,
 
             // Physical Profile Details
-            'physical_profile' => new UserProfileResource($this->profile),
+            'physical_profile' => $this->profile ? new UserProfileResource($this->profile) : null,
 
             // Nutritional Targets
             'nutritional_targets' => [

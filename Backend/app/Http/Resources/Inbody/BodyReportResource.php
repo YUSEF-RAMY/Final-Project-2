@@ -43,6 +43,9 @@ class BodyReportResource extends JsonResource
             'created_at' => $this->created_at->format('Y-m-d h:i A'),
             'image' => $this->report_image ? asset('storage/'.$this->report_image) : null,
             'classification' => $this->whenLoaded('classification', function () {
+                if (!$this->classification) {
+                    return null;
+                }
                 return [
                     'category' => $this->classification->category,
                     'reasoning' => $this->classification->reasoning,

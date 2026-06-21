@@ -98,32 +98,53 @@ function normalizeDailySummary(data: DailySummaryData): DailySummaryData {
   };
 }
 
-export async function fetchDailySummary(date: string): Promise<DailySummaryData> {
+const summaryCache: Record<string, { data: DailySummaryData; time: number }> = {};
+const summaryCachePromises: Record<string, Promise<DailySummaryData>> = {};
+
+export async function fetchDailySummary(date: string, force = false): Promise<DailySummaryData> {
   const token = localStorage.getItem('token') || localStorage.getItem('userToken');
   if (!token) throw new Error('No authentication token found. Please log in again.');
 
-  const response = await fetch(`${API_BASE_URL}/foods/daily-summary?date=${date}`, {
-    headers: getAuthHeaders(),
-  });
-
-  if (response.status === 401) handleUnauthorized();
-
-  const text = await response.text();
-  let result;
-  try {
-    result = text ? JSON.parse(text) : {};
-  } catch (e) {
-    throw new Error(`Server returned invalid JSON: ${text.substring(0, 100)}`);
+  if (!force && summaryCache[date] && Date.now() - summaryCache[date].time < 60000) {
+    return summaryCache[date].data;
+  }
+  if (!force && summaryCachePromises[date]) {
+    return summaryCachePromises[date];
   }
 
-  if (response.ok) {
-    const finalData = result.data || result;
-    if (finalData && typeof finalData === 'object') {
-      // Run the fix before passing anything to the UI
-      return normalizeDailySummary(finalData as DailySummaryData);
+  summaryCachePromises[date] = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/foods/daily-summary?date=${date}`, {
+        headers: getAuthHeaders(),
+      });
+
+      if (response.status === 401) handleUnauthorized();
+
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(`Server returned invalid JSON: ${text.substring(0, 100)}`);
+      }
+
+      if (response.ok) {
+        const finalData = result.data || result;
+        if (finalData && typeof finalData === 'object') {
+          const normalized = normalizeDailySummary(finalData as DailySummaryData);
+          summaryCache[date] = { data: normalized, time: Date.now() };
+          delete summaryCachePromises[date];
+          return normalized;
+        }
+      }
+
+      console.error('Daily Summary Error Details:', { status: response.status, result });
+      throw new Error(result.message || result.error || 'Failed to fetch daily summary');
+    } catch (error) {
+      delete summaryCachePromises[date];
+      throw error;
     }
-  }
+  })();
 
-  console.error('Daily Summary Error Details:', { status: response.status, result });
-  throw new Error(result.message || result.error || 'Failed to fetch daily summary');
+  return summaryCachePromises[date];
 }

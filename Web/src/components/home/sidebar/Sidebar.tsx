@@ -53,6 +53,10 @@ const Sidebar: React.FC = () => {
         <NavLink 
           to="/analytics" 
           className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+          onMouseEnter={() => {
+            import('../../../services/profileService').then(m => m.prefetchProfile());
+            import('../../../services/analyticsService').then(m => m.prefetch7DayAverages());
+          }}
         >
           <i className="fa-solid fa-chart-simple"></i>
           Analytics
@@ -60,6 +64,9 @@ const Sidebar: React.FC = () => {
         <NavLink 
           to="/profile" 
           className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}
+          onMouseEnter={() => {
+            import('../../../services/profileService').then(m => m.prefetchProfile());
+          }}
         >
           <i className="fa-regular fa-user"></i>
           Profile
