@@ -53,7 +53,10 @@ const LogMealModal: React.FC<LogMealModalProps> = ({ onClose, onSuccess }) => {
     setSubmitting(true);
     setError(null);
     try {
-      await addFoodToMeal(mealType, selected.id, amount);
+      // The API treats quantity as a multiplier for the food's base nutrition (which is per 100g).
+      // So if the user enters 150g, we should send 1.5.
+      const quantityMultiplier = amount / 100;
+      await addFoodToMeal(mealType, selected.id, quantityMultiplier);
       onSuccess();
     } catch (err: unknown) {
       const msg = (err as { message?: string }).message || 'Failed to log meal.';

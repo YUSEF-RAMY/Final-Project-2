@@ -43,6 +43,9 @@ export async function fetchFoods(): Promise<Food[]> {
   throw new Error(result.message || 'Failed to fetch foods');
 }
 
+import { clearDailySummaryCache } from './dailySummaryService';
+import { clear7DayAveragesCache } from './analyticsService';
+
 // Add food to meal
 export async function addFoodToMeal(
   mealType: string,
@@ -70,6 +73,8 @@ export async function addFoodToMeal(
   }
 
   if (response.ok) {
+    clearDailySummaryCache();
+    clear7DayAveragesCache();
     return result;
   }
 
@@ -94,6 +99,8 @@ export async function deleteFoodItem(itemId: number): Promise<unknown> {
   }
 
   if (response.ok) {
+    clearDailySummaryCache();
+    clear7DayAveragesCache();
     return result;
   }
 
