@@ -105,9 +105,11 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
 
   const yDomain = useMemo(() => {
     if (!chartData.length) return [60, 80];
-    const weights = chartData.map((d) => d.weight);
+    const weights = chartData.map((d) => d.weight).filter(w => !isNaN(w));
+    if (!weights.length) return [60, 80];
     const min = Math.floor(Math.min(...weights) - 3);
     const max = Math.ceil(Math.max(...weights) + 3);
+    if (isNaN(min) || isNaN(max)) return [60, 80];
     return [min, max];
   }, [chartData]);
 

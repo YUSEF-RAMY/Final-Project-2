@@ -102,6 +102,16 @@ const AnalyticsContent: React.FC = () => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [showDetail, setShowDetail] = useState(false);
 
+  const history = data?.history || [];
+  const averages = data?.averages;
+
+  // Sort newest first
+  const sorted = useMemo(() =>
+    [...history].sort((a, b) =>
+      new Date(b.measured_at ?? b.created_at ?? '').getTime() -
+      new Date(a.measured_at ?? a.created_at ?? '').getTime()
+    ), [history]);
+
   // ── Loading skeleton ──────────────────────────────────────────────────
   if (loading) {
     return (
@@ -120,7 +130,7 @@ const AnalyticsContent: React.FC = () => {
   }
 
   // ── Error state ─────────────────────────────────────────────────────
-  if (error || !data) {
+  if (error || !data || !averages) {
     return (
       <div className={styles.errorState}>
         <i className="fa-solid fa-triangle-exclamation" />
@@ -130,15 +140,6 @@ const AnalyticsContent: React.FC = () => {
       </div>
     );
   }
-
-  const { history, averages } = data;
-
-  // Sort newest first
-  const sorted = useMemo(() =>
-    [...history].sort((a, b) =>
-      new Date(b.measured_at ?? b.created_at ?? '').getTime() -
-      new Date(a.measured_at ?? a.created_at ?? '').getTime()
-    ), [history]);
 
   const current = sorted[selectedIdx] || null;
   const previous = sorted[selectedIdx + 1] || null;
