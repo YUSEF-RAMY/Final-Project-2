@@ -56,8 +56,9 @@ const AnalysisInBodyPage: React.FC = () => {
 
         setError(null);
 
-        // Stop polling as we have the final data
-        if (newData.protein && (newData.image || newData.inbody_image)) {
+        // Stop polling if we see it's no longer processing on backend,
+        // or if we have some data that signifies completion
+        if (newData.protein || newData.created_at) {
           if (pollingRef.current) {
             clearInterval(pollingRef.current);
             pollingRef.current = null;
@@ -93,6 +94,19 @@ const AnalysisInBodyPage: React.FC = () => {
       }
     };
   }, [fetchLatestData]);
+
+  const { state: notifState } = useNotification();
+  const prevStatus = useRef(notifState.status);
+
+  useEffect(() => {
+    // If notification state transitions to done, trigger a fetch
+    if (prevStatus.current === 'processing' && notifState.status === 'done') {
+      const controller = new AbortController();
+      fetchLatestData(controller.signal);
+      return () => controller.abort();
+    }
+    prevStatus.current = notifState.status;
+  }, [notifState.status, fetchLatestData]);
 
   const imageUrl = useMemo(() => {
     if (!inBodyData) return null;

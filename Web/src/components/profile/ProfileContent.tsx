@@ -117,10 +117,13 @@ const ProfileContent: React.FC = () => {
 
   const {
     name, email, profile_image,
-    physical_profile: pp,
-    nutritional_targets: nt,
+    physical_profile,
+    nutritional_targets,
     latest_body_report: lbr,
   } = profile;
+
+  const pp = physical_profile || {} as any;
+  const nt = nutritional_targets || { calories: 0, protein: 0, carbs: 0, fats: 0 } as any;
 
   const avatarUrl   = resolveImageUrl(profile_image);
   const inbodyImgUrl = lbr?.image ? resolveImageUrl(lbr.image) : null;
@@ -195,16 +198,20 @@ const ProfileContent: React.FC = () => {
             <StatTile value={pp.weight} unit="kg"  label="Weight" />
           </div>
 
-          {/* Diseases */}
-          {pp.medical_conditions && pp.medical_conditions !== 'healthy' && (
-            <div className={styles.diseasesSection} style={{ marginTop: '16px', padding: '12px', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fee2e2' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#b91c1c', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <i className="fa-solid fa-notes-medical" /> Medical Conditions
+          {/* Medical Conditions */}
+          {pp.medical_conditions && (
+            <div style={{ marginTop: '16px', padding: '12px', background: pp.medical_conditions === 'healthy' ? '#f0fdf4' : '#fef2f2', borderRadius: '8px', border: `1px solid ${pp.medical_conditions === 'healthy' ? '#bbf7d0' : '#fee2e2'}` }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: pp.medical_conditions === 'healthy' ? '#15803d' : '#b91c1c', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <i className={`fa-solid ${pp.medical_conditions === 'healthy' ? 'fa-heart-pulse' : 'fa-notes-medical'}`} /> Medical Conditions
               </h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {pp.medical_conditions.split(',').map(disease => (
-                  <span key={disease} style={{ background: '#fca5a5', color: '#7f1d1d', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>
-                    {formatLabel(disease)}
+                {pp.medical_conditions.split(',').map((disease: string) => (
+                  <span key={disease.trim()} style={{
+                    background: pp.medical_conditions === 'healthy' ? '#86efac' : '#fca5a5',
+                    color: pp.medical_conditions === 'healthy' ? '#14532d' : '#7f1d1d',
+                    padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 500
+                  }}>
+                    {formatLabel(disease.trim())}
                   </span>
                 ))}
               </div>

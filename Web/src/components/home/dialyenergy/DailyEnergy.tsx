@@ -10,9 +10,10 @@ interface DailyEnergyProps {
 
 const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, targetData }) => {
   const eaten     = Math.round(consumedData?.calories  || 0);
-  const target    = Math.round(targetData?.calories    || 2400);
+  const target    = Math.round(targetData?.calories    || 0);
   // Use the API's pre-computed remaining (already corrected by normalizeDailySummary)
   const remaining = Math.round(remainingData?.calories ?? (target - eaten));
+  const noTarget  = target === 0;
 
   // Circular progress shows % consumed vs target
   const percentage = target > 0 ? Math.min((eaten / target) * 100, 100) : 0;
@@ -38,7 +39,7 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
           />
         </svg>
         <div className={styles.progressText}>
-          <span className={styles.kcalValue}>{remaining.toLocaleString()}</span>
+          <span className={styles.kcalValue}>{noTarget ? '--' : remaining.toLocaleString()}</span>
           <span className={styles.kcalLabel}>REMAINING</span>
         </div>
       </div>
@@ -46,11 +47,11 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
       <div className={styles.stats}>
         <div className={styles.statItem}>
           <span className={styles.statLabel}>Consumed</span>
-          <span className={styles.statValue}>{eaten.toLocaleString()} kcal</span>
+          <span className={styles.statValue}>{noTarget ? '--' : `${eaten.toLocaleString()} kcal`}</span>
         </div>
         <div className={`${styles.statItem} ${styles.target}`}>
           <span className={styles.statLabel}>Target</span>
-          <span className={styles.statValue}>{target.toLocaleString()} kcal</span>
+          <span className={styles.statValue}>{noTarget ? '--' : `${target.toLocaleString()} kcal`}</span>
         </div>
       </div>
 
@@ -60,7 +61,7 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
           <div className={styles.macroHeader}>
             <span className={styles.macroName} style={{ color: '#ef4444' }}>Protein</span>
             <span className={styles.macroValue}>
-              {Math.round(consumedData?.protein || 0)} / {Math.round(targetData?.protein || 0)}g
+              {noTarget ? '-- / --' : `${Math.round(consumedData?.protein || 0)} / ${Math.round(targetData?.protein || 0)}g`}
             </span>
           </div>
           <div className={styles.macroProgressBg}>
@@ -78,7 +79,7 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
           <div className={styles.macroHeader}>
             <span className={styles.macroName} style={{ color: '#eab308' }}>Carbs</span>
             <span className={styles.macroValue}>
-              {Math.round(consumedData?.carbs || 0)} / {Math.round(targetData?.carbs || 0)}g
+              {noTarget ? '-- / --' : `${Math.round(consumedData?.carbs || 0)} / ${Math.round(targetData?.carbs || 0)}g`}
             </span>
           </div>
           <div className={styles.macroProgressBg}>
@@ -96,7 +97,7 @@ const DailyEnergy: React.FC<DailyEnergyProps> = ({ remainingData, consumedData, 
           <div className={styles.macroHeader}>
             <span className={styles.macroName} style={{ color: '#3b82f6' }}>Fat</span>
             <span className={styles.macroValue}>
-              {Math.round(consumedData?.fat || 0)} / {Math.round(targetData?.fat || 0)}g
+              {noTarget ? '-- / --' : `${Math.round(consumedData?.fat || 0)} / ${Math.round(targetData?.fat || 0)}g`}
             </span>
           </div>
           <div className={styles.macroProgressBg}>

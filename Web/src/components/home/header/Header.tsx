@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProfile } from '../../../services/profileService';
 import { fetchNotifications } from '../../../services/notificationService';
 import NotificationPanel from '../NotificationPanel/NotificationPanel';
 import styles from './Header.module.css';
 import { resolveImageUrl } from '../../../services/api';
+import { useNotification } from '../../../context/NotificationContext';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { state: notifState } = useNotification();
 
   const [name, setName] = useState('User');
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -43,6 +45,15 @@ const Header: React.FC = () => {
   const handleUnreadChange = useCallback((count: number) => {
     setUnreadCount(count);
   }, []);
+
+  // Listen for new notifications
+  const prevStatus = useRef(notifState.status);
+  useEffect(() => {
+    if (prevStatus.current === 'processing' && notifState.status === 'done') {
+      setUnreadCount(prev => prev + 1);
+    }
+    prevStatus.current = notifState.status;
+  }, [notifState.status]);
 
   return (
     <>

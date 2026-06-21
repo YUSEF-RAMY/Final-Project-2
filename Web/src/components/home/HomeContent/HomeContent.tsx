@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '../../../pages/Home/Home.module.css';
 import DailyEnergy from '../dialyenergy/DailyEnergy';
 import Hydration from '../Hydration/Hydration';
 import MealPlan from '../MealPlan/MealPlan';
 import Insights from '../Insights/Insights';
 import { useDailySummary } from '../../../hooks/useDailySummary';
+import { useNotification } from '../../../context/NotificationContext';
 
 const HomeContent: React.FC = () => {
   const { data, loading, error, refetch } = useDailySummary();
+  const { state: notifState } = useNotification();
+
+  // Auto-refetch when processing finishes (notification goes from 'processing' → 'done')
+  const prevStatus = useRef(notifState.status);
+  useEffect(() => {
+    if (prevStatus.current === 'processing' && notifState.status === 'done') {
+      // Give backend a moment to finalize, then refetch
+      setTimeout(refetch, 1500);
+    }
+    prevStatus.current = notifState.status;
+  }, [notifState.status, refetch]);
 
   if (loading) {
     return (
