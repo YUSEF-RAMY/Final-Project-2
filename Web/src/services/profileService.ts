@@ -49,27 +49,54 @@ export interface UserProfile {
   created_at: string;
 }
 
-export async function fetchProfile(): Promise<UserProfile> {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
-    headers: getAuthHeaders(),
-  });
+let profileCache: UserProfile | null = null;
+let profileCachePromise: Promise<UserProfile> | null = null;
+let profileCacheTime = 0;
 
-  if (response.status === 401) handleUnauthorized();
+export function prefetchProfile() {
+  fetchProfile().catch(() => {});
+}
 
-  const text = await response.text();
-  let result;
-  try {
-    result = text ? JSON.parse(text) : {};
-  } catch {
-    result = {};
+export async function fetchProfile(force = false): Promise<UserProfile> {
+  if (!force && profileCache && Date.now() - profileCacheTime < 60000) {
+    return profileCache;
+  }
+  if (!force && profileCachePromise) {
+    return profileCachePromise;
   }
 
-  if (response.ok) {
-    const data = result.data || result;
-    return data as UserProfile;
-  }
+  profileCachePromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        headers: getAuthHeaders(),
+      });
 
-  throw new Error(result.message || 'Failed to fetch profile');
+      if (response.status === 401) handleUnauthorized();
+
+      const text = await response.text();
+      let result;
+      try {
+        result = text ? JSON.parse(text) : {};
+      } catch {
+        result = {};
+      }
+
+      if (response.ok) {
+        const data = result.data || result;
+        profileCache = data as UserProfile;
+        profileCacheTime = Date.now();
+        profileCachePromise = null;
+        return profileCache;
+      }
+
+      throw new Error(result.message || 'Failed to fetch profile');
+    } catch (error) {
+      profileCachePromise = null;
+      throw error;
+    }
+  })();
+
+  return profileCachePromise;
 }
 
 export async function logout(): Promise<void> {
