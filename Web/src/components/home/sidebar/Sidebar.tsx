@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
           Hfy
         </div>
         <div className={styles.logoText}>
-          <h1>Healthyfy</h1>
+          <h1>Healthify</h1>
           <p>AI Nutrition</p>
         </div>
       </div>

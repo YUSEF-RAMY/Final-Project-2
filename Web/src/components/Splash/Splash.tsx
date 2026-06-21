@@ -26,7 +26,7 @@ const Splash: React.FC = () => {
 
         </div>
 
-        <h1 className={styles['brand-name']}>Healthyfy</h1>
+        <h1 className={styles['brand-name']}>Healthify</h1>
         <p className={styles.tagline}>Your AI Nutrition Coach</p>
 
         <div className={styles['loader-dots']}>

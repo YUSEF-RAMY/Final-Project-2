@@ -6,7 +6,7 @@ const LeftPanel: React.FC = () => {
   return (
     <div className={styles.leftSide}>
       <div className={styles.leftLogo}>
-        <i className="fa-solid fa-leaf"></i> Healthyfy
+        <i className="fa-solid fa-leaf"></i> Healthify
       </div>
       <div className={styles.heroText}>
         <h1>Restore your<br />connection.</h1>
