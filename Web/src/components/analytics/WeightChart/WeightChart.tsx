@@ -38,9 +38,9 @@ const CustomTooltip = ({ active, payload, label }: {
   );
 };
 
-// Custom SVG Label for the highlighted October persistent pill matching the mockup exactly
+// Custom SVG Label for the highlighted persistent pill matching the mockup exactly
 const HighlightPill = (props: any) => {
-  const { cx, cy, weight } = props;
+  const { cx, cy, weight, label } = props;
   if (!cx || !cy) return null;
   return (
     <g style={{ pointerEvents: 'none' }}>
@@ -81,7 +81,7 @@ const HighlightPill = (props: any) => {
         fontWeight="600"
         fontFamily="inherit"
       >
-        Oct 12
+        {label}
       </text>
     </g>
   );
@@ -111,9 +111,10 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
     return [min, max];
   }, [chartData]);
 
-  // Find the exact highlighted point for the October persistent pill
-  const octPoint = useMemo(() => {
-    return chartData.find((d) => d.label === 'Oct' || d.label.startsWith('Oct'));
+  // Highlight the latest point dynamically
+  const lastPoint = useMemo(() => {
+    if (chartData.length === 0) return null;
+    return chartData[chartData.length - 1];
   }, [chartData]);
 
   const isEmpty = chartData.length === 0;
@@ -129,7 +130,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
           </span>
           <span className={`${styles.chip} ${styles.chipOrange}`}>
             <i className="fa-solid fa-arrows-up-down-left-right" style={{ transform: 'rotate(45deg)', fontSize: '11px' }} />
-            +{Math.abs(muscleChange)} kg
+            {muscleChange >= 0 ? '+' : '-'}{Math.abs(muscleChange)} kg
             <span className={styles.chipSub}>(Muscle)</span>
           </span>
         </div>
@@ -146,7 +147,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
         </div>
       </div>
 
-      <h3 className={styles.chartTitle}>Weight &amp; Lean Mass Trajectory</h3>
+      <h3 className={styles.chartTitle}>Weight, Muscle &amp; Fat Trajectory</h3>
 
       {isEmpty ? (
         <div className={styles.emptyState}>
@@ -202,12 +203,22 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
                 dot={false}
               />
 
+              {/* Dashed Fat Mass Trajectory in Red */}
+              <Line
+                type="monotone"
+                dataKey="fatMass"
+                stroke="#ef4444"
+                strokeWidth={1.5}
+                strokeDasharray="2 2"
+                dot={false}
+              />
+
               {/* Persistent mockup highlighted pill inside Recharts matching design exactly */}
-              {octPoint && (
+              {lastPoint && (
                 <ReferenceDot
-                  x={octPoint.label}
-                  y={octPoint.weight}
-                  shape={<HighlightPill weight={octPoint.weight} />}
+                  x={lastPoint.label}
+                  y={lastPoint.weight}
+                  shape={<HighlightPill weight={lastPoint.weight} label={lastPoint.label} />}
                 />
               )}
             </ComposedChart>

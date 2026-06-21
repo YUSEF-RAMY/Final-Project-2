@@ -7,6 +7,9 @@ export interface InBodyRecord {
   id?: number;
   measured_at?: string;
   created_at?: string;
+  height?: number;
+  age?: number;
+  gender?: string;
   weight: number;
   bmi: number;
   muscle_mass: number;
@@ -16,6 +19,14 @@ export interface InBodyRecord {
   water?: number;
   protein?: number;
   minerals?: number;
+  bmr?: number;
+  tdee?: number;
+  inbody_score?: number;
+  lbm?: number;
+  calories?: number;
+  target_protein?: number;
+  target_carbs?: number;
+  target_fats?: number;
   image?: string | null;
   inbody_image?: string | null;
 }
@@ -114,7 +125,7 @@ export async function fetch7DayAverages(): Promise<SevenDayAverages> {
 }
 
 // Coerce all numeric string fields the API might return
-function normaliseRecord(r: Record<string, unknown>): InBodyRecord {
+export function normaliseRecord(r: Record<string, unknown>): InBodyRecord {
   return {
     ...r,
     weight:                Number(r.weight               ?? 0),
@@ -125,5 +136,13 @@ function normaliseRecord(r: Record<string, unknown>): InBodyRecord {
     water:                 Number(r.water                ?? 0),
     protein:               Number(r.protein              ?? 0),
     minerals:              Number(r.minerals             ?? 0),
+    bmr:                   r.bmr != null ? Number(r.bmr) : undefined,
+    tdee:                  r.tdee != null ? Number(r.tdee) : undefined,
+    inbody_score:          r.inbody_score != null ? Number(r.inbody_score) : undefined,
+    lbm:                   r.lbm != null ? Number(r.lbm) : undefined,
+    calories:              r.calories != null ? Number(r.calories) : undefined,
+    target_protein:        r.target_protein != null ? Number(r.target_protein) : undefined,
+    target_carbs:          r.target_carbs != null ? Number(r.target_carbs) : undefined,
+    target_fats:           r.target_fats != null ? Number(r.target_fats) : undefined,
   } as InBodyRecord;
 }

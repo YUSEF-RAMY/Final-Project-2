@@ -18,14 +18,14 @@ const GoogleCallback = () => {
     
     const handleCallback = async () => {
       const token = searchParams.get('token');
-      const name = searchParams.get('name') || 'مستخدم جديد';
+      const name = searchParams.get('name') || 'New User';
       const error = searchParams.get('error');
 
       if (error) {
         hasHandledRef.current = true;
         Swal.fire({
           icon: 'error',
-          title: 'فشل تسجيل الدخول',
+          title: 'Login Failed',
           text: decodeURIComponent(error),
           confirmButtonColor: '#e74c3c',
         }).then(() => navigate('/login'));
@@ -36,8 +36,8 @@ const GoogleCallback = () => {
         hasHandledRef.current = true;
         Swal.fire({
           icon: 'error',
-          title: 'خطأ',
-          text: 'لم يتم استلام التوكن من السيرفر. يرجى التأكد من إعدادات الباك إند.',
+          title: 'Error',
+          text: 'Token not received from server. Please check backend settings.',
           confirmButtonColor: '#e74c3c',
         }).then(() => navigate('/login'));
         return;
@@ -48,13 +48,16 @@ const GoogleCallback = () => {
       saveToken(token);
       await registerDevice(token);
 
+      const needsOnboarding = searchParams.get('needs_onboarding');
+      const targetRoute = needsOnboarding === 'false' ? '/dashboard' : '/onboarding1';
+
       Swal.fire({
         icon: 'success',
-        title: `مرحباً بك، ${name}!`,
-        text: 'تم التسجيل الدخول باستخدام جوجل بنجاح.',
+        title: `Welcome, ${name}!`,
+        text: 'Successfully logged in with Google.',
         timer: 3000,
         showConfirmButton: false,
-      }).then(() => navigate('/onboarding1'));
+      }).then(() => navigate(targetRoute));
     };
 
     handleCallback();
@@ -82,7 +85,7 @@ const GoogleCallback = () => {
             margin: '0 auto 16px',
           }}
         />
-        <p style={{ color: '#666', fontSize: '1rem' }}>جارٍ إكمال تسجيل الدخول...</p>
+        <p style={{ color: '#666', fontSize: '1rem' }}>Completing login...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>

@@ -110,7 +110,7 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, mealTargets, onRefetch }) =>
                   <span className={styles.mealTargetKcal}>Target: {Math.round(target)} kcal</span>
                 ) : (
                   <span className={styles.mealKcal} style={{ color: config.color }}>
-                    {Math.round(consumed)} kcal
+                    {Math.round(consumed)} / {Math.round(target)} kcal
                   </span>
                 )}
               </div>
@@ -138,9 +138,10 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, mealTargets, onRefetch }) =>
                     const carbs = Math.round(item.total_nutrition?.carbs    ?? 0);
                     const fat   = Math.round(item.total_nutrition?.fat      ?? 0);
                     
-                    // The backend might return the log ID as 'id' directly on the item, 
-                    // or inside an 'entries' array. Fallback to food_id if neither is present.
-                    const entryId = item.id || item.entries?.[0]?.id || item.food_id;
+                    // Priority 1: the log entry ID (entries[0].id)
+                    // Priority 2: item.id (if backend attaches it directly)
+                    // Priority 3: food_id (fallback)
+                    const entryId = item.entries?.[0]?.id || item.id || item.food_id;
                     const isDeleting = deletingId === entryId;
 
                     return (
@@ -177,14 +178,26 @@ const MealPlan: React.FC<MealPlanProps> = ({ meals, mealTargets, onRefetch }) =>
                     );
                   })}
 
-                  {items.length > 3 && (
-                    <button
-                      className={styles.viewMoreBtn}
-                      onClick={() => navigate(`/food-log?meal=${mealType}`)}
-                    >
-                      +{items.length - 3} more
-                    </button>
-                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                    {items.length > 3 && (
+                      <button
+                        className={styles.viewMoreBtn}
+                        onClick={() => navigate(`/food-log?meal=${mealType}`)}
+                      >
+                        +{items.length - 3} more
+                      </button>
+                    )}
+
+                    {consumed < target && (
+                      <button
+                        className={styles.addMoreBtn}
+                        style={{ color: config.color }}
+                        onClick={() => navigate(`/food-log?meal=${mealType}`)}
+                      >
+                        <i className="fa-solid fa-plus"></i> Add item
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
