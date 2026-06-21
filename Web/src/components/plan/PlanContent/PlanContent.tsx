@@ -88,7 +88,7 @@ const PlanContent: React.FC = () => {
       )}
       {showEditModal && (
         <EditTargetsModal
-          initialTargets={profile.nutritional_targets}
+          initialTargets={profile.nutritional_targets || { calories: 0, protein: 0, carbs: 0, fats: 0 }}
           onClose={() => setShowEditModal(false)}
           onSuccess={() => { setShowEditModal(false); refetch(); }}
         />

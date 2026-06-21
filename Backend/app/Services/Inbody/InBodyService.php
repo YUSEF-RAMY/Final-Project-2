@@ -166,6 +166,6 @@ class InBodyService
 
     public function getHistory($user)
     {
-        return $user->body_report()->orderBy('created_at', 'desc')->get();
+        return $user->body_report()->with('classification')->orderBy('created_at', 'desc')->get();
     }
 }

@@ -46,6 +46,7 @@ class BodyReportResource extends JsonResource
                 return [
                     'category' => $this->classification->category,
                     'reasoning' => $this->classification->reasoning,
+                    'disease_condition' => $this->classification->disease_condition,
                 ];
             }),
         ];
