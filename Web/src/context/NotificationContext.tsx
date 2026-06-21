@@ -191,9 +191,10 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
                   const newData = pollResult.data;
                   // Only mark as done if this is genuinely new data that has fully finished processing
                   const isNew = newData.created_at !== oldCreatedAt;
-                  const isComplete = newData.protein && (newData.image || newData.inbody_image);
-
-                  if (isNew && isComplete) {
+                  
+                  // The backend only creates the body report record at the very end of the pipeline.
+                  // So if we see a genuinely new report, it means the processing is 100% complete.
+                  if (isNew) {
                     isPolling = false;
                     // finishProcessing is guarded by the ref-lock so it's safe to call from both paths
                     finishProcessing("Done ✓", "/analysis-inbody");

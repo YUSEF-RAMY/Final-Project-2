@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   fetchNotifications,
-  markNotificationsAsRead,
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
   clearAllNotifications,
+  deleteNotification,
 } from '../../../services/notificationService';
 import type { AppNotification } from '../../../services/notificationService';
 import styles from './NotificationPanel.module.css';
@@ -49,7 +51,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
 
   const handleMarkAllRead = async () => {
     try {
-      await markNotificationsAsRead();
+      await markAllNotificationsAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
       onUnreadCountChange(0);
     } catch (err) {
@@ -67,6 +69,34 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
       console.error('Clear error:', err);
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleMarkSingleRead = async (id: number) => {
+    const notif = notifications.find(n => n.id === id);
+    if (!notif || notif.is_read) return;
+
+    try {
+      await markNotificationAsRead(id);
+      setNotifications((prev) => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+      onUnreadCountChange(notifications.filter(n => !n.is_read && n.id !== id).length);
+    } catch (err) {
+      console.error('Mark single read error:', err);
+    }
+  };
+
+  const handleDeleteSingle = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation(); // prevent clicking the notification which would trigger mark as read
+    try {
+      await deleteNotification(id);
+      setNotifications((prev) => prev.filter(n => n.id !== id));
+      // update unread count if we deleted an unread notification
+      const notif = notifications.find(n => n.id === id);
+      if (notif && !notif.is_read) {
+        onUnreadCountChange(notifications.filter(n => !n.is_read && n.id !== id).length);
+      }
+    } catch (err) {
+      console.error('Delete notification error:', err);
     }
   };
 
@@ -154,6 +184,8 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
                 <div
                   key={n.id}
                   className={`${styles.notificationItem} ${!n.is_read ? styles.unread : ''}`}
+                  onClick={() => handleMarkSingleRead(n.id)}
+                  style={{ cursor: !n.is_read ? 'pointer' : 'default' }}
                 >
                   <div className={styles.notifIcon} style={{ color: getTypeColor(n.type) }}>
                     <i className={getTypeIcon(n.type)}></i>
@@ -163,7 +195,17 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose, 
                     <p className={styles.notifMessage}>{n.message}</p>
                     <span className={styles.notifTime}>{formatTime(n.created_at)}</span>
                   </div>
-                  {!n.is_read && <div className={styles.unreadDot}></div>}
+                  
+                  <div className={styles.notifActions}>
+                    {!n.is_read && <div className={styles.unreadDot}></div>}
+                    <button 
+                      className={styles.deleteSingleBtn} 
+                      onClick={(e) => handleDeleteSingle(e, n.id)}
+                      title="Delete notification"
+                    >
+                      <i className="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

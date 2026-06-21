@@ -35,9 +35,9 @@ export async function fetchNotifications(): Promise<AppNotification[]> {
   throw new Error(result.message || 'Failed to fetch notifications');
 }
 
-// POST /notifications/mark-as-read
-export async function markNotificationsAsRead(): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/notifications/mark-as-read`, {
+// POST /notifications/read-all
+export async function markAllNotificationsAsRead(): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/notifications/read-all`, {
     method: 'POST',
     headers: getAuthHeaders(),
   });
@@ -46,13 +46,29 @@ export async function markNotificationsAsRead(): Promise<void> {
     const text = await response.text();
     let result;
     try { result = text ? JSON.parse(text) : {}; } catch { result = {}; }
-    throw new Error(result.message || 'Failed to mark notifications as read');
+    throw new Error(result.message || 'Failed to mark all notifications as read');
   }
 }
 
-// DELETE /notifications/clear
+// POST /notifications/read (single)
+export async function markNotificationAsRead(notificationId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/notifications/read`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ notification_id: notificationId })
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    let result;
+    try { result = text ? JSON.parse(text) : {}; } catch { result = {}; }
+    throw new Error(result.message || 'Failed to mark notification as read');
+  }
+}
+
+// DELETE /notifications/clear-all
 export async function clearAllNotifications(): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/notifications/clear`, {
+  const response = await fetch(`${API_BASE_URL}/notifications/clear-all`, {
     method: 'DELETE',
     headers: getAuthHeaders(),
   });
@@ -61,6 +77,22 @@ export async function clearAllNotifications(): Promise<void> {
     const text = await response.text();
     let result;
     try { result = text ? JSON.parse(text) : {}; } catch { result = {}; }
-    throw new Error(result.message || 'Failed to clear notifications');
+    throw new Error(result.message || 'Failed to clear all notifications');
   }
 }
+
+// DELETE /notifications/{id} (single)
+export async function deleteNotification(notificationId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    let result;
+    try { result = text ? JSON.parse(text) : {}; } catch { result = {}; }
+    throw new Error(result.message || 'Failed to delete notification');
+  }
+}
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProfile } from '../../../services/profileService';
+import { fetchNotifications } from '../../../services/notificationService';
 import NotificationPanel from '../NotificationPanel/NotificationPanel';
 import styles from './Header.module.css';
 import { resolveImageUrl } from '../../../services/api';
@@ -13,7 +14,7 @@ const Header: React.FC = () => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Fetch profile once on mount
+  // Fetch profile and notifications once on mount
   useEffect(() => {
     let cancelled = false;
     fetchProfile()
@@ -27,6 +28,15 @@ const Header: React.FC = () => {
         if (err?.message === 'UNAUTHORIZED') navigate('/login');
         console.warn('Profile fetch error:', err);
       });
+
+    // Also fetch notifications to get the initial unread count
+    fetchNotifications()
+      .then((data) => {
+        if (cancelled) return;
+        setUnreadCount(data.filter((n) => !n.is_read).length);
+      })
+      .catch((err) => console.warn('Notification fetch error on mount:', err));
+
     return () => { cancelled = true; };
   }, [navigate]);
 
