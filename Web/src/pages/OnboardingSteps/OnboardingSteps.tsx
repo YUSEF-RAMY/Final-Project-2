@@ -8,6 +8,7 @@ import Step3Goal from '../../components/OnboardingSteps/Step3Goal';
 import Step4Final from '../../components/OnboardingSteps/Step4Final';
 import styles from '../../components/OnboardingSteps/OnboardingSteps.module.css';
 import { API_BASE_URL } from '../../services/api';
+import { clearProfileCache } from '../../services/profileService';
 import { forbiddenRules } from '../../components/OnboardingSteps/Step4Final';
 
 // Removed CustomWindow and declare global for window since we use Context now
@@ -127,6 +128,7 @@ const OnboardingSteps: React.FC = () => {
     if (isImageMode) {
       // Start background upload and immediately navigate to dashboard
       if (token) {
+        clearProfileCache();
         uploadAnalysis(data, endpoint, token, true);
         navigate("/dashboard");
       } else {
@@ -151,6 +153,7 @@ const OnboardingSteps: React.FC = () => {
         });
 
         if (response.ok) {
+          clearProfileCache();
           localStorage.removeItem("analysis_notified");
           Swal.fire({
             icon: "success",

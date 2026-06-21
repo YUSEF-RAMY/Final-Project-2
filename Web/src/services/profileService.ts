@@ -53,6 +53,12 @@ let profileCache: UserProfile | null = null;
 let profileCachePromise: Promise<UserProfile> | null = null;
 let profileCacheTime = 0;
 
+export function clearProfileCache() {
+  profileCache = null;
+  profileCachePromise = null;
+  profileCacheTime = 0;
+}
+
 export function prefetchProfile() {
   fetchProfile().catch(() => {});
 }

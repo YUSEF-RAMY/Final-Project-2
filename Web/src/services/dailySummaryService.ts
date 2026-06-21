@@ -124,7 +124,7 @@ export async function fetchDailySummary(date: string, force = false): Promise<Da
 
   summaryCachePromises[date] = (async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/foods/daily-summary?date=${date}`, {
+      const response = await fetch(`${API_BASE_URL}/foods/daily-summary?date=${date}&_t=${Date.now()}`, {
         headers: getAuthHeaders(),
       });
 
