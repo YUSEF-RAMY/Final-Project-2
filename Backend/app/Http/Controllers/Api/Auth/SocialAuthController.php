@@ -43,7 +43,7 @@ class SocialAuthController extends Controller
     /**
      * Handle the callback from the given provider.
      */
-    public function callback(string $provider): JsonResponse
+    public function callback(string $provider): Response
     {
         try {
             $handler = $this->providerFactory->make($provider);
@@ -54,12 +54,10 @@ class SocialAuthController extends Controller
             // Handle the login/registration business logic
             $result = $this->handleSocialLoginAction->execute($socialUserDTO);
 
-            return response()->json([
-                'message' => 'Successfully authenticated.',
-                'status_code' => Response::HTTP_OK,
-                'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ], Response::HTTP_OK);
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $result['token'] . '&name=' . urlencode($result['user']->name);
+
+            return redirect($redirectUrl);
         } catch (InvalidArgumentException $e) {
             return response()->json([
                 'error' => 'Unsupported provider.',
