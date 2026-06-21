@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('reasoning')->nullable();
             $table->json('metrics')->nullable();
+            $table->string('disease_condition')->nullable();
             $table->timestamps();
         });
     }

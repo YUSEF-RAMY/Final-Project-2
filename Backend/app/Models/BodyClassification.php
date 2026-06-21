@@ -10,6 +10,7 @@ class BodyClassification extends Model
         'body_report_id',
         'category',
         'reasoning',
+        'disease_condition',
         'metrics',
     ];
 

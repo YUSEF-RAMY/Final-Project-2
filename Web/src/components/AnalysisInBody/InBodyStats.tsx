@@ -25,6 +25,21 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
     });
   };
 
+  const renderDelta = (current: string | number | null | undefined, previous: string | number | null | undefined, unit: string, invert: boolean = false) => {
+    if (current == null || previous == null) return null;
+    const diff = Number(current) - Number(previous);
+    if (Math.abs(diff) < 0.1) return <span style={{fontSize: '12px', color: '#6b7280', marginTop: '4px', display: 'block'}}>No change</span>;
+    const isUp = diff > 0;
+    const color = invert ? (isUp ? '#ef4444' : '#10b981') : (isUp ? '#10b981' : '#ef4444');
+    const icon = isUp ? '▲' : '▼';
+    const sign = isUp ? '+' : '';
+    return (
+      <span style={{fontSize: '13px', fontWeight: 600, color, display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px'}}>
+        {icon} {sign}{diff.toFixed(1)}{unit}
+      </span>
+    );
+  };
+
   return (
     <div className={styles.statsContainer}>
 
@@ -59,7 +74,10 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
         <div className={styles.statCard}>
           <div className={styles.cardContent}>
             <span className={styles.cardLabel}>Current Weight</span>
-            <h2 className={styles.cardValue}>{display(data?.weight, " kg")}</h2>
+            <div className={styles.cardValue} style={{ display: 'flex', flexDirection: 'column' }}>
+              {display(data?.weight, " kg")}
+              {renderDelta(data?.weight, data?.previous_report?.weight, "kg", true)}
+            </div>
             <p className={styles.cardSubtext}>Total Body Mass</p>
           </div>
           <div className={styles.iconBox}><i className="fa-solid fa-weight-scale"></i></div>
@@ -106,12 +124,21 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
       <div className={styles.compositionGrid}>
         <div className={styles.miniCard}>
           <span className={styles.miniLabel}>MUSCLE MASS</span>
-          <div className={styles.miniValue}>{display(data?.muscle_mass, " kg")}</div>
+          <div className={styles.miniValue} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {display(data?.muscle_mass, " kg")}
+            {renderDelta(data?.muscle_mass, data?.previous_report?.muscle_mass, "kg", false)}
+          </div>
         </div>
         <div className={styles.miniCard}>
           <span className={styles.miniLabel}>FAT PERCENTAGE (PBF)</span>
-          <div className={styles.miniValue}>
+          <div className={styles.miniValue} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {display(data?.body_fat_percentage ?? data?.["body_fat_percentage (pbf)"], "%")}
+            {renderDelta(
+              data?.body_fat_percentage ?? data?.["body_fat_percentage (pbf)"], 
+              data?.previous_report?.body_fat_percentage ?? data?.previous_report?.["body_fat_percentage (pbf)"], 
+              "%", 
+              true
+            )}
           </div>
         </div>
         <div className={styles.miniCard}>
