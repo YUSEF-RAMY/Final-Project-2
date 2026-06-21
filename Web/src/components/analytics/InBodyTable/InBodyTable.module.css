@@ -69,3 +69,57 @@
   text-align: center;
 }
 .empty i { font-size: 24px; color: #d1d5db; }
+
+/* ── Delta badges ── */
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.deltaUp {
+  color: #16a34a;
+  background: #ecfdf5;
+}
+
+.deltaDown {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.deltaNeutral {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+/* For metrics where down is good (body fat, weight during cut) */
+.deltaGoodDown {
+  color: #16a34a;
+  background: #ecfdf5;
+}
+
+.deltaBadUp {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.reportDate {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.metricLabel {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.metricValue {
+  font-weight: 600;
+  color: #111827;
+}

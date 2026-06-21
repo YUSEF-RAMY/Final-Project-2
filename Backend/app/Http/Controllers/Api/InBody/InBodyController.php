@@ -142,6 +142,27 @@ class InBodyController extends Controller
         ]);
     }
 
+    public function getHistory(Request $request)
+    {
+        $reports = $this->inBodyService->getHistory($request->user());
+
+        if ($reports->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'status_code' => 200,
+                'message' => 'No reports found.',
+                'data' => [],
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'status_code' => 200,
+            'message' => 'History retrieved successfully.',
+            'data' => BodyReportResource::collection($reports),
+        ]);
+    }
+
     public function classifyBodyType(Request $request)
     {
         $report = $request->user()->body_report()->latest()->firstOrFail();

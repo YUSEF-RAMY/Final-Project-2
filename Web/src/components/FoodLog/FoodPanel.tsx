@@ -11,15 +11,15 @@ interface FoodPanelProps {
 }
 
 const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSuccess }) => {
-  const [quantity, setQuantity] = useState<number | ''>(100);
+  const [quantity, setQuantity] = useState<number | ''>(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // The API always returns nutrition values based on 100g serving.
-  // multiplier = userGrams / 100  →  e.g. 1g → 0.01, 100g → 1.0, 200g → 2.0
-  const userGrams = quantity === '' ? 0 : quantity;
-  const multiplier = userGrams / 100;
+  // The API returns nutrition values based on 1 serving.
+  // multiplier = userQuantity
+  const userQuantity = quantity === '' ? 0 : quantity;
+  const multiplier = userQuantity;
 
   const dynCalories = +(Number(food.nutrition.calories) * multiplier).toFixed(1);
   const dynProtein  = +(Number(food.nutrition.protein)  * multiplier).toFixed(1);
@@ -92,7 +92,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                 )}
                 <div className={styles.foodMainInfo}>
                   <h3>{food.name}</h3>
-                  <p>Per 100g serving</p>
+                  <p>Per 1 serving</p>
                 </div>
               </div>
 
@@ -103,7 +103,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                   <span className={styles.caloriesLabel}>CALORIES</span>
                 </div>
                 <p style={{ fontSize: '11px', color: 'var(--color-text-muted, #9ca3af)', margin: '2px 0 0', textAlign: 'center' }}>
-                  {food.nutrition.calories} kcal per 100g
+                  {food.nutrition.calories} kcal per 1 serving
                 </p>
 
                 <div className={styles.macrosRow}>
@@ -143,7 +143,7 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
               {/* Quantity input */}
               <div className={styles.quantitySection}>
                 <div className={styles.quantityField}>
-                  <label>Amount (grams)</label>
+                  <label>Quantity</label>
                   <input
                     type="number"
                     min={0}
@@ -161,8 +161,8 @@ const FoodPanel: React.FC<FoodPanelProps> = ({ food, mealType, onClose, onSucces
                 </div>
                 <div className={styles.quantityField}>
                   <label>Unit</label>
-                  <select defaultValue="g">
-                    <option value="g">Grams (g)</option>
+                  <select defaultValue="serving">
+                    <option value="serving">Serving</option>
                   </select>
                 </div>
               </div>

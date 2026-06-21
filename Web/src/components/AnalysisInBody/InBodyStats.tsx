@@ -84,8 +84,24 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
         </div>
       </div>
 
-      <h3 className={styles.sectionTitle}>Body Composition Details</h3>
+      <div className={styles.secondaryGrid} style={{ marginTop: '16px' }}>
+        <div className={styles.statCardSmall}>
+          <div className={styles.smallInfo}>
+            <span className={styles.cardLabel}>Total Daily Energy Exp. (TDEE)</span>
+            <h3 className={styles.smallValue}>{display(data?.tdee, " kcal")}</h3>
+          </div>
+          <i className="fa-solid fa-bolt" style={{ color: '#ef4444' }}></i>
+        </div>
+        <div className={styles.statCardSmall}>
+          <div className={styles.smallInfo}>
+            <span className={styles.cardLabel}>InBody Score</span>
+            <h3 className={styles.smallValue}>{display(data?.inbody_score, " / 100")}</h3>
+          </div>
+          <i className="fa-solid fa-award" style={{ color: '#10b981' }}></i>
+        </div>
+      </div>
 
+      <h3 className={styles.sectionTitle}>Body Composition Details</h3>
 
       <div className={styles.compositionGrid}>
         <div className={styles.miniCard}>
@@ -94,14 +110,15 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
         </div>
         <div className={styles.miniCard}>
           <span className={styles.miniLabel}>FAT PERCENTAGE (PBF)</span>
-          <div className={styles.miniValue}>{display(data?.["body_fat_percentage (pbf)"], "%")}</div>
+          <div className={styles.miniValue}>
+            {display(data?.body_fat_percentage ?? data?.["body_fat_percentage (pbf)"], "%")}
+          </div>
         </div>
         <div className={styles.miniCard}>
           <span className={styles.miniLabel}>BODY WATER</span>
           <div className={styles.miniValue}>{display(data?.water, " kg")}</div>
         </div>
       </div>
-
 
       <div className={styles.wideInfoCard}>
         <div className={styles.infoText}>
@@ -111,8 +128,23 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
         <div className={styles.wideValue}>{display(data?.body_fat_mass, " kg")}</div>
       </div>
 
-      <h3 className={styles.sectionTitle}>Structural Components</h3>
+      <div className={styles.wideInfoCard} style={{ marginTop: '12px', borderLeftColor: '#f97316' }}>
+        <div className={styles.infoText}>
+          <strong>Visceral Fat Level</strong>
+          <p>Fat surrounding internal organs</p>
+        </div>
+        <div className={styles.wideValue}>{display(data?.visceral_fat, " Level")}</div>
+      </div>
 
+      <div className={styles.wideInfoCard} style={{ marginTop: '12px', borderLeftColor: '#8b5cf6' }}>
+        <div className={styles.infoText}>
+          <strong>Lean Body Mass (LBM)</strong>
+          <p>Total weight minus fat mass</p>
+        </div>
+        <div className={styles.wideValue}>{display(data?.lbm, " kg")}</div>
+      </div>
+
+      <h3 className={styles.sectionTitle}>Structural Components</h3>
 
       <div className={styles.progressContainer}>
         <div className={styles.progressItem}>
@@ -135,6 +167,24 @@ const InBodyStats: React.FC<Props> = ({ data }) => {
           </div>
         </div>
       </div>
+
+      <h3 className={styles.sectionTitle}>Calculated Macro Targets</h3>
+      
+      <div className={styles.compositionGrid}>
+        <div className={styles.miniCard} style={{ borderBottom: '3px solid #f59e0b' }}>
+          <span className={styles.miniLabel}>PROTEIN</span>
+          <div className={styles.miniValue}>{display(data?.target_protein, " g")}</div>
+        </div>
+        <div className={styles.miniCard} style={{ borderBottom: '3px solid #3b82f6' }}>
+          <span className={styles.miniLabel}>CARBS</span>
+          <div className={styles.miniValue}>{display(data?.target_carbs, " g")}</div>
+        </div>
+        <div className={styles.miniCard} style={{ borderBottom: '3px solid #ef4444' }}>
+          <span className={styles.miniLabel}>FATS</span>
+          <div className={styles.miniValue}>{display(data?.target_fats, " g")}</div>
+        </div>
+      </div>
+      
     </div>
   );
 };

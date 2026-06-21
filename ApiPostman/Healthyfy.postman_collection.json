@@ -920,6 +920,40 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get All History Inbody",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{docker_url}}/inbody/history",
+              "host": [
+                "{{docker_url}}"
+              ],
+              "path": [
+                "inbody",
+                "history"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },

@@ -110,6 +110,57 @@
   background-color: #059669;
 }
 
+/* User info section */
+.userSection {
+  padding: 0 24px;
+  margin-bottom: 16px;
+}
+
+.userButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: none;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.userButton:hover {
+  background: #f3f4f6;
+}
+
+.userAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userAvatarPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Mobile Bottom Navigation Layout */
 @media (max-width: 768px) {
   .sidebar {
@@ -128,6 +179,10 @@
 
   .logoContainer {
     display: none; /* Hide logo on mobile to save space */
+  }
+
+  .userSection {
+    display: none; /* Hide user section on mobile */
   }
 
   .nav {

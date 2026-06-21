@@ -18,6 +18,7 @@ class HandleSocialLoginAction
     public function execute(SocialUserDTO $socialUser): array
     {
         return DB::transaction(function () use ($socialUser) {
+            $isNewUser = false;
             $linkedAccount = LinkedSocialAccount::query()
                 ->where('provider_name', $socialUser->providerName)
                 ->where('provider_id', $socialUser->providerId)
@@ -39,6 +40,7 @@ class HandleSocialLoginAction
                         'password' => bcrypt(Str::random(16)), // Fallback random password
                         'email_verified_at' => now(), // Social emails are verified by the provider
                     ]);
+                    $isNewUser = true;
                 }
 
                 // Link the social account to the user
@@ -54,6 +56,7 @@ class HandleSocialLoginAction
             return [
                 'user' => $user,
                 'token' => $token,
+                'is_new_user' => $isNewUser,
             ];
         });
     }

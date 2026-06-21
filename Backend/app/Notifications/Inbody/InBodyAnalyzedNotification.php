@@ -99,12 +99,13 @@ class InBodyAnalyzedNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): ?MailMessage
     {
         try {
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
             return (new MailMessage)
-                ->subject('InBody Analysis Completed! 🎉')
-                ->greeting('Hello '.$notifiable->name.'!')
-                ->line('Your InBody analysis is complete and your new macros are ready.')
-                ->action('View Results', url('/results'))
-                ->line('Thank you for using Healthify!');
+                ->subject('تم الانتهاء من تحليل InBody! 🎉')
+                ->greeting('مرحباً '.$notifiable->name.'!')
+                ->line('لقد انتهينا من تحليل بيانات InBody الخاصة بك، وتم تحديث السعرات الحرارية والماكروز بناءً على النتيجة الجديدة.')
+                ->action('عرض التفاصيل', $frontendUrl . '/dashboard')
+                ->line('شكراً لاستخدامك تطبيق Healthify!');
         } catch (\Throwable $e) {
             LogService::error($e, ['notifiable_id' => $notifiable->id], 'notification');
 

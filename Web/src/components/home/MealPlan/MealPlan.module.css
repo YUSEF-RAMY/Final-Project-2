@@ -193,6 +193,25 @@
   color: #374151;
 }
 
+.addMoreBtn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.addMoreBtn:hover {
+  opacity: 0.8;
+  background-color: #f9fafb;
+}
+
 /* === Delete Button === */
 .deleteBtn {
   background: none;

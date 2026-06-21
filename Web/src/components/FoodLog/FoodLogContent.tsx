@@ -20,11 +20,17 @@ const FoodLogContent: React.FC = () => {
 
   const filteredFoods = useMemo(() => {
     let result = foods;
-    if (activeCategory !== 'All') result = result.filter((f) => f.category === activeCategory);
+    if (activeCategory !== 'All') {
+      result = result.filter((f) => {
+        if (!f.category) return false;
+        const normalized = f.category.trim().charAt(0).toUpperCase() + f.category.trim().slice(1).toLowerCase();
+        return normalized === activeCategory;
+      });
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
-        (f) => f.name.toLowerCase().includes(q) || f.category.toLowerCase().includes(q)
+        (f) => f.name.toLowerCase().includes(q) || (f.category && f.category.toLowerCase().includes(q))
       );
     }
     return result;
@@ -54,25 +60,27 @@ const FoodLogContent: React.FC = () => {
 
       {/* ── Scroll area ── */}
       <div className={styles.scrollArea}>
-        {/* Search */}
-        <div className={styles.searchBar}>
-          <i className="fa-solid fa-magnifying-glass" />
-          <input
-            className={styles.searchInput}
-            type="text"
-            placeholder="Search foods..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            id="food-search-input"
+        <div className={styles.stickyFilters}>
+          {/* Search */}
+          <div className={styles.searchBar}>
+            <i className="fa-solid fa-magnifying-glass" />
+            <input
+              className={styles.searchInput}
+              type="text"
+              placeholder="Search foods..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              id="food-search-input"
+            />
+          </div>
+
+          {/* Category tabs */}
+          <CategoryTabs
+            categories={categories}
+            activeCategory={activeCategory}
+            onSelect={setActiveCategory}
           />
         </div>
-
-        {/* Category tabs */}
-        <CategoryTabs
-          categories={categories}
-          activeCategory={activeCategory}
-          onSelect={setActiveCategory}
-        />
 
         {/* Food grid or error */}
         {error ? (

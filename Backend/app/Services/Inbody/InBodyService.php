@@ -163,4 +163,9 @@ class InBodyService
     {
         return $user->body_report()->latest()->first();
     }
+
+    public function getHistory($user)
+    {
+        return $user->body_report()->orderBy('created_at', 'desc')->get();
+    }
 }

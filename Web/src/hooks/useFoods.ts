@@ -47,7 +47,10 @@ export function useFoods(): UseFoodsResult {
   const categories = useMemo(() => {
     const cats = new Set<string>();
     foods.forEach((f) => {
-      if (f.category) cats.add(f.category);
+      if (f.category) {
+        const normalized = f.category.trim().charAt(0).toUpperCase() + f.category.trim().slice(1).toLowerCase();
+        cats.add(normalized);
+      }
     });
     return ['All', ...Array.from(cats).sort()];
   }, [foods]);
