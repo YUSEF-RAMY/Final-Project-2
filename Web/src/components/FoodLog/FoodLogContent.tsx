@@ -106,7 +106,10 @@ const FoodLogContent: React.FC = () => {
           food={selectedFood}
           mealType={mealType}
           onClose={() => setSelectedFood(null)}
-          onSuccess={() => setSelectedFood(null)}
+          onSuccess={() => {
+            setSelectedFood(null);
+            navigate('/dashboard');
+          }}
         />
       )}
     </div>
