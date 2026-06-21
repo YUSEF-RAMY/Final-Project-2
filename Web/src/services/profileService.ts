@@ -18,6 +18,10 @@ export interface LatestBodyReport {
   measured_at: string;
   created_at: string;
   image: string | null;
+  classification?: {
+    category: string;
+    reasoning: string;
+  } | null;
 }
 
 export interface UserProfile {

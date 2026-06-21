@@ -17,7 +17,7 @@ class ProfileController extends Controller
         $user = $request->user()->load([
             'profile',
             'target',
-            'body_report',
+            'body_report.classification',
             'linkedSocialAccounts',
             'devices',
             'meals',

@@ -37,6 +37,12 @@ class UserMeResource extends JsonResource
 
             // Body Reports (InBody)
             'body_reports' => BodyReportResource::collection($this->whenLoaded('body_report')),
+            
+            // Latest Body Report
+            'latest_body_report' => $this->whenLoaded('body_report', function() {
+                $latest = $this->body_report->sortByDesc('created_at')->first();
+                return $latest ? new BodyReportResource($latest) : null;
+            }),
 
             // Meals
             'meals' => MealResource::collection($this->whenLoaded('meals')),

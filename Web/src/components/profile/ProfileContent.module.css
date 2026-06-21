@@ -277,6 +277,32 @@
 
 .measuredAt { margin-top: 6px !important; font-size: 12px !important; color: #9ca3af !important; }
 
+/* ── Classification section ────────────────────────────────────── */
+.classificationBox {
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+  border: 1px solid #ddd6fe;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.classificationTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5b21b6;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.classificationReason {
+  font-size: 13px;
+  color: #6d28d9;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* ── Body stat chips ──────────────────────────────────────────── */
 .bodyStatsGrid {
   display: grid;

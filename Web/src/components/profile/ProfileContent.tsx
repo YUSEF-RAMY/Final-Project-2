@@ -241,6 +241,19 @@ const ProfileContent: React.FC = () => {
               </div>
             </div>
 
+            {/* AI Classification */}
+            {lbr.classification && (
+              <div className={styles.classificationBox}>
+                <div className={styles.classificationTitle}>
+                  <i className="fa-solid fa-robot" />
+                  Body Type: {lbr.classification.category}
+                </div>
+                <p className={styles.classificationReason}>
+                  {lbr.classification.reasoning}
+                </p>
+              </div>
+            )}
+
             {/* Body stat chips — all fields */}
             <div className={styles.bodyStatsGrid}>
               <BodyChip label="Muscle Mass"  value={lbr.muscle_mass}          unit="kg" />
