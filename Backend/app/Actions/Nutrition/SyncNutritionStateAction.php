@@ -67,6 +67,15 @@ class SyncNutritionStateAction
             ]
         );
 
+        // 5. Update the report with calculated macro targets and TDEE
+        $report->update([
+            'tdee' => $results['tdee'] ?? null,
+            'calories' => $results['daily_calories'],
+            'target_protein' => $results['target_protein'],
+            'target_carbs' => $results['target_carbs'],
+            'target_fats' => $results['target_fats'],
+        ]);
+
         return $report;
     }
 }

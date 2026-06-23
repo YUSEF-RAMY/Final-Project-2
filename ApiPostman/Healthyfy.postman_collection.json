@@ -754,7 +754,7 @@
                   "key": "image",
                   "type": "file",
                   "uuid": "18aeffd2-f54a-4d1e-be4b-967d6d480871",
-                  "src": "/home/yusef/Documents/inbody1.jpeg"
+                  "value": null
                 },
                 {
                   "key": "goal",
@@ -824,7 +824,7 @@
               "formdata": [
                 {
                   "key": "age",
-                  "value": "",
+                  "value": "22",
                   "type": "text",
                   "uuid": "13fedb52-663a-4142-b780-9226434d640e"
                 },
@@ -832,37 +832,37 @@
                   "key": "height",
                   "type": "text",
                   "uuid": "00f2a1c9-db27-4f0c-9fbe-fcdcc9a22664",
-                  "value": ""
+                  "value": "166"
                 },
                 {
                   "key": "weight",
-                  "value": "",
+                  "value": "44",
                   "type": "text",
                   "uuid": "d2a75bfd-c314-4e54-b5a5-de7adb2e18f1"
                 },
                 {
                   "key": "gender",
-                  "value": "",
+                  "value": "male",
                   "description": "male || female",
                   "type": "text",
                   "uuid": "f0337cff-6962-4c52-89a2-d53d733308f3"
                 },
                 {
                   "key": "activity_level",
-                  "value": "",
+                  "value": "lightly_active",
                   "description": "sedentary || lightly_active || moderately_active ||very_active",
                   "type": "text",
                   "uuid": "34b13316-2aad-4e1f-849b-f3bacc9834d1"
                 },
                 {
-                  "key": "primary_objective",
-                  "value": "",
+                  "key": "goal",
+                  "value": "build_muscle",
                   "description": "lose_weight || build_muscle || maintain",
                   "type": "text",
                   "uuid": "1e3e77cd-79bd-4216-b4fb-2356a0b32e7d"
                 },
                 {
-                  "key": "medical_conditions",
+                  "key": "disease_condition",
                   "value": "",
                   "description": "nullable",
                   "type": "text",
@@ -1149,7 +1149,40 @@
       "name": "Daily User Target",
       "item": [
         {
-          "name": "GET Daily Summary",
+          "name": "Get User Target",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/daily-target",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "daily-target"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Daily Summary",
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -1178,8 +1211,10 @@
                 {
                   "key": "date",
                   "value": "",
+                  "description": "when you keep it impty i put it now",
                   "type": "text",
-                  "uuid": "b42a3ec5-764f-4005-8ba8-dfa6f10bae36"
+                  "uuid": "1997416e-1742-4d82-ba8b-0e5013abbccc",
+                  "disabled": true
                 }
               ]
             },
@@ -1191,39 +1226,6 @@
               "path": [
                 "foods",
                 "daily-summary"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get User Target",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/daily-target",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "daily-target"
               ]
             }
           },

@@ -15,6 +15,7 @@ use App\Jobs\Inbody\ProcessInBodyAnalysis;
 use App\Models\InBodyRequest;
 use App\Services\Inbody\InBodyCalculationService;
 use App\Services\Inbody\InBodyService;
+use App\Services\MealTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
@@ -73,18 +74,24 @@ class InBodyController extends Controller
         ]);
     }
 
-    public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction)
+    public function storeManualEntry(StoreManualProfileRequest $request, SyncNutritionStateAction $syncAction, MealTrackingService $mealService)
     {
         $data = $request->validated();
 
-        $activityMap = [
-            1 => ActivityLevel::SEDENTARY,
-            2 => ActivityLevel::LIGHTLY_ACTIVE,
-            3 => ActivityLevel::MODERATELY_ACTIVE,
-            4 => ActivityLevel::VERY_ACTIVE,
-            5 => ActivityLevel::EXTRA_ACTIVE,
-        ];
-        $data['activity_level'] = $activityMap[$data['activity_level'] ?? 3] ?? ActivityLevel::MODERATELY_ACTIVE;
+        $activityInput = $data['activity_level'] ?? 3;
+
+        if (is_string($activityInput) && ActivityLevel::tryFrom($activityInput)) {
+            $data['activity_level'] = ActivityLevel::from($activityInput);
+        } else {
+            $activityMap = [
+                1 => ActivityLevel::SEDENTARY,
+                2 => ActivityLevel::LIGHTLY_ACTIVE,
+                3 => ActivityLevel::MODERATELY_ACTIVE,
+                4 => ActivityLevel::VERY_ACTIVE,
+                5 => ActivityLevel::EXTRA_ACTIVE,
+            ];
+            $data['activity_level'] = $activityMap[$activityInput] ?? ActivityLevel::MODERATELY_ACTIVE;
+        }
 
         $goalMap = [
             'lose_fat' => PrimaryObjective::LOSE_WEIGHT,
@@ -97,17 +104,37 @@ class InBodyController extends Controller
         // Calculate BMI automatically
         $data['bmi'] = $this->calculationService->calculateBMI($data['weight'], $data['height']);
 
+        // Calculate and simulate InBody Data
+        $data['inbody_data'] = $this->calculationService->calculateManualInBodyData(
+            $data['weight'],
+            $data['height'],
+            $data['age'],
+            $data['gender']
+        );
+
         $inputDto = NutritionAnalysisInputDTO::fromArray($data);
 
-        $syncAction->execute($request->user(), $inputDto);
+        $report = $syncAction->execute($request->user(), $inputDto);
 
         $profile = $request->user()->load('profile')->profile;
+
+        $summary = $mealService->getDailySummary($request->user());
 
         return response()->json([
             'status' => true,
             'status_code' => 200,
             'message' => 'Profile metrics and goals updated successfully',
-            'data' => new UserProfileResource($profile),
+            'data' => [
+                'profile' => new UserProfileResource($profile),
+                'report' => new BodyReportResource($report),
+                'daily_targets' => [
+                    'calories' => $report->calories,
+                    'protein' => $report->target_protein,
+                    'carbs' => $report->target_carbs,
+                    'fats' => $report->target_fats,
+                ],
+                'meal_distribution' => $summary['meal_targets'] ?? null,
+            ],
         ], 200);
     }
 
