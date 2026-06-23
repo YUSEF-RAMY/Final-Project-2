@@ -24,7 +24,7 @@ const SignUpForm = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-  const isNameValid = formData.fullName.trim().split(/\s+/).length >= 4;
+  const isNameValid = formData.fullName.trim().split(/\s+/).length >= 2;
   const isPassMatch = formData.confirmPassword === formData.password && formData.confirmPassword !== '';
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
