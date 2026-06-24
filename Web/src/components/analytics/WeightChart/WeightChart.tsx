@@ -94,7 +94,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
 
   // Compute stat chips
   const { totalChange, muscleChange } = useMemo(() => {
-    if (chartData.length < 2) return { totalChange: -4.2, muscleChange: 1.1 };
+    if (chartData.length < 2) return { totalChange: 0, muscleChange: 0 };
     const first = chartData[0];
     const last  = chartData[chartData.length - 1];
     return {
@@ -120,21 +120,39 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
   }, [chartData]);
 
   const isEmpty = chartData.length === 0;
+  const isSinglePoint = chartData.length === 1;
 
   return (
     <div className={styles.card}>
       <div className={styles.chartHeader}>
         <div className={styles.statsRow}>
-          <span className={`${styles.chip} ${styles.chipGreen}`}>
-            <i className="fa-solid fa-arrow-trend-down" />
-            {totalChange < 0 ? '' : '-'}{Math.abs(totalChange)} kg
-            <span className={styles.chipSub}>(Total)</span>
-          </span>
-          <span className={`${styles.chip} ${styles.chipOrange}`}>
-            <i className="fa-solid fa-arrows-up-down-left-right" style={{ transform: 'rotate(45deg)', fontSize: '11px' }} />
-            {muscleChange >= 0 ? '+' : '-'}{Math.abs(muscleChange)} kg
-            <span className={styles.chipSub}>(Muscle)</span>
-          </span>
+          {isSinglePoint ? (
+            <>
+              <span className={`${styles.chip} ${styles.chipGreen}`}>
+                <i className="fa-solid fa-weight-scale" />
+                {chartData[0].weight} kg
+                <span className={styles.chipSub}>(Current)</span>
+              </span>
+              <span className={`${styles.chip} ${styles.chipOrange}`}>
+                <i className="fa-solid fa-dumbbell" />
+                {chartData[0].muscle} kg
+                <span className={styles.chipSub}>(Muscle)</span>
+              </span>
+            </>
+          ) : (
+            <>
+              <span className={`${styles.chip} ${styles.chipGreen}`}>
+                <i className="fa-solid fa-arrow-trend-down" />
+                {totalChange < 0 ? '' : '-'}{Math.abs(totalChange)} kg
+                <span className={styles.chipSub}>(Total)</span>
+              </span>
+              <span className={`${styles.chip} ${styles.chipOrange}`}>
+                <i className="fa-solid fa-arrows-up-down-left-right" style={{ transform: 'rotate(45deg)', fontSize: '11px' }} />
+                {muscleChange >= 0 ? '+' : '-'}{Math.abs(muscleChange)} kg
+                <span className={styles.chipSub}>(Muscle)</span>
+              </span>
+            </>
+          )}
         </div>
         <div className={styles.periodTabs}>
           {PERIODS.map((p) => (
@@ -149,7 +167,9 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
         </div>
       </div>
 
-      <h3 className={styles.chartTitle}>Weight, Muscle &amp; Fat Trajectory</h3>
+      <h3 className={styles.chartTitle}>
+        {isSinglePoint ? 'Your Starting Point' : 'Weight, Muscle & Fat Trajectory'}
+      </h3>
 
       {isEmpty ? (
         <div className={styles.emptyState}>
@@ -191,7 +211,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
                 stroke="#047857"
                 strokeWidth={2.5}
                 fill="url(#weightGrad)"
-                dot={false}
+                dot={isSinglePoint ? { r: 6, fill: '#047857', strokeWidth: 2, stroke: '#fff' } : false}
                 activeDot={{ r: 5, fill: '#047857', strokeWidth: 2, stroke: '#fff' }}
               />
               
@@ -202,7 +222,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
                 stroke="#d97706"
                 strokeWidth={1.5}
                 strokeDasharray="4 3"
-                dot={false}
+                dot={isSinglePoint ? { r: 5, fill: '#d97706', strokeWidth: 2, stroke: '#fff' } : false}
               />
 
               {/* Dashed Fat Mass Trajectory in Red */}
@@ -212,7 +232,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
                 stroke="#ef4444"
                 strokeWidth={1.5}
                 strokeDasharray="2 2"
-                dot={false}
+                dot={isSinglePoint ? { r: 5, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' } : false}
               />
 
               {/* Persistent mockup highlighted pill inside Recharts matching design exactly */}

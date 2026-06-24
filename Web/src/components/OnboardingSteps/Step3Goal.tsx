@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './OnboardingSteps.module.css';
 
 
-type GoalType = 'lose_fat' | 'gain_muscle' | 'maintain' | '';
+type GoalType = 'lose_weight' | 'build_muscle' | 'maintain' | '';
 
 interface Step3GoalProps {
   selectedGoal: string;
@@ -17,20 +17,20 @@ const Step3Goal: React.FC<Step3GoalProps> = ({ selectGoal, selectedGoal }) => (
 
         {/* Lose Weight Card */}
         <div
-          className={`${styles['obj-card']} ${selectedGoal === 'lose_fat' ? styles.selected : ''}`}
-          onClick={() => selectGoal('lose_fat')}
+          className={`${styles['obj-card']} ${selectedGoal === 'lose_weight' ? styles.selected : ''}`}
+          onClick={() => selectGoal('lose_weight')}
         >
           <i className="fa-solid fa-fire"></i><br />
-          <h4>lose fat</h4>
+          <h4>Lose Weight</h4>
         </div>
 
         {/* Build Muscle Card */}
         <div
-          className={`${styles['obj-card']} ${selectedGoal === 'gain_muscle' ? styles.selected : ''}`}
-          onClick={() => selectGoal('gain_muscle')}
+          className={`${styles['obj-card']} ${selectedGoal === 'build_muscle' ? styles.selected : ''}`}
+          onClick={() => selectGoal('build_muscle')}
         >
           <i className="fa-solid fa-dumbbell"></i><br />
-          <h4>gain muscle</h4>
+          <h4>Build Muscle</h4>
         </div>
 
         {/* Maintain Card */}
@@ -39,7 +39,7 @@ const Step3Goal: React.FC<Step3GoalProps> = ({ selectGoal, selectedGoal }) => (
           onClick={() => selectGoal('maintain')}
         >
           <i className="fa-solid fa-heart"></i><br />
-          <h4>maintain</h4>
+          <h4>Maintain</h4>
         </div>
 
       </div>

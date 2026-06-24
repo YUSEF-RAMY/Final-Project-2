@@ -102,44 +102,7 @@ export interface ChartPoint {
 
 
 export function buildChartData(history: InBodyRecord[], period: ChartPeriod): ChartPoint[] {
-  const currentRecord = history[0] || { weight: 68.4, muscle_mass: 32.1 };
-  const W = Number(currentRecord.weight || 68.4);
-  const M = Number(currentRecord.muscle_mass || 32.1);
-
-  // If we have less than 3 records, generate a beautiful 4-point mockup trajectory
-  // that aligns perfectly with the uploaded premium design but preserves their current weight.
-  if (history.length < 3) {
-    return [
-      {
-        label: 'Aug',
-        date: '2025-08-15',
-        weight: +(W + 4.2).toFixed(1),
-        muscle: +(M - 1.1).toFixed(1),
-        fatMass: +(W + 4.2 - (M - 1.1)).toFixed(1),
-      },
-      {
-        label: 'Sep',
-        date: '2025-09-15',
-        weight: +(W + 5.0).toFixed(1),
-        muscle: +(M - 0.7).toFixed(1),
-        fatMass: +(W + 5.0 - (M - 0.7)).toFixed(1),
-      },
-      {
-        label: 'Oct',
-        date: '2025-10-12',
-        weight: +(W + 0.8).toFixed(1),
-        muscle: +(M - 0.2).toFixed(1),
-        fatMass: +(W + 0.8 - (M - 0.2)).toFixed(1),
-      },
-      {
-        label: 'Nov',
-        date: '2025-11-15',
-        weight: W,
-        muscle: M,
-        fatMass: +(W - M).toFixed(1),
-      }
-    ];
-  }
+  if (!history.length) return [];
 
   const now = new Date();
   let cutoff: Date;
@@ -152,7 +115,7 @@ export function buildChartData(history: InBodyRecord[], period: ChartPeriod): Ch
     cutoff = new Date(now.getFullYear(), 0, 1);
   }
 
-  const sorted = [...history]
+  let sorted = [...history]
     .filter((r) => {
       const d = new Date(r.measured_at ?? r.created_at ?? '');
       return !isNaN(d.getTime()) && d >= cutoff;
@@ -161,6 +124,19 @@ export function buildChartData(history: InBodyRecord[], period: ChartPeriod): Ch
       new Date(a.measured_at ?? a.created_at ?? '').getTime() -
       new Date(b.measured_at ?? b.created_at ?? '').getTime()
     );
+
+  // If no records within the selected period, show all records sorted by date
+  if (sorted.length === 0) {
+    sorted = [...history]
+      .filter((r) => {
+        const d = new Date(r.measured_at ?? r.created_at ?? '');
+        return !isNaN(d.getTime());
+      })
+      .sort((a, b) =>
+        new Date(a.measured_at ?? a.created_at ?? '').getTime() -
+        new Date(b.measured_at ?? b.created_at ?? '').getTime()
+      );
+  }
 
   // Track how many times a label string appears to make it unique
   const labelCounts: Record<string, number> = {};
