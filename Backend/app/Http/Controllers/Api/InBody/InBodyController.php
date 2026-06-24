@@ -95,8 +95,10 @@ class InBodyController extends Controller
 
         $goalMap = [
             'lose_fat' => PrimaryObjective::LOSE_WEIGHT,
+            'lose_weight' => PrimaryObjective::LOSE_WEIGHT,
             'maintain' => PrimaryObjective::MAINTAIN,
             'gain_muscle' => PrimaryObjective::BUILD_MUSCLE,
+            'build_muscle' => PrimaryObjective::BUILD_MUSCLE,
         ];
         $data['primary_objective'] = $goalMap[$data['goal'] ?? 'maintain'] ?? PrimaryObjective::MAINTAIN;
         $data['medical_conditions'] = $data['disease_condition'] ?? null;

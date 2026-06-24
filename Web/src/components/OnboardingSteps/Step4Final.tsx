@@ -23,11 +23,11 @@ const diseasesList = [
 ];
 
 export const forbiddenRules: Record<string, string[]> = {
-  overweight: ['gain_muscle'],
-  obesity: ['maintain', 'gain_muscle'],
-  underweight: ['lose_fat'],
-  fatty_liver: ['gain_muscle'],
-  kidney_disease: ['gain_muscle']
+  overweight: ['build_muscle'],
+  obesity: ['maintain', 'build_muscle'],
+  underweight: ['lose_weight'],
+  fatty_liver: ['build_muscle'],
+  kidney_disease: ['build_muscle']
 };
 
 const Step4Final: React.FC<Step4FinalProps> = ({ medical, setMedical, selectedGoal }) => {
