@@ -26,13 +26,26 @@ interface UseAnalyticsResult {
   refetch: () => void;
 }
 
+let analyticsCache: AnalyticsData | null = null;
+let analyticsCacheTime = 0;
+
+export function clearAnalyticsCache() {
+  analyticsCache = null;
+  analyticsCacheTime = 0;
+}
+
 export function useAnalytics(): UseAnalyticsResult {
   const navigate = useNavigate();
-  const [data,    setData]    = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data,    setData]    = useState<AnalyticsData | null>(analyticsCache);
+  const [loading, setLoading] = useState(!analyticsCache);
   const [error,   setError]   = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (force = false) => {
+    if (!force && analyticsCache && Date.now() - analyticsCacheTime < 60000) {
+      setData(analyticsCache);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -52,8 +65,11 @@ export function useAnalytics(): UseAnalyticsResult {
       }
 
       const insight = generateInsight(profile, averages, records);
+      const newData = { profile, history: records, averages, insight };
 
-      setData({ profile, history: records, averages, insight });
+      analyticsCache = newData;
+      analyticsCacheTime = Date.now();
+      setData(newData);
     } catch (err: unknown) {
       const msg = (err as { message?: string }).message ?? 'Unexpected error';
       if (msg === 'UNAUTHORIZED') {
@@ -89,7 +105,7 @@ export function useAnalytics(): UseAnalyticsResult {
 
 // ── Chart data builder ────────────────────────────────────────────────────────
 
-export type ChartPeriod = '1M' | '3M' | 'YTD';
+export type ChartPeriod = '1M' | '3M' | 'ALL';
 
 export interface ChartPoint {
   label:    string;     // "Aug", "Sep 12", etc.
@@ -99,44 +115,28 @@ export interface ChartPoint {
   fatMass:  number;     // weight - muscle_mass (used for dashed line)
 }
 
-
-
 export function buildChartData(history: InBodyRecord[], period: ChartPeriod): ChartPoint[] {
   if (!history.length) return [];
 
   const now = new Date();
-  let cutoff: Date;
+  let cutoff: Date | null = null;
 
   if (period === '1M') {
     cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 1);
   } else if (period === '3M') {
     cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 3);
-  } else {
-    cutoff = new Date(now.getFullYear(), 0, 1);
   }
 
   let sorted = [...history]
     .filter((r) => {
       const d = new Date(r.measured_at ?? r.created_at ?? '');
-      return !isNaN(d.getTime()) && d >= cutoff;
+      if (isNaN(d.getTime())) return false;
+      return cutoff ? d >= cutoff : true;
     })
     .sort((a, b) =>
       new Date(a.measured_at ?? a.created_at ?? '').getTime() -
       new Date(b.measured_at ?? b.created_at ?? '').getTime()
     );
-
-  // If no records within the selected period, show all records sorted by date
-  if (sorted.length === 0) {
-    sorted = [...history]
-      .filter((r) => {
-        const d = new Date(r.measured_at ?? r.created_at ?? '');
-        return !isNaN(d.getTime());
-      })
-      .sort((a, b) =>
-        new Date(a.measured_at ?? a.created_at ?? '').getTime() -
-        new Date(b.measured_at ?? b.created_at ?? '').getTime()
-      );
-  }
 
   // Track how many times a label string appears to make it unique
   const labelCounts: Record<string, number> = {};

@@ -105,13 +105,26 @@ export async function fetchProfile(force = false): Promise<UserProfile> {
   return profileCachePromise;
 }
 
+import { clear7DayAveragesCache } from './analyticsService';
+import { clearAnalyticsCache } from '../hooks/useAnalytics';
+
 export async function logout(): Promise<void> {
   const headers = getAuthHeaders();
-  await fetch(`${API_BASE_URL}/logout`, {
-    method: 'POST',
-    headers,
-  });
+  try {
+    await fetch(`${API_BASE_URL}/logout`, {
+      method: 'POST',
+      headers,
+    });
+  } catch (error) {
+    console.error('Logout request failed:', error);
+  }
+  
   // Always clear local tokens regardless of response
   localStorage.removeItem('token');
   localStorage.removeItem('userToken');
+
+  // Clear all global caches to prevent data leaking to next login
+  clearProfileCache();
+  clear7DayAveragesCache();
+  clearAnalyticsCache();
 }

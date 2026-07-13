@@ -44,8 +44,12 @@ class SyncNutritionStateAction
             'datetime' => now(),
         ], $input->inBodyData));
 
-        // 3. Calculate New Targets or use AI targets
-        if (isset($input->inBodyData['calories'], $input->inBodyData['target_protein'])) {
+        // 3. Calculate New Targets or use AI targets (with sanity check)
+        $useAiTargets = isset($input->inBodyData['calories'], $input->inBodyData['target_protein']) 
+            && $input->inBodyData['calories'] >= 800 
+            && $input->inBodyData['calories'] <= 10000;
+
+        if ($useAiTargets) {
             $results = [
                 'daily_calories' => $input->inBodyData['calories'],
                 'target_protein' => $input->inBodyData['target_protein'],

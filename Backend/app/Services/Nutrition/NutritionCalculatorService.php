@@ -9,9 +9,12 @@ class NutritionCalculatorService
 {
     public function calculate(NutritionAnalysisInputDTO $input): array
     {
-        // 1. Calculate BMR (Mifflin-St Jeor Equation)
-        $bmr = (10 * $input->weight) + (6.25 * $input->height) - (5 * $input->age);
-        $bmr = $input->gender === 'male' ? $bmr + 5 : $bmr - 161;
+        // 1. Use BMR from InBody if valid, otherwise calculate (Mifflin-St Jeor Equation)
+        $bmr = $input->bmr;
+        if (!$bmr || $bmr > 5000 || $bmr < 500) {
+            $bmr = (10 * $input->weight) + (6.25 * $input->height) - (5 * $input->age);
+            $bmr = $input->gender === 'male' ? $bmr + 5 : $bmr - 161;
+        }
 
         // 2. Calculate TDEE
         $tdee = $bmr * $input->activityLevel->getMultiplier();

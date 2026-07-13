@@ -120,9 +120,23 @@ const OnboardingSteps: React.FC = () => {
       data.append("weight", formData.weight);
       data.append("gender", formData.gender === 'm' ? 'male' : 'female');
     }
-    data.append("activity_level", activity);
+    const activityMap: Record<string, string> = {
+      'sedentary': '1',
+      'lightly_active': '2',
+      'moderately_active': '3',
+      'very_active': '4',
+      'extra_active': '5',
+    };
+
+    const goalMap: Record<string, string> = {
+      'lose_weight': 'lose_fat',
+      'build_muscle': 'gain_muscle',
+      'maintain': 'maintain'
+    };
+
+    data.append("activity_level", activityMap[activity] || "3");
     data.append("fitness_level", fitness);
-    data.append("goal", selectedGoal);
+    data.append("goal", goalMap[selectedGoal] || "maintain");
     data.append("disease_condition", medical.length > 0 ? medical.join(',') : "healthy");
 
     if (isImageMode) {

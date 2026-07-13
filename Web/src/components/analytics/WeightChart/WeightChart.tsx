@@ -13,7 +13,7 @@ interface WeightChartProps {
   history: InBodyRecord[];
 }
 
-const PERIODS: ChartPeriod[] = ['1M', '3M', 'YTD'];
+const PERIODS: ChartPeriod[] = ['1M', '3M', 'ALL'];
 
 interface TooltipPayload {
   value: number;
@@ -88,7 +88,7 @@ const HighlightPill = (props: any) => {
 };
 
 const WeightChart: React.FC<WeightChartProps> = ({ history }) => {
-  const [period, setPeriod] = useState<ChartPeriod>('3M');
+  const [period, setPeriod] = useState<ChartPeriod>('ALL');
 
   const chartData = useMemo(() => buildChartData(history, period), [history, period]);
 
