@@ -14,6 +14,8 @@ interface ExtendedInBodyData extends InBodyData {
 const AnalysisInBodyPage: React.FC = () => {
   useNotification();
   const [inBodyData, setInBodyData] = useState<ExtendedInBodyData | null>(null);
+  const [inBodyHistory, setInBodyHistory] = useState<ExtendedInBodyData[]>([]);
+  const selectedIdRef = useRef<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -28,7 +30,7 @@ const AnalysisInBodyPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/inbody/latest`, {
+      const response = await fetch(`${API_BASE_URL}/inbody/history`, {
         signal,
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -46,22 +48,28 @@ const AnalysisInBodyPage: React.FC = () => {
 
       const result = await response.json();
 
-      if (result.status === "success" && result.data) {
-        const newData = result.data as ExtendedInBodyData;
+      if (result.status === "success" && Array.isArray(result.data)) {
+        const historyData = result.data as ExtendedInBodyData[];
+        setInBodyHistory(historyData);
 
-        setInBodyData(prev => {
-          if (JSON.stringify(prev) === JSON.stringify(newData)) return prev;
-          return newData;
-        });
+        if (historyData.length > 0) {
+          const selectedId = selectedIdRef.current;
+          const selected = selectedId ? historyData.find((r: any) => r.id?.toString() === selectedId) || historyData[0] : historyData[0];
+          
+          setInBodyData(prev => {
+            if (JSON.stringify(prev) === JSON.stringify(selected)) return prev;
+            return selected;
+          });
 
-        setError(null);
+          setError(null);
 
-        // Stop polling if we see it's no longer processing on backend,
-        // or if we have some data that signifies completion
-        if (newData.protein || newData.created_at) {
-          if (pollingRef.current) {
-            clearInterval(pollingRef.current);
-            pollingRef.current = null;
+          // Stop polling if we see it's no longer processing on backend,
+          // or if we have some data that signifies completion
+          if (historyData[0].protein || historyData[0].created_at) {
+            if (pollingRef.current) {
+              clearInterval(pollingRef.current);
+              pollingRef.current = null;
+            }
           }
         }
       }
@@ -176,6 +184,34 @@ const AnalysisInBodyPage: React.FC = () => {
               : error || "Waiting for your latest InBody data..."}
           </p>
         </div>
+
+        {inBodyHistory.length > 1 && (
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '5px', color: '#666' }}>
+              <i className="fa-solid fa-clock-rotate-left"></i> Previous Scans
+            </label>
+            <select
+              style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e5e7eb', background: '#f9fafb', color: '#374151' }}
+              value={selectedIdRef.current || (inBodyHistory[0] as any).id || ''}
+              onChange={(e) => {
+                const id = e.target.value;
+                selectedIdRef.current = id;
+                const selected = inBodyHistory.find((r: any) => r.id?.toString() === id);
+                if (selected) setInBodyData(selected);
+              }}
+            >
+              {inBodyHistory.map((report: any) => {
+                const dateStr = report.measured_at || report.created_at || '';
+                const date = dateStr ? new Date(dateStr).toLocaleDateString() : 'Unknown Date';
+                return (
+                  <option key={report.id} value={report.id}>
+                    {date} - {report.weight}kg
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button
