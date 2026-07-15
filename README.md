@@ -75,4 +75,5 @@ tail -f storage/logs/jobs.log | grep "trace_id_uuid"
    docker compose up -d --build
    ```
 ---
+**https://y1xw85mrkrx0-d.space-z.ai/**
 *Built for performance, scalability, and developer happiness.*
